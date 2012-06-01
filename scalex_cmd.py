@@ -8,6 +8,7 @@ import json
 import base64
 import sys
 import scalex
+import time
 
 class scalex_cmd(cmd.Cmd):
   
@@ -44,6 +45,7 @@ class scalex_cmd(cmd.Cmd):
     print "login username password"
   
   def help_get(self):
+    print "get json [companies/roles/myScripts/orgScripts]=> get json format data"
     print "get companies => get companies"
     print "get roles => get roles"
     print "get nodes [nodename] => get nodes info, if nodename is provided, show the detail of this node"
@@ -58,7 +60,9 @@ class scalex_cmd(cmd.Cmd):
     print 'set role [companyId]'
 
   def help_script(self):
-    print "script runtest"
+    print "script run [scriptId] [version] [targets] [startTime]"
+    print 'targets are comma  separated '
+    print 'startTime 0 means run now, or schedule time format 2012-06-02-12:12'
   
   def help_exit(self):
     print "exit --- exit this program"
@@ -115,6 +119,20 @@ class scalex_cmd(cmd.Cmd):
     try :
       s = s.strip()
       param = s.split();
+      if param[0] == 'json':
+        if len(param) != 2:
+          self.help_get()
+        elif param[1] == 'companies':
+          print json.dumps(self.scalex_instance.companies)
+        elif param[1] == 'roles':
+          print json.dumps(self.scalex_instance.roles)
+        elif param[1] == 'myScripts':
+          print json.dumps(self.scalex_instance.myScripts)
+        elif param[1] == 'orgScripts':
+          print json.dumps(self.scalex_instance.orgScripts)
+        else:
+          self.help_get()
+            
       if ( param[0] == "companies" ):
         self.scalex_instance.getCompanies();
 #        print self.scalex_instance.companies;
@@ -152,18 +170,16 @@ class scalex_cmd(cmd.Cmd):
         projectId = param[2]
         projectRunId = param[3]
         print 'output: ', self.scalex_instance.getOutputForRun(jobId, projectId, projectRunId);
-
+        for r in self.scalex_instance.runs[jobId]:
+          print 'jobname:', r['stepRunLogBeans'][0]['taskName']
+          print 'status: ', r['status']
+          print 'run at: ', time.ctime(int(r['runTimestamp'])/1000)
+          
       elif ( param[0] == "nodes" ):
-        if ( len(param) == 2 ):
-          self.scalex_instance.getNodes(param[1]);
-          print self.scalex_instance.nodes
-        elif ( len(param) == 1 ): 
-          self.scalex_instance.getNodes(param[1]);
-          print self.scalex_instance.nodes
-        else:
-          self.help_get();
-      else :
-        self.help_get();
+        self.scalex_instance.getNodes()
+        for n in self.scalex_instance.nodes:
+          print 'nodeId: %d\tnodeName: %s' % (n['nodeId'], n['nodeName'])
+          
     except Exception,e:
       print "Unknown Error:" , e
   
@@ -173,9 +189,12 @@ class scalex_cmd(cmd.Cmd):
       print "Please Login first"
       return 
     try :
-      param = s.strip()
-      if ( s == "runtest" ):
-        print self.scalex_instance.runScript();
+      param = s.split()
+      if len(param) != 5:
+        self.help_script()
+        return
+      if ( param[0] == "run" ):
+        self.scalex_instance.runScript(param);
     except Exception,e:
       print "Unknown Error:" , e
   
