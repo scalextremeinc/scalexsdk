@@ -57,7 +57,10 @@ class scaleXtreme():
     response = urllib2.urlopen(url, postData)
     self.cookie = response.headers.get('Set-Cookie')
     usrInfo = json.loads(response.read())
+    if ( usrInfo['result'] == 'FAILURE' ):
+      return False, usrInfo['data']
     self.userId = usrInfo['data']['userID']
+    return True,self.userId
 #    print self.cookie
 
   def getCompanies(self):
@@ -90,6 +93,7 @@ class scaleXtreme():
     postData = urllib.urlencode(value)
     response = urllib2.urlopen(url, postData).read()
     roleList = json.loads(response)['data']
+    self.roles = []
     for i in roleList:
       self.roles.append(base64.b64decode(i))
 #    self.currentRole = self.roles[0]
@@ -176,7 +180,7 @@ class scaleXtreme():
     request.add_header('cookie', self.cookie)
     response = urllib2.urlopen(request).read()
     self.orgScripts = json.loads(response)['data']
-    print self.orgScripts
+#    print self.orgScripts
 
   def getJobsForScript(self, scriptId):
     '''
@@ -224,8 +228,8 @@ class scaleXtreme():
     request.add_header('cookie', self.cookie)
     response = urllib2.urlopen(request).read()
     self.jobs[scriptId] = json.loads(response)['data']
-    print self.jobs.keys()
-    print self.jobs['7'][0].keys()
+#    print self.jobs.keys()
+#    print self.jobs['7'][0].keys()
   
 #      get runs for job
   def getRunsForJob(self, jobId):
