@@ -61,9 +61,10 @@ class scalex_cmd(cmd.Cmd):
     print 'set role [companyId]'
 
   def help_script(self):
-    print "script run [job name] [scriptId] [version] [targets] [startTime]"
-    print 'targets are comma  separated '
+    print "script run [job name] [scriptId] [version] [targetIds] [startTime] [parameters]"
+    print 'targets are comma separated example: 101,102'
     print 'startTime 0 means run now, or schedule time format 2012-06-02-12:12'
+    print 'parameters are space separated example: argument1 argument2'
   
   def help_exit(self):
     print "exit --- exit this program"
@@ -139,24 +140,29 @@ class scalex_cmd(cmd.Cmd):
 #        print self.scalex_instance.companies;
         for com in self.scalex_instance.companies:
           print 'name: %s \t\t companyId: ' % (com['name']), com['companyId']
+
       elif ( param[0] == "roles" ):
         self.scalex_instance.getRoles();
         print self.scalex_instance.roles;
+
       elif ( param[0] == "myScripts" ):
         print 'get my scripts'
         self.scalex_instance.getMyScripts();
         for s in self.scalex_instance.myScripts:
           print 'id: %s\tversion: %s\tname: %s' % (s['scriptId'], s['version'], s['scriptName'])
+
       elif ( param[0] == "orgScripts" ):
         self.scalex_instance.getOrgScripts();
         for s in self.scalex_instance.myScripts:
           print 'id: %s\tversion: %s\tname: %s' % (s['scriptId'], s['version'], s['scriptName'])
+
       elif ( param[0] == "jobs" ):
         if len(param) < 2:
           self.help_get() 
         self.scalex_instance.getJobsForScript(param[1]);
         for j in self.scalex_instance.jobs[param[1]]:
           print 'jobId: %s\tstatus: %s\t\tjobName: %s' % (j['jobId'], j['status'], j['jobName'])
+
       elif ( param[0] == "runs" ):
         if len(param) < 2:
           self.help_get()
@@ -164,6 +170,7 @@ class scalex_cmd(cmd.Cmd):
         self.scalex_instance.getRunsForJob(jobId);
         for r in self.scalex_instance.runs[jobId]:
           print 'jobId: %s\tprojectId: %s\tprojectRunId: %s\tstatus: %s\t' % (r['jobId'], r['projectId'], r['projectRunId'], r['status'])
+
       elif param[0] == 'arguments':
         if len(param) < 3:
           self.help_get()
@@ -173,6 +180,7 @@ class scalex_cmd(cmd.Cmd):
         print 'script: %s, scriptId: %s' % (self.scalex_instance.arguments[scriptId]['scriptName'], self.scalex_instance.arguments[scriptId]['scriptId'])
         for arg in self.scalex_instance.arguments[scriptId]['scriptInputParams']:
           print 'argu: %s\ttype: %s\tdefault value: %s' % (arg['parameterKey'],arg['parameterDataType'],arg['parameterDefaultValue'])
+ 
       elif ( param[0] == "output" ):
         if len(param) != 4:
           self.help_get()
@@ -180,11 +188,22 @@ class scalex_cmd(cmd.Cmd):
         projectId = param[2]
         projectRunId = param[3]
         self.scalex_instance.getOutputForRun(jobId, projectId, projectRunId)
-        print 'output: ', self.scalex_instance.output
+        
         for r in self.scalex_instance.runs[jobId]:
           print 'jobname:', r['stepRunLogBeans'][0]['taskName']
           print 'status: ', r['status']
           print 'run at: ', time.ctime(int(r['runTimestamp'])/1000)
+        
+        print '-----------------'  
+        for output in self.scalex_instance.outputs:
+            print 'target:', output['target']
+            print 'outputStatus:', output['outputStatus']
+            if output['truncated'] == 'Y' :
+                print 'output (truncated - more than 500 chars):'
+            else: 
+                print 'output:'
+            print output['output'] 
+            print '-----------------'
           
       elif ( param[0] == "nodes" ):
         self.scalex_instance.getNodes()

@@ -8,7 +8,7 @@ import base64
 import datetime
 import time
 import sys
-import md5
+import hashlib
 
 class scaleXtreme():
   '''
@@ -34,7 +34,7 @@ class scaleXtreme():
     self.cookie = ''
 #
     self.user = usr
-    self.pwd = md5.new(pwd).hexdigest()
+    self.pwd = hashlib.md5(pwd).hexdigest()
     self.userId = ''
     self.companies = []
     self.currentCompanyId = ''
@@ -45,13 +45,14 @@ class scaleXtreme():
     self.orgScripts = []
     self.jobs = {}
     self.runs = {}
-    self.output = ''
+    self.outputs = []
     self.arguments = {}
+    self.domain = 'https://manage.scalextreme.com'
   
   def login(self):
     '''
     '''
-    url = 'https://manage.scalextreme.com/scalex/acl/authenticate?type=scalex&rid=%s' % (self.rid)
+    url = self.domain + '/scalex/acl/authenticate?type=scalex&rid=%s' % (self.rid)
     value = {
         'user':self.user,
         'password':self.pwd
@@ -67,7 +68,7 @@ class scaleXtreme():
 #    print self.cookie
 
   def getCompanies(self):
-    url = 'https://manage.scalextreme.com/scalex/acl/usercompanies?rid=%s' % (self.rid)
+    url = self.domain + '/scalex/acl/usercompanies?rid=%s' % (self.rid)
     value = {
         'userId':self.userId
     }
@@ -82,14 +83,14 @@ class scaleXtreme():
 
   def getRoles(self):
     '''
-    URL: https://manage.scalextreme.com/scalex/acl/userroles?rid=
+    URL: <DOMAIN>/scalex/acl/userroles?rid=
     Post Data: companyId=11307&user=ol
     '''
     if self.currentCompanyId == '':
       print 'you need setCompany first'
       return
     
-    url = 'https://manage.scalextreme.com/scalex/acl/userroles?rid=%s' % (self.rid)
+    url = self.domain + '/scalex/acl/userroles?rid=%s' % (self.rid)
     value = {
       'companyId':self.currentCompanyId,
       'user':self.user
@@ -118,7 +119,7 @@ class scaleXtreme():
 
   def getNodes(self):
     '''
-    Requesting URL: https://manage.scalextreme.com/scalex/acl/nodelistbyrole?rid=4AC31284-CE1A-47DF-A771-E764C09EB555
+    Requesting URL: <DOMAIN>/scalex/acl/nodelistbyrole?rid=4AC31284-CE1A-47DF-A771-E764C09EB555
     Post Data: companyId=11307&role=Admin&user=olivier.tarroux%40edifixio.com&
     '''
 #    need set company and role first
@@ -126,7 +127,7 @@ class scaleXtreme():
     if not self.isReady():
       return
 #
-    url = 'https://manage.scalextreme.com/scalex/acl/nodelistbyrole?rid=%s' % (self.rid)
+    url = self.domain + '/scalex/acl/nodelistbyrole?rid=%s' % (self.rid)
     value = {
       'companyId':self.currentCompanyId,
       'role':self.currentRole,
@@ -141,13 +142,13 @@ class scaleXtreme():
   def getMyScripts(self):
     '''
       this request need cookie
-      https://manage.scalextreme.com/library?companyid=10476&user=10473&role=Admin&operation=userscripts&rid=7861539B-6EA3-4C0A-9FEA-EF961E44233E
+      <DOMAIN>/library?companyid=10476&user=10473&role=Admin&operation=userscripts&rid=7861539B-6EA3-4C0A-9FEA-EF961E44233E
       '''
     #    need set company and role first
     if not self.isReady():
       return
 #    
-    url = 'https://manage.scalextreme.com/library'
+    url = self.domain + '/library'
     value = {
       'companyid':self.currentCompanyId,
       'user':self.userId,
@@ -166,12 +167,12 @@ class scaleXtreme():
   def getOrgScripts(self):
     '''
       this request need cookie
-      https://manage.scalextreme.com/library?rid=7861539B-6EA3-4C0A-9FEA-EF961E44233E&companyid=10476&user=10473&role=Admin&operation=orgscripts
+      <DOMAIN>/library?rid=7861539B-6EA3-4C0A-9FEA-EF961E44233E&companyid=10476&user=10473&role=Admin&operation=orgscripts
       '''
     if not self.isReady():
       return
     #    
-    url = 'https://manage.scalextreme.com/library'
+    url = self.domain + '/library'
     value = {
       'companyid':self.currentCompanyId,
       'user':self.userId,
@@ -189,7 +190,7 @@ class scaleXtreme():
 
   def getJobsForScript(self, scriptId):
     '''
-    https://manage.scalextreme.com/managejob?rid=2794A488-BC90-43DD-B13B-292233803B91&companyid=10361&user=10002&role=Admin&operation=joblist
+    <DOMAIN>/managejob?rid=2794A488-BC90-43DD-B13B-292233803B91&companyid=10361&user=10002&role=Admin&operation=joblist
     '''
     payload = {
       "companyId": self.currentCompanyId,
@@ -198,7 +199,7 @@ class scaleXtreme():
       "role": self.currentRole,
     }
     postData = 'payload=' + json.dumps(payload)
-    url = 'https://manage.scalextreme.com/managejob'
+    url = self.domain + '/managejob'
     value = {
       'companyid':self.currentCompanyId,
       'user':self.userId,
@@ -217,7 +218,7 @@ class scaleXtreme():
 #      get runs for job
   def getRunsForJob(self, jobId):
     '''
-    https://manage.scalextreme.com/managejob?rid=2794A488-BC90-43DD-B13B-292233803B91&companyid=10361&user=10002&role=Admin&operation=rundetail
+    <DOMAIN>/managejob?rid=2794A488-BC90-43DD-B13B-292233803B91&companyid=10361&user=10002&role=Admin&operation=rundetail
     '''
     payload = {
       "companyId": self.currentCompanyId,
@@ -226,7 +227,7 @@ class scaleXtreme():
       "jobId": jobId,
     }
     postData = 'payload=' + json.dumps(payload)
-    url = 'https://manage.scalextreme.com/managejob'
+    url = self.domain + '/managejob'
     value = {
       'companyid':self.currentCompanyId,
       'user':self.userId,
@@ -244,7 +245,7 @@ class scaleXtreme():
 
   def getOutputForRun(self, jobId, projectId, projectRunId):
     '''
-      https://manage.scalextreme.com/managejob?rid=&companyid=10361&user=10002&role=Admin&operation=runoutput
+      <DOMAIN>/managejob?rid=&companyid=10361&user=10002&role=Admin&operation=runoutput
       '''
     payload = {
       "companyId": self.currentCompanyId,
@@ -259,7 +260,7 @@ class scaleXtreme():
 #      "jobRunOutputBeans": []
     }
     postData = 'payload=' + json.dumps(payload)
-    url = 'https://manage.scalextreme.com/managejob'
+    url = self.domain + '/managejob'
     value = {
       'companyid':self.currentCompanyId,
       'user':self.userId,
@@ -272,18 +273,32 @@ class scaleXtreme():
     request = urllib2.Request(url, postData)
     request.add_header('cookie', self.cookie)
     response = urllib2.urlopen(request).read()
-    self.output = base64.b64decode(json.loads(response)['data'][0]['output'])
+    data = json.loads(response)['data'];
+    self.outputs = []
+    
+    for index,item in enumerate(data):
+        o1 = base64.b64decode(item['output'])
+        truncated = 'N'
+        if len(o1) > 500:
+            truncated = 'Y'             
+        self.outputs.append({
+            'target' : item['agentId'], 
+            'outputStatus' : item['stepExitCode'], 
+            'output': o1[0:500],
+            'truncated' :  truncated 
+        })
+
     return response
   
   def getParamsOfScript(self, scriptId, version):
     '''
-    https://manage.scalextreme.com/library?rid=&companyid=10361&user=10002&role=Admin&operation=scriptcontent
+    <DOMAIN>/library?rid=&companyid=10361&user=10002&role=Admin&operation=scriptcontent
     '''
     payload = {
       'scriptid':scriptId,
       'version':version
     }
-    url = 'https://manage.scalextreme.com/library'
+    url = self.domain + '/library'
     value = {
       'companyid':self.currentCompanyId,
       'user':self.userId,
@@ -303,7 +318,7 @@ class scaleXtreme():
   def runScript(self, params):
     '''
       this request need cookie
-      https://manage.scalextreme.com/managescript?rid=22673add-18fa-4096-ae75-5030c32a3646
+      <DOMAIN>/managescript?rid=22673add-18fa-4096-ae75-5030c32a3646
       '''
 #    startTime 0 means run now
 #    scriptId, version, targets, startTime
@@ -348,7 +363,7 @@ class scaleXtreme():
       "scriptType": None
     }
     postData = 'operation=runscript&payload=' + json.dumps(payload)
-    url = 'https://manage.scalextreme.com/managescript?rid='
+    url = self.domain +'/managescript?rid='
     request = urllib2.Request(url, postData)
     request.add_header('cookie', self.cookie)
     response = urllib2.urlopen(request).read()
