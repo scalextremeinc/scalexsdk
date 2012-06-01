@@ -2,7 +2,6 @@
 
 import readline
 import cmd
-import hashlib
 import urllib
 import urllib2
 import uuid
