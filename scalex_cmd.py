@@ -60,7 +60,7 @@ class scalex_cmd(cmd.Cmd):
     print 'set role [companyId]'
 
   def help_script(self):
-    print "script run [scriptId] [version] [targets] [startTime]"
+    print "script run [scriptname(you name it)] [scriptId] [version] [targets] [startTime]"
     print 'targets are comma  separated '
     print 'startTime 0 means run now, or schedule time format 2012-06-02-12:12'
   
@@ -191,7 +191,7 @@ class scalex_cmd(cmd.Cmd):
       return 
     try :
       param = s.split()
-      if len(param) != 5:
+      if len(param) != 6:
         self.help_script()
         return
       if ( param[0] == "run" ):

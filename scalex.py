@@ -308,10 +308,11 @@ class scaleXtreme():
       '''
 #    startTime 0 means run now
 #    scriptId, version, targets, startTime
-    scriptId = params[0]
-    version = params[1]
-    targets = params[2].split(',')
-    startTime = params[3]
+    name = params[0]
+    scriptId = params[1]
+    version = params[2]
+    targets = params[3].split(',')
+    startTime = params[4]
     if startTime != '0':
       d = datetime.datetime.strptime(startTime, "%Y-%m-%d-%H:%M")
       startTime = int(time.mktime(d.timetuple())*1000)
@@ -331,8 +332,8 @@ class scaleXtreme():
       "repeatInterval": 0,
       "cronExpr": None,
       "timeZone": None,
-      "name": "python test",
-      "description": "python teset",
+      "name": name,
+      "description": name,
       "jobId": 0,
       "jobName": None,
       "scriptType": None
