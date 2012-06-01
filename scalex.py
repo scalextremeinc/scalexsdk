@@ -1,10 +1,5 @@
 #!/usr/bin/env python
 
-try :
-    import hashlib 
-except ImportError:
-    import md5
-
 import urllib
 import urllib2
 import uuid
