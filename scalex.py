@@ -5,6 +5,10 @@ import urllib2
 import uuid
 import json
 import base64
+import datetime
+import time
+import sys
+import md5
 
 class scaleXtreme():
   '''
@@ -25,7 +29,7 @@ class scaleXtreme():
   def __init__(self, usr, pwd):
 
     if sys.version_info < (2, 5):
-      raise "must use python 2.5 or greater"
+      raise 'you must use python 2.5 or greater'
 
     self.cookie = ''
 #
@@ -42,11 +46,6 @@ class scaleXtreme():
     self.jobs = {}
     self.runs = {}
   
-  def info(self):
-    print 'user', self.user
-    print 'company id', self.currentCompanyId
-    print 'role', self.currentRole
-    
   
   def login(self):
     '''
@@ -294,7 +293,7 @@ class scaleXtreme():
     output = base64.b64decode(json.loads(response)['data'][0]['output'])
     return output
 
-  def runScript(self):
+  def runScript(self, params):
     '''
       this request need cookie
       https://manage.scalextreme.com/managescript?rid=22673add-18fa-4096-ae75-5030c32a3646
@@ -304,18 +303,27 @@ class scaleXtreme():
       targets [], nodeId
       schedule info
       '''
-    print 'FIXME, this method not finished'
+#    startTime 0 means run now
+#    scriptId, version, targets, startTime
+    del params[0]
+    scriptId = params[0]
+    version = params[1]
+    targets = params[2].split(',')
+    startTime = params[3]
+    if startTime != '0':
+      d = datetime.datetime.strptime(startTime, "%Y-%m-%d-%H:%M")
+      startTime = int(time.mktime(d.timetuple())*1000)
     payload = {
       "companyId": self.currentCompanyId,
       "user": self.userId,
       "role": self.currentRole,
-      "scriptId": 7,
-      "version": "3",
+      "scriptId": scriptId,
+      "version": version,
       "scriptArgs": [],
-      "targets": [9],
+      "targets": targets,
       "destInstallDir": None,
       "scheduleType": 12,
-      "startTime": 0,
+      "startTime": startTime,
       "endTime": 0,
       "repeatCount": 0,
       "repeatInterval": 0,
@@ -332,8 +340,8 @@ class scaleXtreme():
     request = urllib2.Request(url, postData)
     request.add_header('cookie', self.cookie)
     response = urllib2.urlopen(request).read()
-    print response
-
+    returnData = json.loads(response)
+    print 'runScript %s' % (returnData['result'])
 
 #if __name__ == '__main__':
 #  sx = scaleXtreme('karthik@scalextreme.com', '123456')
