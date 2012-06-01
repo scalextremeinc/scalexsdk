@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import hashlib
+import md5
 import urllib
 import urllib2
 import uuid
@@ -27,7 +27,7 @@ class scaleXtreme():
     self.cookie = ''
 #
     self.user = usr
-    self.pwd = hashlib.md5(pwd).hexdigest()
+    self.pwd = md5.new(pwd).hexdigest()
     self.userId = ''
     self.companies = []
     self.currentCompanyId = ''
