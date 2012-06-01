@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 
-import readline
+try :
+    import readline
+except ImportError:
+    pass
+
 import cmd
 import urllib
 import urllib2

@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 
-import md5
+try :
+    import hashlib 
+except ImportError:
+    import md5
+
 import urllib
 import urllib2
 import uuid
@@ -24,6 +28,10 @@ class scaleXtreme():
   rid = str(uuid.uuid4())
   
   def __init__(self, usr, pwd):
+
+    if sys.version_info < (2, 5):
+      raise "must use python 2.5 or greater"
+
     self.cookie = ''
 #
     self.user = usr
