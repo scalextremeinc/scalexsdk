@@ -53,6 +53,7 @@ class scalex_cmd(cmd.Cmd):
     print "get orgScripts => get orgScripts"
     print "get jobs [scriptId] => get jobs for script"
     print "get runs [jobId] => get runs for jobs"
+    print "get arguments [scriptId] [script version] => get runs for jobs"
     print "get output [jobId, projectId, projectRunId] => get output for runs"
 
   def help_set(self):
@@ -60,7 +61,7 @@ class scalex_cmd(cmd.Cmd):
     print 'set role [companyId]'
 
   def help_script(self):
-    print "script run [scriptname(you name it)] [scriptId] [version] [targets] [startTime]"
+    print "script run [job name] [scriptId] [version] [targets] [startTime]"
     print 'targets are comma  separated '
     print 'startTime 0 means run now, or schedule time format 2012-06-02-12:12'
   
@@ -145,11 +146,11 @@ class scalex_cmd(cmd.Cmd):
         print 'get my scripts'
         self.scalex_instance.getMyScripts();
         for s in self.scalex_instance.myScripts:
-          print 'id: %s\tverion: %s\tname: %s' % (s['scriptId'], s['version'], s['scriptName'])
+          print 'id: %s\tversion: %s\tname: %s' % (s['scriptId'], s['version'], s['scriptName'])
       elif ( param[0] == "orgScripts" ):
         self.scalex_instance.getOrgScripts();
         for s in self.scalex_instance.myScripts:
-          print 'id: %s\tverion: %s\tname: %s' % (s['scriptId'], s['version'], s['scriptName'])
+          print 'id: %s\tversion: %s\tname: %s' % (s['scriptId'], s['version'], s['scriptName'])
       elif ( param[0] == "jobs" ):
         if len(param) < 2:
           self.help_get() 
@@ -163,6 +164,15 @@ class scalex_cmd(cmd.Cmd):
         self.scalex_instance.getRunsForJob(jobId);
         for r in self.scalex_instance.runs[jobId]:
           print 'jobId: %s\tprojectId: %s\tprojectRunId: %s\tstatus: %s\t' % (r['jobId'], r['projectId'], r['projectRunId'], r['status'])
+      elif param[0] == 'arguments':
+        if len(param) < 3:
+          self.help_get()
+        scriptId = param[1]
+        version = param[2]
+        self.scalex_instance.getParamsOfScript(scriptId, version)
+        print 'script: %s, scriptId: %s' % (self.scalex_instance.arguments[scriptId]['scriptName'], self.scalex_instance.arguments[scriptId]['scriptId'])
+        for arg in self.scalex_instance.arguments[scriptId]['scriptInputParams']:
+          print 'argu: %s\ttype: %s\tdefault value: %s' % (arg['parameterKey'],arg['parameterDataType'],arg['parameterDefaultValue'])
       elif ( param[0] == "output" ):
         if len(param) != 4:
           self.help_get()
@@ -191,7 +201,7 @@ class scalex_cmd(cmd.Cmd):
       return 
     try :
       param = s.split()
-      if len(param) != 6:
+      if len(param) < 6:
         self.help_script()
         return
       if ( param[0] == "run" ):

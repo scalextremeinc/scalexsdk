@@ -46,6 +46,7 @@ class scaleXtreme():
     self.jobs = {}
     self.runs = {}
     self.output = ''
+    self.arguments = {}
   
   def login(self):
     '''
@@ -170,7 +171,6 @@ class scaleXtreme():
     if not self.isReady():
       return
     #    
-
     url = 'https://manage.scalextreme.com/library'
     value = {
       'companyid':self.currentCompanyId,
@@ -196,27 +196,6 @@ class scaleXtreme():
       "scriptId": str(scriptId),
       "user": str(self.userId),
       "role": self.currentRole,
-#      "scriptName": "Script With Variables",
-#      "version": "3",
-#      "scriptType": None,
-#      "scriptPlatform": None,
-#      "scriptTags": None,
-#      "scriptDescription": "VGVzdA==",
-#      "scriptContent": None,
-#      "inputParams": None,
-#      "scriptAttachments": [],
-#      "status": None,
-#      "sku": None,
-#      "scriptLocation": None,
-#      "viewableFlag": None,
-#      "activeFlag": None,
-#      "parentScriptId": 0,
-#      "parentScriptVersion": None,
-#      "parentCompanyId": 0,
-#      "parentUser": None,
-#      "purchasedFlag": None,
-#      "sharedFlag": None,
-#      "scriptInputParams": []
     }
     postData = 'payload=' + json.dumps(payload)
     url = 'https://manage.scalextreme.com/managejob'
@@ -295,16 +274,36 @@ class scaleXtreme():
     response = urllib2.urlopen(request).read()
     self.output = base64.b64decode(json.loads(response)['data'][0]['output'])
     return response
+  
+  def getParamsOfScript(self, scriptId, version):
+    '''
+    https://manage.scalextreme.com/library?rid=&companyid=10361&user=10002&role=Admin&operation=scriptcontent
+    '''
+    payload = {
+      'scriptid':scriptId,
+      'version':version
+    }
+    url = 'https://manage.scalextreme.com/library'
+    value = {
+      'companyid':self.currentCompanyId,
+      'user':self.userId,
+      'role':self.currentRole,
+      'operation':'scriptcontent',
+      'rid':self.rid
+    }
+    query = urllib.urlencode(value)
+    url = url + '?' + query
+    request = urllib2.Request(url, urllib.urlencode(payload))
+    request.add_header('cookie', self.cookie)
+    response = urllib2.urlopen(request).read()
+    returnData = json.loads(response)['data']
+    self.arguments[scriptId] = returnData
+    return response
 
   def runScript(self, params):
     '''
       this request need cookie
       https://manage.scalextreme.com/managescript?rid=22673add-18fa-4096-ae75-5030c32a3646
-      # arguments
-      scriptId
-      scriptVersion
-      targets [], nodeId
-      schedule info
       '''
 #    startTime 0 means run now
 #    scriptId, version, targets, startTime
@@ -316,13 +315,23 @@ class scaleXtreme():
     if startTime != '0':
       d = datetime.datetime.strptime(startTime, "%Y-%m-%d-%H:%M")
       startTime = int(time.mktime(d.timetuple())*1000)
+    arguments = []
+    self.getParamsOfScript(scriptId, version)
+    for a in self.arguments[scriptId]['scriptInputParams']:
+      arguments.append(a['parameterDefaultValue'])
+    i = 0
+    if len(params) > 6:  
+      for argu in params[5:]:
+        arguments[i] = argu
+        i += 1
+
     payload = {
       "companyId": self.currentCompanyId,
       "user": self.userId,
       "role": self.currentRole,
       "scriptId": scriptId,
       "version": version,
-      "scriptArgs": [],
+      "scriptArgs": arguments,
       "targets": targets,
       "destInstallDir": None,
       "scheduleType": 12,
