@@ -155,7 +155,7 @@ class scalex_cmd(cmd.Cmd):
           self.help_get() 
         self.scalex_instance.getJobsForScript(param[1]);
         for j in self.scalex_instance.jobs[param[1]]:
-          print 'jobId: %s\tstatus: %s\tjobName: %s' % (j['jobId'], j['status'], j['jobName'])
+          print 'jobId: %s\tstatus: %s\t\tjobName: %s' % (j['jobId'], j['status'], j['jobName'])
       elif ( param[0] == "runs" ):
         if len(param) < 2:
           self.help_get()
@@ -169,7 +169,8 @@ class scalex_cmd(cmd.Cmd):
         jobId = param[1]
         projectId = param[2]
         projectRunId = param[3]
-        print 'output: ', self.scalex_instance.getOutputForRun(jobId, projectId, projectRunId);
+        self.scalex_instance.getOutputForRun(jobId, projectId, projectRunId)
+        print 'output: ', self.scalex_instance.output
         for r in self.scalex_instance.runs[jobId]:
           print 'jobname:', r['stepRunLogBeans'][0]['taskName']
           print 'status: ', r['status']
@@ -194,6 +195,7 @@ class scalex_cmd(cmd.Cmd):
         self.help_script()
         return
       if ( param[0] == "run" ):
+        del param[0]
         self.scalex_instance.runScript(param);
     except Exception,e:
       print "Unknown Error:" , e

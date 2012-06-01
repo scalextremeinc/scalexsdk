@@ -45,7 +45,7 @@ class scaleXtreme():
     self.orgScripts = []
     self.jobs = {}
     self.runs = {}
-  
+    self.output = ''
   
   def login(self):
     '''
@@ -74,7 +74,8 @@ class scaleXtreme():
     response = urllib2.urlopen(url, postData).read()
 
     self.companies = json.loads(response)['data']
-
+    return response
+  
   def setCompany(self, companyId):
     self.currentCompanyId = companyId
 
@@ -98,6 +99,7 @@ class scaleXtreme():
     self.roles = []
     for i in roleList:
       self.roles.append(base64.b64decode(i))
+    return response
 #    self.currentRole = self.roles[0]
 #    print postData, response
 
@@ -132,6 +134,7 @@ class scaleXtreme():
     postData = urllib.urlencode(value)
     response = urllib2.urlopen(url, postData).read()
     self.nodes = json.loads(response)['data']
+    return response
 #    print self.nodes[0]['nodeName']
 
   def getMyScripts(self):
@@ -157,7 +160,7 @@ class scaleXtreme():
     request.add_header('cookie', self.cookie)
     response = urllib2.urlopen(request).read()
     self.myScripts = json.loads(response)['data']
-#    print self.myScripts
+    return response
   
   def getOrgScripts(self):
     '''
@@ -182,7 +185,7 @@ class scaleXtreme():
     request.add_header('cookie', self.cookie)
     response = urllib2.urlopen(request).read()
     self.orgScripts = json.loads(response)['data']
-#    print self.orgScripts
+    return response
 
   def getJobsForScript(self, scriptId):
     '''
@@ -230,9 +233,8 @@ class scaleXtreme():
     request.add_header('cookie', self.cookie)
     response = urllib2.urlopen(request).read()
     self.jobs[scriptId] = json.loads(response)['data']
-#    print self.jobs.keys()
-#    print self.jobs['7'][0].keys()
-  
+    return response
+
 #      get runs for job
   def getRunsForJob(self, jobId):
     '''
@@ -259,6 +261,7 @@ class scaleXtreme():
     request.add_header('cookie', self.cookie)
     response = urllib2.urlopen(request).read()
     self.runs[jobId] = json.loads(response)['data']
+    return response
 
   def getOutputForRun(self, jobId, projectId, projectRunId):
     '''
@@ -290,8 +293,8 @@ class scaleXtreme():
     request = urllib2.Request(url, postData)
     request.add_header('cookie', self.cookie)
     response = urllib2.urlopen(request).read()
-    output = base64.b64decode(json.loads(response)['data'][0]['output'])
-    return output
+    self.output = base64.b64decode(json.loads(response)['data'][0]['output'])
+    return response
 
   def runScript(self, params):
     '''
@@ -305,7 +308,6 @@ class scaleXtreme():
       '''
 #    startTime 0 means run now
 #    scriptId, version, targets, startTime
-    del params[0]
     scriptId = params[0]
     version = params[1]
     targets = params[2].split(',')
