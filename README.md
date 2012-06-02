@@ -10,3 +10,4 @@ python 2.5 - 2.7
 More Info
 =========
 SDK Wiki https://github.com/scalextremeinc/scalexsdk/wiki
+.
