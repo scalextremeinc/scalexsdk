@@ -200,6 +200,7 @@ def update(scriptid, version = '', name = '', type = '', content = '', descripti
   # ://manage.scalextreme.com/library?rid=a&companyid=10476&user=10473&role=Admin&operation=deletescript&scriptid=115
   #FIXME, no script attachments
   #ttps://manage.scalextreme.com/library?rid=411C2ECD-BDD0-4F61-9F37-E3718F02E084
+  #Session expired
   url = userinfo.domain + '/library?rid=' + userinfo.rid
   content = base64.b64encode(content)
   description = base64.b64encode(description)
@@ -215,12 +216,10 @@ def update(scriptid, version = '', name = '', type = '', content = '', descripti
     content = script['scriptContent'] 
   if not description:
     description = script['scriptDescription'] 
-  '''
-  sharedFlag	N
-  viewableflag	Y
-  parentScriptId	0
-  purchasedFlag	N
-  '''
+  if not params:
+    params = script['scriptInputParams'] 
+  if not tags:
+    tags = script['scriptTags'] 
   value = {
     'companyid':userinfo.companyid,
     'operation':'updatescript',
