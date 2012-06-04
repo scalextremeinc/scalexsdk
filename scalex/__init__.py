@@ -33,7 +33,7 @@ def login(username, password):
   postData = urllib.urlencode(value)
   response = urllib2.urlopen(url, postData)
   userinfo.cookie = response.headers.get('Set-Cookie')
-  returnData = response.read()
-  userinfo.userid = json.loads(returnData)['data']['userID']
+  returnData = json.loads(response.read())
+  userinfo.userid = returnData['data']['userID']
   return returnData
 
