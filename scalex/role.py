@@ -2,16 +2,12 @@ import urllib
 import urllib2
 import json
 #
-import userinfo
+from scalex import userinfo
+import scalex
 
 def getRoles():
-  if userinfo.userid == '':
-    #print 'you need login first'
-    return
-  if userinfo.companyid == '':
-    #print 'you need setCompany first'
-    return
-  
+  assert userinfo.companyid != '', 'you need set company first'
+  scalex.relogin()
   url = '%s/scalex/acl/userroles?rid=%s' % (userinfo.domain, userinfo.rid)
   value = {
     'user':userinfo.username,
@@ -23,5 +19,6 @@ def getRoles():
   return returnData
 
 def set(rolename):
+  assert rolename != '', 'wrong rolename'
   userinfo.rolename = rolename
 

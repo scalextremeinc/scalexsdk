@@ -2,21 +2,19 @@ import urllib
 import urllib2
 import json
 #
-import userinfo
+from scalex import userinfo
 from scalex import script
 
-def getJobsForScript(scriptid):
+def getJobs(script):
   '''arguments: type
     0 is myscripts
     1 is orgscripts
     default is 0
-    '''
-  if userinfo.companyid == '' or userinfo.rolename == '':
-    print 'you need setCompany and setRole first'
-    return
+  '''
+  userinfo.check()
   payload = {
     'companyId': userinfo.companyid,
-    'scriptId': str(scriptid),
+    'scriptId': str(script['scriptId']),
     'user': str(userinfo.userid),
     'role': userinfo.rolename,
   }
@@ -37,14 +35,16 @@ def getJobsForScript(scriptid):
   returnData = json.loads(response.read())
   return returnData
 
-def getRuns(jobid):
+def getRuns(job):
   '''
   '''
+  userinfo.check()
+
   payload = {
     'companyId': userinfo.companyid,
     'user': str(userinfo.userid),
     'role': userinfo.rolename,
-    'jobId': jobid,
+    'jobId': job['jobId'],
   }
   postData = 'payload=' + json.dumps(payload)
   url = userinfo.domain + '/managejob'
@@ -63,16 +63,18 @@ def getRuns(jobid):
   returnData = json.loads(response.read())
   return returnData
 
-def getOutputsForRun(jobId, projectId, projectRunId):
+def getOutputs(run):
   '''
   '''
+  userinfo.check()
+
   payload = {
   'companyId': userinfo.companyid,
   'user': str(userinfo.userid),
   'role': userinfo.rolename,
-  'projectRunId': projectRunId,
-  'projectId': projectId,
-  'jobId': jobId,
+  'projectRunId': run['projectRunId'],
+  'projectId': run['projectId'],
+  'jobId': run['jobId'],
   }
   postData = 'payload=' + json.dumps(payload)
   url = userinfo.domain + '/managejob'
@@ -105,14 +107,17 @@ def getOutputsForRun(jobId, projectId, projectRunId):
   
   return response
 
-def update(name, scriptid, version, jobId, targets, arguments = [], scheduleType = 0,
+def update(name, script, job, targets, arguments = [], scheduleType = 0,
            startTime = 0, repeatInterval = 60, endTime = 0, repeatCount = 0, cronExpr = None, timeZone = ''):
   '''
+    FIXME
     scheduleType: 0, Run Once
     1, Recurring
     2, Cron Schedule (Advanced)
     '''
   # 
+  userinfo.check()
+
   type = [12, 14, 2]
   if scheduleType == 0:
     if startTime != 0:
@@ -132,18 +137,18 @@ def update(name, scriptid, version, jobId, targets, arguments = [], scheduleType
   else:
     #wrong argument
     pass
-  if len(arguments) == 0:
-    #FIXME
-    params = json.loads(script.getContent(scriptid, version))['data']
-    for p in params['scriptInputParams']:
-      arguments.append(p['parameterDefaultValue'])
+#  if len(arguments) == 0:
+#    #FIXME
+#    params = json.loads(script.getContent(scriptid, version))['data']
+#    for p in params['scriptInputParams']:
+#      arguments.append(p['parameterDefaultValue'])
   
   payload = {
     'companyId': userinfo.companyid,
     'user': str(userinfo.userid),
     'role': userinfo.rolename,
-    'scriptId': scriptid,
-    'version': str(version),
+    'scriptId': script['scriptId'],
+    'version': str(script['version']),
     'scriptArgs': arguments,
     'targets': targets,
     'destInstallDir': None,
@@ -156,7 +161,7 @@ def update(name, scriptid, version, jobId, targets, arguments = [], scheduleType
     'timeZone': timeZone,
     'name': name,
     'description': name,
-    'jobId': jobId,
+    'jobId': job['jobId'],
     'jobName': None,
     'scriptType': None
   }
@@ -168,17 +173,19 @@ def update(name, scriptid, version, jobId, targets, arguments = [], scheduleType
   returnData = json.loads(response.read())
   return returnData
 
-def cancel(jobId):
+def cancel(job):
   '''
   payload={"companyId":10274, "user":"10002", "role":"Admin", "jobId":638, "parentJobId":0, "jobName":"testRun (6)", "jobDescription":"This job is auto-created", "actionGroupId":639, "targetGroupId":639, "targetDetailBeans":[{"agentId":40, "companyId":10274, "user":"10002", "role":"Admin", "ipAddress":"10.211.31.18", "hostName":"domU-12-31-39-0A-1C-E4", "nodeMask":"", "nodeIf":"12:31:39:0a:1c:e4", "nodeMac":"eth0", "nodeHw":"i686", "nodeDesc":"", "osName":"Linux", "osVer":"2.6.35.14-97.44.amzn1.i686", "osCat":"#1 SMP Mon Oct 24 16:03:22 UTC 2011"}], "scheduleBeans":[{"companyId":0, "user":null, "role":null, "name":"trigger_testRun (6)", "scheduleId":8165, "jobName":"testRun (6)", "jobId":638, "scheduleType":2, "startTime":1338798839315, "endTime":86560732799315, "repeatCount":0, "repeatInterval":0, "cronExpr":"0 * * * 6 ?", "timeZone":"Australia/Perth", "calendarType":"no calendar", "nextFireTime":1338801120000, "prevFireTime":1338801060000, "timesTriggered":0}], "activeFlag":null, "status":"complete"}
     
     //manage.scalextreme.com/managejob?rid=1&companyid=10274&user=10002&role=Admin&operation=canceljob
   '''
+  userinfo.check()
+
   payload = {
     'companyId': userinfo.companyid,
     'user': str(userinfo.userid),
     'role': userinfo.rolename,
-    'jobId':jobId,
+    'jobId':job['jobId'],
   }
   postData = 'payload=' + json.dumps(payload)
   url = userinfo.domain + '/managejob'

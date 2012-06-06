@@ -2,12 +2,14 @@ import urllib
 import urllib2
 import json
 #
-import userinfo
+import scalex
+from scalex import userinfo
 
 def getCompanies():
-  if userinfo.userid == '':
-    print 'you need login first'
-    return
+  '''
+  '''
+  assert userinfo.userid != '', 'you need login first'
+  scalex.relogin()
   url = '%s/scalex/acl/usercompanies?rid=%s' % (userinfo.domain, userinfo.rid)
   value = {
     'userId':userinfo.userid
@@ -17,5 +19,7 @@ def getCompanies():
   returnData = json.loads(response.read())
   return returnData
 
-def set(companyid):
-  userinfo.companyid = companyid
+def set(company):
+  '''
+  '''
+  userinfo.companyid = company['companyId']

@@ -1,29 +1,28 @@
 '''
-  FIXME, add doc string
-  '''
+  scalextreme.com python sdk
+'''
 
 import hashlib
 import urllib
 import urllib2
 import json
 #
+import company
+import role
+import node
+import job
+import script
 import userinfo
 
 __version__ = '0.5'
 
-#_domain = 'https://manage.scalextreme.com'
-#_rid = str(uuid.uuid4())
-#_cookie = ''
-#_user = ''
-#_userid = ''
-#_companyid = ''
-#_rolename = ''
-#
-
+#function
 def login(username, password):
   '''login with username and password
     '''
+  assert username != '' and password != '', 'username/password is empty'
   userinfo.username = username
+  userinfo.password = password
   pwd = hashlib.md5(password).hexdigest()
   url = '%s/scalex/acl/authenticate?type=scalex&rid=%s' % (userinfo.domain, userinfo.rid)
   value = {
@@ -37,3 +36,5 @@ def login(username, password):
   userinfo.userid = returnData['data']['userID']
   return returnData
 
+def relogin():
+  return login(userinfo.username, userinfo.password)

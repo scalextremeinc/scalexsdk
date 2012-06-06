@@ -5,7 +5,8 @@ import time
 import datetime
 import base64
 #
-import userinfo
+from scalex import userinfo
+import scalex
 
 def getScripts(type = 0):
   '''arguments: type
@@ -13,9 +14,7 @@ def getScripts(type = 0):
     1 is orgscripts
     default is 0
     '''
-  if userinfo.companyid == '' or userinfo.rolename == '':
-    print 'you need setCompany and setRole first'
-    return
+  userinfo.check()
   operation = ['userscripts', 'orgscripts']
   if type < 0 or type > len(operation) - 1:
     return
@@ -35,15 +34,13 @@ def getScripts(type = 0):
   returnData = json.loads(response.read())
   return returnData
 
-def getContent(scriptid, version):
+def getContent(script):
   '''arguments: scriptid, version
     '''
-  if userinfo.companyid == '' or userinfo.rolename == '':
-    print 'you need setCompany and setRole first'
-    return
+  userinfo.check()
   payload = {
-    'scriptid': scriptid,
-    'version': version,
+    'scriptid': script['scriptId'],
+    'version': script['version'],
   }
   url = userinfo.domain + '/library'
   value = {
@@ -61,11 +58,12 @@ def getContent(scriptid, version):
   returnData = json.loads(response.read())
   return returnData
 
-def getVersions(scriptid):
+def getVersions(script):
   #ttps://manage.scalextreme.com/library?rid=70E1FA13-7F7D-49CE-87DA-9FBF5A9484B7&companyid=10274&user=10002&role=Admin&operation=scriptversions
+  userinfo.check()
   url = userinfo.domain + '/library'
   payload = {
-    'scriptid': scriptid,
+    'scriptid': script['scriptId'],
   }
   value = {
    'companyid':userinfo.companyid,
@@ -82,13 +80,14 @@ def getVersions(scriptid):
   returnData = json.loads(response.read())
   return returnData
 
-def run(name, scriptid, version, targets, arguments = [], scheduleType = 0,
-        startTime = 0, repeatInterval = 60, endTime = 0, repeatCount = 0, cronExpr = None, timeZone = ''):
+def run(name, script, targets, arguments = [], scheduleType = 0,
+        startTime = 0, repeatInterval = 60, endTime = 0, repeatCount = 0, cronExpr = None, timeZone = '', scriptType = None):
   '''
   scheduleType: 0, Run Once
                 1, Recurring
                 2, Cron Schedule (Advanced)
   '''
+  userinfo.check()
   # 
   type = [12, 14, 2]
   if scheduleType == 0:
@@ -109,20 +108,26 @@ def run(name, scriptid, version, targets, arguments = [], scheduleType = 0,
   else:
     #wrong argument
     pass
-  if len(arguments) == 0:
-    #FIXME
-    params = getContent(scriptid, version)['data']
-    for p in params['scriptInputParams']:
-      arguments.append(p['parameterDefaultValue'])
-  
+  #  if len(arguments) == 0:
+  #    #FIXME
+  #    params = getContent(scriptid, version)['data']
+  #    for p in params['scriptInputParams']:
+  #      arguments.append(p['parameterDefaultValue'])
+  if not isinstance(targets, list):
+    t = targets
+    targets = []
+    targets.append(t)
+  agents = []
+  for n in targets:
+    agents.append(n['agentId'])
   payload = {
     "companyId": userinfo.companyid,
     "user": userinfo.userid,
     "role": userinfo.rolename,
-    "scriptId": scriptid,
-    "version": version,
+    "scriptId": script['scriptId'],
+    "version": script['version'],
     "scriptArgs": arguments,
-    "targets": targets,
+    "targets": agents,
     "destInstallDir": None,
     "scheduleType": type[scheduleType],
     "startTime": startTime,
@@ -135,7 +140,7 @@ def run(name, scriptid, version, targets, arguments = [], scheduleType = 0,
     "description": name,
     "jobId": 0,
     "jobName": None,
-    "scriptType": None
+    "scriptType": scriptType
   }
   postData = 'operation=runscript&payload=' + json.dumps(payload)
   url = userinfo.domain + '/managescript?rid=' + userinfo.rid
@@ -150,6 +155,8 @@ def create(name, type, content, description = '', params = [], tags = []):
     scriptparams	[{"taskId":0, "taskParameterId":0, "parameterType":"INPUT", "parameterKey":"KEY1", "parameterDefaultValue":"VALUE", "parameterValue":null, "parameterDataType":"string", "description":"desc", "requiredFlag":"Y", "sequenceNumber":1},]
     scripttags	[{"tagName":"amazon ec2", "tagType":null, "activeFlag":null},]
   '''
+  userinfo.check()
+
   #FIXME, no script attachments
   #ttps://manage.scalextreme.com/library?rid=411C2ECD-BDD0-4F61-9F37-E3718F02E084
   url = userinfo.domain + '/library?rid=' + userinfo.rid
@@ -175,16 +182,18 @@ def create(name, type, content, description = '', params = [], tags = []):
   returnData = json.loads(response.read())
   return returnData
 
-def delete(scriptid):
+def delete(script):
   # ://manage.scalextreme.com/library?rid=a&companyid=10476&user=10473&role=Admin&operation=deletescript&scriptid=115
   #FIXME, 
+  userinfo.check()
+
   url = userinfo.domain + '/library'
   value = {
     'companyid':userinfo.companyid,
     'user':userinfo.userid,
     'role':userinfo.rolename,
     'operation':'deletescript',
-    'scriptid':scriptid,
+    'scriptid':script['scriptId'],
     'rid':userinfo.rid
   }
   query = urllib.urlencode(value)
@@ -196,18 +205,17 @@ def delete(scriptid):
 
 #def create(name, type, content, description = '', params = [], tags = []):
 
-def update(scriptid, version = '', name = '', type = '', content = '', description = '', params = [], tags = [] ):
+def update(script, name = '', type = '', content = '', description = '', params = [], tags = [] ):
   # ://manage.scalextreme.com/library?rid=a&companyid=10476&user=10473&role=Admin&operation=deletescript&scriptid=115
   #FIXME, no script attachments
   #ttps://manage.scalextreme.com/library?rid=411C2ECD-BDD0-4F61-9F37-E3718F02E084
   #Session expired
+  userinfo.check()
+
   url = userinfo.domain + '/library?rid=' + userinfo.rid
   content = base64.b64encode(content)
   description = base64.b64encode(description)
 
-  if not version:
-    version = getVersions(scriptid)['data'][0]['version']
-  script = getContent(scriptid, version)['data']
   if not name:
     name = script['scriptName']
   if not type:
@@ -225,8 +233,8 @@ def update(scriptid, version = '', name = '', type = '', content = '', descripti
     'operation':'updatescript',
     'user':userinfo.userid,
     'role':userinfo.rolename,
-    'scriptid':scriptid,
-    'version':version,
+    'scriptid':script['scriptId'],
+    'version':script['version'],
     'scriptname':name,
     'scripttype':type,
     'scriptcontent':content,
