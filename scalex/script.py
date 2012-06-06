@@ -81,7 +81,7 @@ def getVersions(script):
   return returnData
 
 def run(name, script, targets, arguments = [], scheduleType = 0,
-        startTime = 0, repeatInterval = 60, endTime = 0, repeatCount = 0, cronExpr = None, timeZone = '', scriptType = None):
+        startTime = 0, repeatInterval = 60, endTime = 0, repeatCount = 0, cronExpr = None, timeZone = 'FIXME', scriptType = None):
   '''
   scheduleType: 0, Run Once
                 1, Recurring
