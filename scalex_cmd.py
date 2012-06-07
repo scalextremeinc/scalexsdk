@@ -197,6 +197,16 @@ class scalex_cmd(cmd.Cmd):
         self.nodes = scalex.node.getNodes()['data']
         for n in self.nodes:
           print 'index:[%d] nodeName: %s' % (self.nodes.index(n), n['nodeName'])
+      elif ( param[0] == "patches" ):
+        node = self.nodes[int(param[1])]
+        self.patches = scalex.node.getPatches(node)['data']
+        for n in self.patches:
+          print 'index:[%d] nodeName: %s' % (self.nodes.index(n), n['nodeName'])
+      elif ( param[0] == "updates" ):
+        self.nodes = scalex.node.getNodes()['data']
+        for n in self.nodes:
+          print 'index:[%d] nodeName: %s' % (self.nodes.index(n), n['nodeName'])
+
     except Exception,e:
       print "Unknown Error:" , e
   

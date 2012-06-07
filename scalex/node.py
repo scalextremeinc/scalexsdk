@@ -176,6 +176,9 @@ def _getlist(node):
     https://manage.scalextreme.com/patchupdate/updatelist?rid=042F8639-FF15-445A-95F9-E03B7DABA6F0&companyid=10274&user=10002&role=Admin&agentid=40&patchanalysisid=316
     '''
   overview = getOverviewOfUpdatesOrPatches(node)['data']
+  if overview == {}:
+    return {u'data': [], u'result': u'SUCCESS'}
+
   if 'Windows' in str(node):
     os = 1
   else:

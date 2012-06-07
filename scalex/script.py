@@ -35,8 +35,8 @@ def getScripts(type = 0):
   return returnData
 
 def getContent(script):
-  '''arguments: scriptid, version
-    '''
+  '''
+  '''
   userinfo.check()
   payload = {
     'scriptid': script['scriptId'],

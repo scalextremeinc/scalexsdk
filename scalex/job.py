@@ -105,7 +105,7 @@ def getOutputs(run):
 #                        'truncated' :  truncated 
 #                        })
   
-  return response
+  return data
 
 def update(name, script, job, targets, arguments = [], scheduleType = 0,
            startTime = 0, repeatInterval = 60, endTime = 0, repeatCount = 0, cronExpr = None, timeZone = ''):
