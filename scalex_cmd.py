@@ -22,6 +22,11 @@ class scalex_cmd(cmd.Cmd):
   nodes = []
   jobs = []
   runs = []
+  patches = []
+  updates = []
+  patchJobs = []
+  updateJobs = []
+  
   def __init__ ( self ):
     self.prompt = "scalex>>";
     cmd.Cmd.__init__(self);
@@ -63,7 +68,9 @@ class scalex_cmd(cmd.Cmd):
     print "get jobs INDEX => get jobs for script"
     print "get runs INDEX => get runs for jobs"
     print "get output INDEX => get output for runs"
-
+    print 'get update jobs => get applied updates'
+    print 'get patch jobs => get applied patches'
+  
   def help_set(self):
     print 'set company INDEX'
     print 'set role INDEX'
@@ -73,6 +80,13 @@ class scalex_cmd(cmd.Cmd):
     print 'targets are comma separated example: 1,2'
     print 'startTime 0 means run now, or schedule time format 2012-06-02-12:12'
     print 'parameters are space separated example: argument1 argument2'
+  
+  def help_cancel(self):
+    print 'cancel update/patch/job INDEX'
+  
+  def help_apply(self):
+    print 'apply update/patch node patch_Index,patch_Index name [time]'
+    print 'example: apply update 0 0,1,2,3 job_name 2012-01-01-01:01
   
   def help_exit(self):
     print "exit --- exit this program"
@@ -200,12 +214,27 @@ class scalex_cmd(cmd.Cmd):
       elif ( param[0] == "patches" ):
         node = self.nodes[int(param[1])]
         self.patches = scalex.node.getPatches(node)['data']
+        if self.patches == []:
+          print 'node is up to date'
+          return
         for n in self.patches:
-          print 'index:[%d] nodeName: %s' % (self.nodes.index(n), n['nodeName'])
+          print 'index:[%d] nodeName: %s' % (self.patches.index(n), n['name'])
       elif ( param[0] == "updates" ):
-        self.nodes = scalex.node.getNodes()['data']
-        for n in self.nodes:
-          print 'index:[%d] nodeName: %s' % (self.nodes.index(n), n['nodeName'])
+        node = self.nodes[int(param[1])]
+        self.updates = scalex.node.getUpdates(node)['data']
+        if self.updates == []:
+          print 'node is up to date'
+          return
+        for n in self.updates:
+          print 'index:[%d] nodeName: %s' % (self.updates.index(n), n['name'])
+      elif param[0] == 'update':
+        self.updateJobs = scalex.job.getUpdateJobs()['data']
+        for i in self.updateJobs:
+          print 'index:[%d] jobname: %s' % (self.updateJobs.index(i), i['jobName'])
+      elif param[0] == 'patch':
+        self.patchJobs = scalex.job.getPatchJobs()['data']
+        for i in self.updateJobs:
+          print 'index:[%d] jobname: %s' % (self.updateJobs.index(i), i['jobName'])
 
     except Exception,e:
       print "Unknown Error:" , e
@@ -234,7 +263,48 @@ class scalex_cmd(cmd.Cmd):
         print result['result']
     except Exception,e:
       print "Unknown Error:" , e
-  
+        
+  def do_cancel(self,s):
+    try:
+      param = s.split()
+      if param[0] not in ['update', 'patch', 'job']:
+        self.help_cancel()
+        return
+      index = int(param[1])
+      jobs = {'update': self.updateJobs, 'patch':self.patchJobs, 'script':self.jobs}
+      job = jobs[param[0]][index]
+      result = scalex.job.cancel(job)
+      print result['result']
+    except:
+      pass
+  def do_apply(self,s):
+    try:
+      param = s.split()
+      #apply update 1,2 1,2,3 name time
+      #update/patch nodes patches name [time]
+      if param[0] != 'update' and param[0] != 'patch':
+        self.help_apply()
+        return
+      targets = []
+      for i in param[1].split(','):
+        targets.append(self.nodes[int(i)])
+      updates = []
+      if param[0] == 'update':
+        updateList = self.updates
+      else:
+        updateList = self.patches
+      for i in param[2].split(','):
+        updates.append(updateList[int(i)])
+      name = param[3]
+      time = 0
+      try:
+        time = param[4]
+      except:
+        pass
+      print scalex.node.applyUpdates(name, targets, updates, startTime = time)['result']
+    except Exception, e:
+      print "Unknown Error:" , e
+        
   def do_EOF(self, line): 
     print ""
     return True

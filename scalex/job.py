@@ -35,6 +35,64 @@ def getJobs(script):
   returnData = json.loads(response.read())
   return returnData
 
+def _appliedUpdatesOrPatches(path):
+  '''
+    payload = {
+    "companyId": 10274,
+    "user": "10002",
+    "role": "Admin",
+    "scriptId": 0,
+    "version": null,
+    "scriptArgs": [],
+    "targets": [],
+    "destInstallDir": null,
+    "scheduleType": 0,
+    "startTime": 0,
+    "endTime": 0,
+    "repeatCount": 0,
+    "repeatInterval": 0,
+    "cronExpr": null,
+    "timeZone": null,
+    "name": null,
+    "description": null,
+    "jobId": 0,
+    "jobName": null,
+    "scriptType": null
+    }
+  '''
+  value = {
+    'companyid':userinfo.companyid,
+    'user':userinfo.userid,
+    'role':userinfo.rolename,
+    'rid':userinfo.rid
+  }
+  query = urllib.urlencode(value)
+  url = '%s%s?%s' % (userinfo.domain, path, query)
+  payload = {
+    'companyId': userinfo.companyid,
+    'user': str(userinfo.userid),
+    'role': userinfo.rolename,
+    'scriptId': 0
+  }
+  postData = 'payload=' + json.dumps(payload)
+  request = urllib2.Request(url, postData)
+  request.add_header('cookie', userinfo.cookie)
+  response = urllib2.urlopen(request)
+  returnData = json.loads(response.read())
+  return returnData
+
+def getUpdateJobs():
+  '''
+  '''
+  updatesPath = '/managejob/appliedupdates'
+  return _appliedUpdatesOrPatches(updatesPath)
+
+def getPatchJobs():
+  '''
+  '''
+  patchesPath = '/managejob/appliedpatches'
+  return _appliedUpdatesOrPatches(patchesPath)
+
 def getRuns(job):
   '''
   '''
@@ -175,8 +233,6 @@ def update(name, script, job, targets, arguments = [], scheduleType = 0,
 
 def cancel(job):
   '''
-  payload={"companyId":10274, "user":"10002", "role":"Admin", "jobId":638, "parentJobId":0, "jobName":"testRun (6)", "jobDescription":"This job is auto-created", "actionGroupId":639, "targetGroupId":639, "targetDetailBeans":[{"agentId":40, "companyId":10274, "user":"10002", "role":"Admin", "ipAddress":"10.211.31.18", "hostName":"domU-12-31-39-0A-1C-E4", "nodeMask":"", "nodeIf":"12:31:39:0a:1c:e4", "nodeMac":"eth0", "nodeHw":"i686", "nodeDesc":"", "osName":"Linux", "osVer":"2.6.35.14-97.44.amzn1.i686", "osCat":"#1 SMP Mon Oct 24 16:03:22 UTC 2011"}], "scheduleBeans":[{"companyId":0, "user":null, "role":null, "name":"trigger_testRun (6)", "scheduleId":8165, "jobName":"testRun (6)", "jobId":638, "scheduleType":2, "startTime":1338798839315, "endTime":86560732799315, "repeatCount":0, "repeatInterval":0, "cronExpr":"0 * * * 6 ?", "timeZone":"Australia/Perth", "calendarType":"no calendar", "nextFireTime":1338801120000, "prevFireTime":1338801060000, "timesTriggered":0}], "activeFlag":null, "status":"complete"}
-    
     //manage.scalextreme.com/managejob?rid=1&companyid=10274&user=10002&role=Admin&operation=canceljob
   '''
   userinfo.check()
