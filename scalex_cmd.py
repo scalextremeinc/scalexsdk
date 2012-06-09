@@ -86,7 +86,7 @@ class scalex_cmd(cmd.Cmd):
   
   def help_apply(self):
     print 'apply update/patch node patch_Index,patch_Index name [time]'
-    print 'example: apply update 0 0,1,2,3 job_name 2012-01-01-01:01
+    print 'example: apply update 0 0,1,2,3 job_name 2012-01-01-01:01'
   
   def help_exit(self):
     print "exit --- exit this program"
