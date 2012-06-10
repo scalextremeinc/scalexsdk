@@ -41,29 +41,40 @@ class scalex_cmd(cmd.Cmd):
       self.help_login();
     elif ( s == "get" ):
       self.help_get();
+    elif ( s == "set" ):
+      self.help_set();
     elif ( s == "script" ):
       self.help_script();
     elif ( s == "exit" ):
       self.help_exit();
+    elif ( s == "job" ):
+      self.help_job();
+    elif ( s == "apply" ):
+      self.help_apply();
+    elif ( s == "exit" ):
+      self.help_exit();
     else :
       print "Available Command:"
-      print "\tlogin"
-      print "\tget"
-      print "\tset"
-      print "\tscript"
-      print "\texit"
-      print "\tjob"
-      print "\tapply"
+      print "\t login"
+      print "\t get"
+      print "\t set"
+      print "\t script"
+      print "\t exit"
+      print "\t job"
+      print "\t apply"
       print "help COMMAND for more information on a specific command."
     return 
   
   def help_login(self):
     print "login username password"
+
+  def help_job(self):
+    print "job cancel INDEX"
   
   def help_get(self):
     print "get companies => get companies"
     print "get roles => get roles"
-    print "get nodes [nodename] => get nodes"
+    print "get nodes  => get nodes"
     print "get node INDEX => get node info"
     print "get orgscripts => get org scripts"
     print "get myscripts => get my scripts"
@@ -71,8 +82,9 @@ class scalex_cmd(cmd.Cmd):
     print "get jobs INDEX => get jobs for script"
     print "get runs INDEX => get runs for jobs"
     print "get output INDEX => get output for runs"
-    print 'get update jobs => get applied updates'
-    print 'get patch jobs => get applied patches'
+    print "get otheragents INDEX_node INDEX_updates/INDEX_patches"
+    print 'get updatejobs => get update jobs'
+    print 'get patchjobs => get patch jobs'
   
   def help_set(self):
     print 'set company INDEX'
@@ -88,8 +100,8 @@ class scalex_cmd(cmd.Cmd):
     print 'cancel update/patch/job INDEX'
   
   def help_apply(self):
-    print 'apply update/patch node patch_Index,patch_Index name [time]'
-    print 'example: apply update 0 0,1,2,3 job_name 2012-01-01-01:01'
+    print 'apply update/patch node_Index1,node_Index2 patch_Index,patch_Index name [time]'
+    print 'example: apply update 0,1 0,1,2,3 job_name 2012-01-01-01:01'
   
   def help_exit(self):
     print "exit --- exit this program"
@@ -235,30 +247,56 @@ class scalex_cmd(cmd.Cmd):
               print 'invalid index '+index
       elif ( param[0] == "patches" ):
         node = self.nodes[int(param[1])]
+        if scalex.node.isUnix(node):
+          print 'this is not a windows mechine'
+          return
         self.patches = scalex.node.getPatches(node)['data']
         if self.patches == []:
           print 'node is up to date'
           return
         for n in self.patches:
-          print 'index:[%d] nodeName: %s' % (self.patches.index(n), n['name'])
+          print 'index:[%d] name: %s\tcategory: %s' % (self.patches.index(n), n['name'], n['classification'])
       elif ( param[0] == "updates" ):
         node = self.nodes[int(param[1])]
+        if not scalex.node.isUnix(node):
+          print 'this is not a unix mechine'
+          return
+
         self.updates = scalex.node.getUpdates(node)['data']
         if self.updates == []:
           print 'node is up to date'
           return
         for n in self.updates:
-          print 'index:[%d] nodeName: %s' % (self.updates.index(n), n['name'])
-      elif param[0] == 'update':
+          print 'index:[%d] name: %s\tversion: %s\trelease:%s' % (self.patches.index(n), n['name'], n['updateversion'], n['updaterelease'])
+      elif param[0] == 'otheragents':
+        if len(param) < 3:
+          self.help_get()
+          return
+        nodeIndex = int(param[1])
+        node = self.nodes[nodeIndex]
+        patches = []
+        if scalex.node.isWindows(node):
+          for i in param[2].split(','):
+            patches.append(self.patches[int(i)])
+        else:
+          for i in param[2].split(','):
+            patches.append(self.updates[int(i)])
+        others = scalex.node.getOtherAgentsWithPatch(node, patches)['data']
+        for agent in others:
+          for n in self.nodes:
+            if n['agentId'] == agent:
+              print 'index: [%d] nodeName: %s' % (self.nodes.index(n), n['nodeName'])
+        
+        pass
+      elif param[0] == 'updatejobs':
         self.updateJobs = scalex.job.getUpdateJobs()['data']
         for i in self.updateJobs:
           print 'index:[%d] jobname: %s' % (self.updateJobs.index(i), i['jobName'])
-      elif param[0] == 'patch':
+      elif param[0] == 'patchjobs':
         self.patchJobs = scalex.job.getPatchJobs()['data']
         for i in self.updateJobs:
           print 'index:[%d] jobname: %s' % (self.updateJobs.index(i), i['jobName'])
       elif param[0] == 'audits':
-        
         node = self.nodes[int(param[1])]
         overview = scalex.node.getOverviewOfAudits(node)
         if overview != {} and overview['data'] != {}:
@@ -298,15 +336,16 @@ class scalex_cmd(cmd.Cmd):
     except Exception,e:
       print "Unknown Error:" , e
   
-  def do_cancel(self,s):
+  def do_job(self,s):
     try:
       param = s.split()
-      if param[0] not in ['update', 'patch', 'job']:
-        self.help_cancel()
+      
+      if param[0] != 'cancel' and param[1] not in ['update', 'patch', 'job']:
+        self.help_job()
         return
       index = int(param[1])
       jobs = {'update': self.updateJobs, 'patch':self.patchJobs, 'script':self.jobs}
-      job = jobs[param[0]][index]
+      job = jobs[param[1]][index]
       result = scalex.job.cancel(job)
       print result['result']
     except:
@@ -335,7 +374,11 @@ class scalex_cmd(cmd.Cmd):
         time = param[4]
       except:
         pass
-      print scalex.node.applyUpdates(name, targets, updates, startTime = time)['result']
+      if scalex.node.isUnix(targets[0]):
+        result = scalex.node.applyUpdates(name, targets, updates, startTime = time)
+      else:
+        result = scalex.node.applyPatches(name, targets, updates, startTime = time)
+      print  result['result']
     except Exception, e:
       print "Unknown Error:" , e
   
