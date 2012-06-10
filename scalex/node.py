@@ -146,8 +146,6 @@ https://manage.scalextreme.com/scalex/search/searchOtherAgentsWithPatch?
   request.add_header('cookie', userinfo.cookie)
   response = urllib2.urlopen(request)
   returnData = json.loads(response.read())
-  print url
-  print postData
   return returnData
 
 def getUpdates(node):
