@@ -62,7 +62,7 @@ def getAudits(node):
   if overview == {}:
     return {u'data': [], u'result': u'SUCCESS'}
     
-  path = '/scalex/tigeraudit/auditoverview'
+  path = '/scalex/tigeraudit/auditresults'
   url = userinfo.domain + path
   
   value = {
