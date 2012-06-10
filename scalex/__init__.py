@@ -33,7 +33,8 @@ def login(username, password):
   response = urllib2.urlopen(url, postData)
   userinfo.cookie = response.headers.get('Set-Cookie')
   returnData = json.loads(response.read())
-  userinfo.userid = returnData['data']['userID']
+  if returnData['result'] == 'SUCCESS':
+    userinfo.userid = returnData['data']['userID']
   return returnData
 
 def relogin():
