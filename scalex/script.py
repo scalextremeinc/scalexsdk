@@ -13,6 +13,25 @@ def getScripts(type = 0):
     0 is myscripts
     1 is orgscripts
     default is 0
+    
+    RETURN DATA:
+    {
+    "result": "SUCCESS",
+    "data": [
+    {
+    "parentCompanyId": 0,
+    "scriptName": "python_sdk_testcase_scriptname_38882",
+    "parentScriptId": 0,
+    "scriptDescription": "ZGVzY3JpcHRpb24=",
+    "scriptInputParams": [],
+    "role": "Admin",
+    "companyId": 10361,
+    "scriptId": "81",
+    "tagList": [],
+    "user": "10002",
+    "scriptAttachments": [],
+    "version": "1"
+    },
     '''
   userinfo.check()
   operation = ['userscripts', 'orgscripts']
@@ -34,13 +53,16 @@ def getScripts(type = 0):
   returnData = json.loads(response.read())
   return returnData
 
-def getContent(script):
+def getContent(script, version = -1):
   '''
   '''
   userinfo.check()
+  if version == -1:
+    #default version
+    version = script['version']
   payload = {
     'scriptid': script['scriptId'],
-    'version': script['version'],
+    'version': version,
   }
   url = userinfo.domain + '/library'
   value = {
@@ -80,7 +102,7 @@ def getVersions(script):
   returnData = json.loads(response.read())
   return returnData
 
-def run(name, script, targets, arguments = [], scheduleType = 0,
+def run(name, script, targets, version = -1, arguments = [], scheduleType = 0,
         startTime = 0, repeatInterval = 60, endTime = 0, repeatCount = 0, cronExpr = None, timeZone = 'FIXME', scriptType = None):
   '''
   scheduleType: 0, Run Once
@@ -88,6 +110,9 @@ def run(name, script, targets, arguments = [], scheduleType = 0,
                 2, Cron Schedule (Advanced)
   '''
   userinfo.check()
+  if version == -1:
+    # default version
+    version = script['version']
   # 
   type = [12, 14, 2]
   if scheduleType == 0:
@@ -125,7 +150,7 @@ def run(name, script, targets, arguments = [], scheduleType = 0,
     "user": userinfo.userid,
     "role": userinfo.rolename,
     "scriptId": script['scriptId'],
-    "version": script['version'],
+    "version": str(version),
     "scriptArgs": arguments,
     "targets": agents,
     "destInstallDir": None,
@@ -150,15 +175,56 @@ def run(name, script, targets, arguments = [], scheduleType = 0,
   returnData = json.loads(response.read())
   return returnData
 
+def _isNameExists(name):
+  '''
+    https://manage.scalextreme.com/library/scriptexists?rid=0&companyid=10274&user=10002&role=Admin
+  '''
+  postData = 'scriptname=' + name
+  url = userinfo.domain + '/library/scriptexists'
+  value = {
+    'companyid':userinfo.companyid,
+    'user':userinfo.userid,
+    'role':userinfo.rolename,
+    'rid':userinfo.rid
+  }
+  query = urllib.urlencode(value)
+  url = url + '?' + query
+  request = urllib2.Request(url, postData)
+  request.add_header('cookie', userinfo.cookie)
+  response = urllib2.urlopen(request)
+  exists = False
+  if json.loads(response.read())['data'] == 'Y':
+    exists = True
+  return exists
+
 def create(name, type, content, description = '', params = [], tags = []):
   '''
-    scriptparams	[{"taskId":0, "taskParameterId":0, "parameterType":"INPUT", "parameterKey":"KEY1", "parameterDefaultValue":"VALUE", "parameterValue":null, "parameterDataType":"string", "description":"desc", "requiredFlag":"Y", "sequenceNumber":1},]
+    params format
+    [
+    {"parameterKey":"first int key", "parameterDefaultValue":"1", "parameterDataType":"int", "description":"desc", "requiredFlag":"Y"},
+    {"parameterKey":"second str key", "parameterDefaultValue":"string2",  "parameterDataType":"string", "description":"desc", "requiredFlag":"Y"},
+    ]
     scripttags	[{"tagName":"amazon ec2", "tagType":null, "activeFlag":null},]
   '''
   userinfo.check()
 
   #FIXME, no script attachments
   #ttps://manage.scalextreme.com/library?rid=411C2ECD-BDD0-4F61-9F37-E3718F02E084
+  
+  if _isNameExists(name):
+    # FIXME, name exists
+    return
+  parameters = []
+  d = { "taskId":0, "taskParameterId":0, "parameterType":"INPUT", "parameterValue":None }
+  if params != []:
+    i = 1
+    for p in params:
+      for k in p:
+        d[k] = p[k]
+      d['sequenceNumber'] = i
+      i += 1
+      parameters.append(d)
+      
   url = userinfo.domain + '/library?rid=' + userinfo.rid
   value = {
     'companyid':userinfo.companyid,
@@ -170,7 +236,7 @@ def create(name, type, content, description = '', params = [], tags = []):
     'scriptcontent':base64.b64encode(content),
     'scriptdescription':base64.b64encode(description),
     'scripttags':tags,
-    'scriptparams':params,
+    'scriptparams':parameters,
     #
     'inputparams':0,
     'parentCompanyId':0,
@@ -200,8 +266,9 @@ def delete(script):
   url = url + '?' + query
   request  = urllib2.Request(url, '')
   request.add_header('cookie', userinfo.cookie)
-  response = urllib2.urlopen(request).read()
-  return response
+  response = urllib2.urlopen(request)
+  returnData = json.loads(response.read())
+  return returnData
 
 #def create(name, type, content, description = '', params = [], tags = []):
 
@@ -215,19 +282,19 @@ def update(script, name = '', type = '', content = '', description = '', params 
   url = userinfo.domain + '/library?rid=' + userinfo.rid
   content = base64.b64encode(content)
   description = base64.b64encode(description)
-
+  scriptDetail = scalex.script.getContent(script)['data']
   if not name:
     name = script['scriptName']
   if not type:
-    type = script['scriptType']
+    type = scriptDetail['scriptType']
   if not content:
-    content = script['scriptContent'] 
+    content = scriptDetail['scriptContent'] 
   if not description:
-    description = script['scriptDescription'] 
+    description = scriptDetail['scriptDescription'] 
   if not params:
-    params = script['scriptInputParams'] 
+    params = scriptDetail['scriptInputParams'] 
   if not tags:
-    tags = script['scriptTags'] 
+    tags = scriptDetail['scriptTags'] 
   value = {
     'companyid':userinfo.companyid,
     'operation':'updatescript',
@@ -241,15 +308,15 @@ def update(script, name = '', type = '', content = '', description = '', params 
     'scriptdescription':description,
     'scripttags':tags,
     'scriptparams':params,
-    'scriptlocation':script['scriptLocation'],
+    'scriptlocation':scriptDetail['scriptLocation'],
     #
-    'inputparams':script['inputParams'],
-    'parentCompanyId':script['parentCompanyId'],
-    'parentScriptId':script['parentScriptId'],
-    'purchasedFlag':script['purchasedFlag'],
-    'parentScriptId':script['parentScriptId'],
-    'sharedFlag':script['sharedFlag'],
-    'viewableflag':script['viewableFlag'],
+    'inputparams':scriptDetail['inputParams'],
+    'parentCompanyId':scriptDetail['parentCompanyId'],
+    'parentScriptId':scriptDetail['parentScriptId'],
+    'purchasedFlag':scriptDetail['purchasedFlag'],
+    'parentScriptId':scriptDetail['parentScriptId'],
+    'sharedFlag':scriptDetail['sharedFlag'],
+    'viewableflag':scriptDetail['viewableFlag'],
   }
   request  = urllib2.Request(url, urllib.urlencode(value))
   request.add_header('cookie', userinfo.cookie)

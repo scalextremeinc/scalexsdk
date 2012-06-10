@@ -20,6 +20,67 @@ def getNodes():
   returnData = json.loads(response.read())
   return returnData
 
+def isWindows(node):
+  iswin = False
+  if 'Windows' in str(node):
+    iswin = True
+  return iswin
+
+def isUnix(node):
+  return not isWindows(node)
+
+def getOverviewOfAudits(node):
+  '''
+  https://manage.scalextreme.com/scalex/tigeraudit/auditoverview?rid=A&companyid=10274&user=10002&role=Admin&agentid=40
+  '''
+  userinfo.check()
+  path = '/scalex/tigeraudit/auditoverview'
+  url = userinfo.domain + path
+  
+  value = {
+      'companyid':userinfo.companyid,
+      'role':userinfo.rolename,
+      'user':userinfo.username,
+      'rid':userinfo.rid,
+      'agentid':node['agentId'],
+  }
+  query = urllib.urlencode(value)
+  url = url + '?' + query
+  request = urllib2.Request(url, '')
+  request.add_header('cookie', userinfo.cookie)
+  response = urllib2.urlopen(request)
+  returnData = json.loads(response.read())
+  return returnData
+
+def getAudits(node):
+  '''
+  https://manage.scalextreme.com/scalex/tigeraudit/auditresults?rid=22A&companyid=10274&user=10002&role=Admin&agentid=40&auditanalid=196
+  '''
+  userinfo.check()
+
+  overview = getOverviewOfAudits(node)['data']
+  if overview == {}:
+    return {u'data': [], u'result': u'SUCCESS'}
+    
+  path = '/scalex/tigeraudit/auditoverview'
+  url = userinfo.domain + path
+  
+  value = {
+      'companyid':userinfo.companyid,
+      'role':userinfo.rolename,
+      'user':userinfo.username,
+      'rid':userinfo.rid,
+      'agentid':node['agentId'],
+      'auditanalid':overview['auditAnalId'],
+  }
+  query = urllib.urlencode(value)
+  url = url + '?' + query
+  request = urllib2.Request(url, '')
+  request.add_header('cookie', userinfo.cookie)
+  response = urllib2.urlopen(request)
+  returnData = json.loads(response.read())
+  return returnData
+
 def getUpdates(node):
   '''
   https://manage.scalextreme.com/patchupdate/updatelist?rid=042F8639-FF15-445A-95F9-E03B7DABA6F0&companyid=10274&user=10002&role=Admin&agentid=40&patchanalysisid=316

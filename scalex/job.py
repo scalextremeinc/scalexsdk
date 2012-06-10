@@ -37,28 +37,6 @@ def getJobs(script):
 
 def _appliedUpdatesOrPatches(path):
   '''
-    payload = {
-    "companyId": 10274,
-    "user": "10002",
-    "role": "Admin",
-    "scriptId": 0,
-    "version": null,
-    "scriptArgs": [],
-    "targets": [],
-    "destInstallDir": null,
-    "scheduleType": 0,
-    "startTime": 0,
-    "endTime": 0,
-    "repeatCount": 0,
-    "repeatInterval": 0,
-    "cronExpr": null,
-    "timeZone": null,
-    "name": null,
-    "description": null,
-    "jobId": 0,
-    "jobName": null,
-    "scriptType": null
-    }
   '''
   value = {
     'companyid':userinfo.companyid,
@@ -147,8 +125,9 @@ def getOutputs(run):
   url = url + '?' + query
   request = urllib2.Request(url, postData)
   request.add_header('cookie', userinfo.cookie)
-  response = urllib2.urlopen(request).read()
-  data = json.loads(response)['data'];
+  response = urllib2.urlopen(request)
+  data = json.loads(response.read())
+  returnData = data
 #  outputs = []
   
 #  for index,item in enumerate(data):
@@ -163,7 +142,7 @@ def getOutputs(run):
 #                        'truncated' :  truncated 
 #                        })
   
-  return data
+  return returnData
 
 def update(name, script, job, targets, arguments = [], scheduleType = 0,
            startTime = 0, repeatInterval = 60, endTime = 0, repeatCount = 0, cronExpr = None, timeZone = ''):
