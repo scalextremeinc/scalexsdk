@@ -28,6 +28,9 @@ class scalex_cmd(cmd.Cmd):
   updateJobs = []
   audits = []
   
+  currentWindows = ''
+  currentUnix = ''
+  
   def __init__ ( self ):
     self.prompt = "scalex>>";
     cmd.Cmd.__init__(self);
@@ -82,7 +85,10 @@ class scalex_cmd(cmd.Cmd):
     print "get jobs INDEX => get jobs for script"
     print "get runs INDEX => get runs for jobs"
     print "get output INDEX => get output for runs"
-    print "get otheragents INDEX_node INDEX_updates/INDEX_patches"
+    print "get nodesforupdate INDEX_updates"
+    print "get nodesforpatch INDEX_patches"
+    print 'get updates INDEX => get updates of a node'
+    print 'get patches INDEX => get patches of a node'
     print 'get updatejobs => get update jobs'
     print 'get patchjobs => get patch jobs'
   
@@ -250,10 +256,16 @@ class scalex_cmd(cmd.Cmd):
         if scalex.node.isUnix(node):
           print 'this is not a windows mechine'
           return
-        self.patches = scalex.node.getPatches(node)['data']
-        if self.patches == []:
+        self.currentWindows = node
+        patches = scalex.node.getPatches(node)['data']
+        if patches == []:
           print 'node is up to date'
           return
+        if not isinstance(patches, list):
+          u = patches
+          patches = []
+          patches.append(u)
+        self.patches = patches
         for n in self.patches:
           print 'index:[%d] name: %s\tcategory: %s' % (self.patches.index(n), n['name'], n['classification'])
       elif ( param[0] == "updates" ):
@@ -261,33 +273,57 @@ class scalex_cmd(cmd.Cmd):
         if not scalex.node.isUnix(node):
           print 'this is not a unix mechine'
           return
-
-        self.updates = scalex.node.getUpdates(node)['data']
-        if self.updates == []:
+        self.currentUnix = node
+        updates = scalex.node.getUpdates(node)['data']
+        if updates == []:
           print 'node is up to date'
           return
+        if not isinstance(updates, list):
+          u = updates
+          updates = []
+          updates.append(u)
+        self.updates = updates
         for n in self.updates:
-          print 'index:[%d] name: %s\tversion: %s\trelease:%s' % (self.patches.index(n), n['name'], n['updateversion'], n['updaterelease'])
-      elif param[0] == 'otheragents':
-        if len(param) < 3:
+          print 'index:[%d] version:%s\trelease:%s\tname: %s' % (self.updates.index(n), n['updateversion'], n['updaterelease'], n['name'])
+            
+      elif param[0] == 'nodesforpatch':
+        if len(param) < 2:
           self.help_get()
           return
-        nodeIndex = int(param[1])
-        node = self.nodes[nodeIndex]
+        node = self.currentWindows
         patches = []
         if scalex.node.isWindows(node):
-          for i in param[2].split(','):
+          for i in param[1].split(','):
             patches.append(self.patches[int(i)])
         else:
-          for i in param[2].split(','):
+          for i in param[1].split(','):
             patches.append(self.updates[int(i)])
         others = scalex.node.getOtherAgentsWithPatch(node, patches)['data']
         for agent in others:
           for n in self.nodes:
             if n['agentId'] == agent:
               print 'index: [%d] nodeName: %s' % (self.nodes.index(n), n['nodeName'])
-        
-        pass
+        print 'index: [%d] nodeName: %s' % (self.nodes.index(node), node['nodeName'])
+
+      elif param[0] == 'nodesforupdate':
+        if len(param) < 2:
+          self.help_get()
+          return
+        node = self.currentUnix
+        patches = []
+        if scalex.node.isWindows(node):
+          for i in param[1].split(','):
+            patches.append(self.patches[int(i)])
+        else:
+          for i in param[1].split(','):
+            patches.append(self.updates[int(i)])
+        others = scalex.node.getOtherAgentsWithPatch(node, patches)['data']
+        for agent in others:
+          for n in self.nodes:
+            if n['agentId'] == agent:
+              print 'index: [%d] nodeName: %s' % (self.nodes.index(n), n['nodeName'])
+        print 'index: [%d] nodeName: %s' % (self.nodes.index(node), node['nodeName'])
+          
       elif param[0] == 'updatejobs':
         self.updateJobs = scalex.job.getUpdateJobs()['data']
         for i in self.updateJobs:
@@ -307,7 +343,8 @@ class scalex_cmd(cmd.Cmd):
           self.audits = scalex.node.getAudits(node)['data']
           for audit in self.audits:
             print 'status: %s\t message: %s' % (audit['auditLevel'], audit['auditDesc'])
-    
+      else:
+        self.help_get()
     except Exception,e:
       print "Unknown Error:" , e
   
