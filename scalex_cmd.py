@@ -63,7 +63,8 @@ class scalex_cmd(cmd.Cmd):
   def help_get(self):
     print "get companies => get companies"
     print "get roles => get roles"
-    print "get nodes [nodename] => get nodes info, if nodename is provided, show the detail of this node"
+    print "get nodes [nodename] => get nodes"
+    print "get node INDEX => get node info"
     print "get orgscripts => get org scripts"
     print "get myscripts => get my scripts"
     print "get arguments INDEX => get arguments for script"
@@ -134,7 +135,11 @@ class scalex_cmd(cmd.Cmd):
   def do_get(self,s):
     try :
       s = s.strip()
-      param = s.split();
+      param = s.split()
+      if len(param) == 0:
+          self.help_get()
+          return
+          
       param[0] = param[0].lower()
       if ( param[0] == "companies" ):
         coms = scalex.company.getCompanies()['data'];
@@ -213,6 +218,21 @@ class scalex_cmd(cmd.Cmd):
         self.nodes = scalex.node.getNodes()['data']
         for n in self.nodes:
           print 'index:[%d] nodeName: %s' % (self.nodes.index(n), n['nodeName'])
+      elif ( param[0] == "node" ):
+          if len(param) != 2 :
+              self.help_get()
+              return
+          self.nodes = scalex.node.getNodes()['data']
+          index = int(param[1])
+          if len(self.nodes) > index:
+              node = self.nodes[index]
+              print 'index:[%d] nodeName: %s nodeId: %d ' % (index, node['nodeName'], node['nodeId'])
+              print 'Properties:'
+              attributeList = sorted(node['nodeAttrList'], key = lambda k: k['attributeName'])
+              for x in attributeList:
+                  print "%s : %s" % (x['attributeName'], x['attributeValue'])
+          else:
+              print 'invalid index '+index
       elif ( param[0] == "patches" ):
         node = self.nodes[int(param[1])]
         self.patches = scalex.node.getPatches(node)['data']
