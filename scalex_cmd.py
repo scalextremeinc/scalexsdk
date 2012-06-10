@@ -63,7 +63,7 @@ class scalex_cmd(cmd.Cmd):
   def help_get(self):
     print "get companies => get companies"
     print "get roles => get roles"
-    print "get nodes [nodename] => get nodes"
+    print "get nodes  => get nodes"
     print "get node INDEX => get node info"
     print "get orgscripts => get org scripts"
     print "get myscripts => get my scripts"
