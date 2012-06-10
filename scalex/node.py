@@ -173,9 +173,9 @@ def applyPatches(name, node, patches, startTime = 0):
     patches.append(t)
   arguments = []
   for u in patches:
-    a = list()
-    a.append(u['name'])
-    arguments.append(a.replace(' ', '+'))
+#    a = list()
+#    a.append(u['name'])
+    arguments.append(u['name'].replace(' ', '+'))
   return _scheduleUpdateOrPatches(name, node, arguments, 'applypatch', startTime)
                                   
 def applyUpdates(name, node, updates, startTime = 0):
