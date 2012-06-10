@@ -13,7 +13,7 @@ def getNodes():
   value = {
     'companyId':userinfo.companyid,
     'role':userinfo.rolename,
-    'user':userinfo.username
+    'user':userinfo.userid
   }
   postData = urllib.urlencode(value)
   response = urllib2.urlopen(url, postData)
@@ -40,7 +40,7 @@ def getOverviewOfAudits(node):
   value = {
       'companyid':userinfo.companyid,
       'role':userinfo.rolename,
-      'user':userinfo.username,
+      'user':userinfo.userid,
       'rid':userinfo.rid,
       'agentid':node['agentId'],
   }
@@ -68,7 +68,7 @@ def getAudits(node):
   value = {
       'companyid':userinfo.companyid,
       'role':userinfo.rolename,
-      'user':userinfo.username,
+      'user':userinfo.userid,
       'rid':userinfo.rid,
       'agentid':node['agentId'],
       'auditanalid':overview['auditAnalId'],
@@ -79,6 +79,75 @@ def getAudits(node):
   request.add_header('cookie', userinfo.cookie)
   response = urllib2.urlopen(request)
   returnData = json.loads(response.read())
+  return returnData
+
+def getOtherAgentsWithPatch(node, patches):
+  '''
+https://manage.scalextreme.com/scalex/search/searchOtherAgentsWithPatch?
+    rid=0F72B45B-935E-44BD-89D6-0F6EACE26C08&
+    organizationId=10274&
+    user=10002&
+    role=Admin&
+    agentId=181&
+    clause=AND&
+    type=UPDATE
+https://manage.scalextreme.com/scalex/search/searchOtherAgentsWithPatch?
+    organizationId=10274&
+    clause=AND&
+    role=Admin&
+    user=10002&
+    rid=39305f26-2e81-435e-8177-3f5a1371db8a&
+    agentid=40&
+    type=UPDATE
+
+
+    windows
+    
+    https://manage.scalextreme.com/scalex/search/searchOtherAgentsWithPatch?rid=0F72B45B-935E-44BD-89D6-0F6EACE26C08&organizationId=10274&user=10002&role=Admin&agentId=88&clause=AND&type=PATCH
+    
+    patchList=[{"name":"Security Update for Microsoft .NET Framework 3.5.1 on Windows 7 and Windows Server 2008 R2 SP1 for x64-based Systems (KB2633873)"}]
+  '''
+  userinfo.check()
+  
+  path = '/scalex/search/searchOtherAgentsWithPatch'
+  url = userinfo.domain + path
+  if isWindows(node):
+    type = 'PATCH'
+  else:
+    type = 'UPDATE'
+  value = {
+    'organizationId':userinfo.companyid,
+    'role':userinfo.rolename,
+    'user':userinfo.userid,
+    'rid':userinfo.rid,
+    'agentId':node['agentId'],
+    'clause':'AND',
+    'type':type,
+  }
+  query = urllib.urlencode(value)
+  url = url + '?' + query
+#      
+  updates = []
+  if not isinstance(patches, list):
+    p = patches
+    patches = []
+    patches.append(p)
+  for u in patches:
+    d = {}
+    d['name'] = u['name']
+    if isUnix(node):
+      d['arch'] = u['arch']
+      d['updateVersion'] = u['updateversion']
+      d['updateRelease'] = u['updaterelease']
+    updates.append(d)
+
+  postData = 'patchList=' + json.dumps(updates)
+  request = urllib2.Request(url, postData)
+  request.add_header('cookie', userinfo.cookie)
+  response = urllib2.urlopen(request)
+  returnData = json.loads(response.read())
+  print url
+  print postData
   return returnData
 
 def getUpdates(node):
@@ -216,7 +285,7 @@ def getOverviewOfUpdatesOrPatches(node):
   value = {
     'companyid':userinfo.companyid,
     'role':userinfo.rolename,
-    'user':userinfo.username,
+    'user':userinfo.userid,
     'rid':userinfo.rid,
     'agentid':node['agentId'],
   }
@@ -249,7 +318,7 @@ def _getlist(node):
   value = {
     'companyid':userinfo.companyid,
     'role':userinfo.rolename,
-    'user':userinfo.username,
+    'user':userinfo.userid,
     'rid':userinfo.rid,
     'agentid':node['agentId'],
     'patchanalysisid':overview['patchanalysisid'],
