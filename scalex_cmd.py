@@ -101,6 +101,8 @@ class scalex_cmd(cmd.Cmd):
     print 'nodes are comma separated example: 1,2'
     print 'for instance: run script 0 at node 0,1,2 at 2012-08-01-00:00, two parameters, install and -v'
     print '>>script run test_run 0 0,1,2 startTime=2012-08-01-00:00 parameters=install,-v'
+    print 'run script 0 at node 0 now, two parameters, foo bar and -v'
+    print '>>script run test_run_now 0 0 parameters=foo bar,-v'
     #print 'startTime 0 means run now, or schedule time format 2012-06-02-12:12'
     #print 'parameters are space separated example: argument1 argument2'
   
@@ -373,11 +375,11 @@ class scalex_cmd(cmd.Cmd):
             kv = p.split('=')
             paramName = kv[0]
             paramValue = kv[1]
-            if paramName == 'startTime':
+            if paramName == 'startTime' and paramValue != 'now':
               startTime = paramValue
             elif paramName == 'parameters':
               i = param.index(p)
-              arguments = ''.join(param[i:]).split('=')[1].split(',')
+              arguments = s.split('parameters=')[1].split(',')
         except:
           pass
         #        scheduleType = int(param[5])
