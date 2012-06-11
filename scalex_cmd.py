@@ -66,7 +66,7 @@ class scalex_cmd(cmd.Cmd):
       print "\t job"
       print "\t apply"
       print "help COMMAND for more information on a specific command."
-    return 
+    return
   
   def help_login(self):
     print "login username password"
