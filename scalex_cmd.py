@@ -62,9 +62,9 @@ class scalex_cmd(cmd.Cmd):
       print "\t get"
       print "\t set"
       print "\t script"
-      print "\t exit"
       print "\t job"
       print "\t apply"
+      print "\t exit"
       print "help COMMAND for more information on a specific command."
     return
   
@@ -85,12 +85,12 @@ class scalex_cmd(cmd.Cmd):
     print "get jobs INDEX => get jobs for script"
     print "get runs INDEX => get runs for jobs"
     print "get output INDEX => get output for runs"
-    print "get nodesforupdate INDEX_updates"
-    print "get nodesforpatch INDEX_patches"
-    print 'get updates INDEX => get updates of a node'
-    print 'get patches INDEX => get patches of a node'
-    print 'get updatejobs => get update jobs'
-    print 'get patchjobs => get patch jobs'
+    print "get nodesforupdate INDEX_updates => get nodes which have the listed updates missing"
+    print "get nodesforpatch INDEX_patches => get nodes which have the listed patches missing"
+    print 'get updates INDEX => get missing updates for node'
+    print 'get patches INDEX => get missing patches for a node'
+    print 'get updatejobs => get all update jobs'
+    print 'get patchjobs => get all patch jobs'
   
   def help_set(self):
     print 'set company INDEX'
@@ -106,8 +106,11 @@ class scalex_cmd(cmd.Cmd):
     print 'cancel update/patch/job INDEX'
   
   def help_apply(self):
-    print 'apply update/patch node_Index1,node_Index2 patch_Index,patch_Index name [time]'
+    print 'apply patches / updates to one or more machines' 
+    print 'apply update/patch node_Index1,node_Index2 patch_Index1,patch_Index2 jobname [startTime]'
+    print 'startTime 0 means run now, or schedule time format 2012-06-02-12:12'    
     print 'example: apply update 0,1 0,1,2,3 job_name 2012-01-01-01:01'
+    
   
   def help_exit(self):
     print "exit --- exit this program"
@@ -163,7 +166,7 @@ class scalex_cmd(cmd.Cmd):
         coms = scalex.company.getCompanies()['data'];
         self.companies = coms
         for c in coms:
-          print 'index: [%d] %s' % (coms.index(c), c['name'])
+          print 'index: [%d] %s companyId:%d' % (coms.index(c), c['name'], c['companyId'])
       elif ( param[0] == "roles" ):
         roles = scalex.role.getRoles()['data'];
         self.roles = roles
@@ -254,7 +257,7 @@ class scalex_cmd(cmd.Cmd):
       elif ( param[0] == "patches" ):
         node = self.nodes[int(param[1])]
         if scalex.node.isUnix(node):
-          print 'this is not a windows mechine'
+          print 'this is not a windows node'
           return
         self.currentWindows = node
         patches = scalex.node.getPatches(node)['data']
@@ -271,7 +274,7 @@ class scalex_cmd(cmd.Cmd):
       elif ( param[0] == "updates" ):
         node = self.nodes[int(param[1])]
         if not scalex.node.isUnix(node):
-          print 'this is not a unix mechine'
+          print 'this is not a unix node'
           return
         self.currentUnix = node
         updates = scalex.node.getUpdates(node)['data']
