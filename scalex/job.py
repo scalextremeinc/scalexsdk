@@ -128,20 +128,6 @@ def getOutputs(run):
   response = urllib2.urlopen(request)
   data = json.loads(response.read())
   returnData = data
-#  outputs = []
-  
-#  for index,item in enumerate(data):
-#    o1 = base64.b64decode(item['output'])
-#    truncated = 'N'
-#    if len(o1) > 500:
-#      truncated = 'Y'             
-#    outputs.append({
-#                        'target' : item['agentId'], 
-#                        'outputStatus' : item['stepExitCode'], 
-#                        'output': o1[0:500],
-#                        'truncated' :  truncated 
-#                        })
-  
   return returnData
 
 def update(name, script, job, targets, arguments = [], scheduleType = 0,
