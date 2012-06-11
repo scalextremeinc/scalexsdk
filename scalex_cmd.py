@@ -97,8 +97,10 @@ class scalex_cmd(cmd.Cmd):
     print 'set role INDEX'
   
   def help_script(self):
-    print 'script run script_INDEX node_INDEX,node_INDEX job_name'
-    print 'targets are comma separated example: 1,2'
+    print 'script run job_name script_INDEX node_INDEX,node_INDEX startTime=2012-09-02-12:12 parameters=PARAM1,PARAM2'
+    print 'nodes are comma separated example: 1,2'
+    print 'for instance: run script 0 at node 0,1,2 at 2012-08-01-00:00, two parameters, install and -v'
+    print '>>script run test_run 0 0,1,2 startTime=2012-08-01-00:00 parameters=install,-v'
     #print 'startTime 0 means run now, or schedule time format 2012-06-02-12:12'
     #print 'parameters are space separated example: argument1 argument2'
   
@@ -223,7 +225,8 @@ class scalex_cmd(cmd.Cmd):
           print 'jobname:', run['stepRunLogBeans'][0]['taskName']
           print 'status: ', r['status']
           print 'output: ', base64.b64decode(r['output'])
-          print 'run at: ', time.ctime(int(run['runTimestamp'])/1000)
+          from time import ctime
+          print 'run at: ', ctime(int(run['runTimestamp'])/1000)
       #        print '-----------------'  
       #        for output in self.outputs:
       #            print 'target:', output['target']
@@ -358,20 +361,29 @@ class scalex_cmd(cmd.Cmd):
         self.help_script()
         return
       if ( param[0] == "run" ):
-        script = self.scripts[int(param[1])]
+        script = self.scripts[int(param[2])]
         targets = []
-        for i in param[2].split(','):
+        for i in param[3].split(','):
           targets.append(self.nodes[int(i)])
-        name = param[3]
+        name = param[1]
         arguments = []
+        startTime = 0
         try:
-          arguments = param[4].split(',')
+          for p in param[4:]:
+            kv = p.split('=')
+            paramName = kv[0]
+            paramValue = kv[1]
+            if paramName == 'startTime':
+              startTime = paramValue
+            elif paramName == 'parameters':
+              i = param.index(p)
+              arguments = ''.join(param[i:]).split('=')[1].split(',')
         except:
           pass
         #        scheduleType = int(param[5])
         #        #schedule type should be one of 0 1 2
         #        startTime = param[6]
-        result = scalex.script.run(name, script, targets)
+        result = scalex.script.run(name, script, targets, arguments = arguments, startTime = startTime)
         print result['result']
     except Exception,e:
       print "Unknown Error:" , e
