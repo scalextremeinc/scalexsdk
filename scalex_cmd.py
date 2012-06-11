@@ -221,24 +221,35 @@ class scalex_cmd(cmd.Cmd):
           self.help_get()
         i = int(param[1])
         run = self.runs[i]
-        outputs  = scalex.job.getOutputs(run)['data']
-        
-        for r in outputs:
-          print 'jobname:', run['stepRunLogBeans'][0]['taskName']
-          print 'status: ', r['status']
-          print 'output: ', base64.b64decode(r['output'])
-          from time import ctime
-          print 'run at: ', ctime(int(run['runTimestamp'])/1000)
-      #        print '-----------------'  
-      #        for output in self.outputs:
-      #            print 'target:', output['target']
-      #            print 'outputStatus:', output['outputStatus']
-      #            if output['truncated'] == 'Y' :
-      #                print 'output (truncated - more than 500 chars):'
-      #            else: 
-      #                print 'output:'
-      #            print output['output'] 
-      #            print '-----------------'
+        data  = scalex.job.getOutputs(run)['data']
+        outputs = []
+
+        for index,item in enumerate(data):
+            o1 = base64.b64decode(item['output'])
+            truncated = 'N'
+            if len(o1) > 500:
+                truncated = 'Y'             
+            outputs.append({
+                   'target' : item['agentId'], 
+                   'outputStatus' : item['stepExitCode'], 
+                   'output': o1[0:500],
+                   'truncated' :  truncated 
+            })
+
+        print 'jobname:', run['stepRunLogBeans'][0]['taskName']
+        print 'run status:', run['status']
+        from time import ctime
+        print 'run time: ', ctime(int(run['runTimestamp'])/1000)
+        print '-----------------'  
+        for output in outputs:
+            print 'target:', output['target']
+            print 'outputStatus:', output['outputStatus']
+            if output['truncated'] == 'Y' :
+                print 'output (truncated - more than 500 chars):'
+            else: 
+                print 'output:'
+                print output['output'] 
+                print '-----------------'
       
       elif ( param[0] == "nodes" ):
         self.nodes = scalex.node.getNodes()['data']
