@@ -7,16 +7,29 @@ import datetime
 from scalex import userinfo
 
 def getNodes():
-  userinfo.check()
-  
-  url = userinfo.domain + '/scalex/acl/nodelistbyrole?rid=%s' % (userinfo.rid)
-  value = {
-    'companyId':userinfo.companyid,
-    'role':userinfo.rolename,
-    'user':userinfo.userid
-  }
-  postData = urllib.urlencode(value)
-  response = urllib2.urlopen(url, postData)
+  '''
+    API : /nodes or /nodes/{id}
+    Method : GET
+    URL Structure: https://<servername>/v0/nodes?access_token=<valid access token>
+    Input params: 
+    platform (optional), valid values Windows or Liniux
+    status (optional), valid values online or offline
+  '''
+#  userinfo.check()
+#  
+#  url = userinfo.domain + '/scalex/acl/nodelistbyrole?rid=%s' % (userinfo.rid)
+#  value = {
+#    'companyId':userinfo.companyid,
+#    'role':userinfo.rolename,
+#    'user':userinfo.userid
+#  }
+#  postData = urllib.urlencode(value)
+#  response = urllib2.urlopen(url, postData)
+#  returnData = json.loads(response.read())
+#  return returnData
+  path = '/nodes'
+  url = userinfo.geturl(path)
+  response = urllib2.urlopen(url)
   returnData = json.loads(response.read())
   return returnData
 

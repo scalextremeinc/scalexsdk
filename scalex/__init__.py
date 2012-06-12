@@ -16,6 +16,28 @@ import userinfo
 
 __version__ = '0.5'
 
+#auth after set role
+def auth():
+  assert userinfo.companyid != '' and userinfo.rolename != '', 'no companyid or rolename'
+  
+  path = '/oauth/token'
+  scope = userinfo.rolename + ',' + userinfo.companyid
+  query = {
+    'grant_type':'client_credentials',
+    'scope':scope
+  }
+  url = '%s%s?%s' % (userinfo.baseurl, path, urllib.urlencode(query))
+  request = urllib2.Request(url, '')
+  import base64
+  authorization = 'Basic ' + base64.b64encode(userinfo.client_id + ':' + userinfo.client_secret)
+  request.add_header('Authorization', authorization)
+  response = urllib2.urlopen(request)
+  returnData = json.loads(response.read())
+  userinfo.access_token = returnData['value']
+# FIXME
+  print userinfo.access_token
+  return returnData
+
 #function
 def login(username, password):
   '''login with username and password
