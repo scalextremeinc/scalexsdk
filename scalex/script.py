@@ -10,7 +10,7 @@ import scalex
 
 def getScripts(script = '', version = 0):
   '''
-    API : /scripts or /scripts/{id}
+    API : /scripts
     Method : GET
     URL structure : https://<servername>/v0/scripts?access_token=<valid access token>
     Input params : version (optional) parameter
@@ -29,61 +29,64 @@ def getScripts(script = '', version = 0):
 
 def getContent(script, version = -1):
   '''
+    API : /scripts or /scripts/{id}
+    Method : GET
+    URL structure : https://<servername>/v0/scripts?access_token=<valid access token>
+    Input params : version (optional) parameter
   '''
-  userinfo.check()
-  if version == -1:
-    #default version
-    version = script['version']
-  payload = {
-    'scriptid': script['scriptId'],
-    'version': version,
+  scriptid = script['scriptId']
+  path = '/scripts/%s' % (str(scriptid))
+  query = {
   }
-  url = userinfo.domain + '/library'
-  value = {
-    'companyid':userinfo.companyid,
-    'user':userinfo.userid,
-    'role':userinfo.rolename,
-    'operation':'scriptcontent',
-    'rid':userinfo.rid
-  }
-  query = urllib.urlencode(value)
-  url = url + '?' + query
-  request = urllib2.Request(url, urllib.urlencode(payload))
-  request.add_header('cookie', userinfo.cookie)
+  if version != -1:
+    query['version'] = version
+  url = userinfo.geturl(path, query)
+  request = urllib2.Request(url)
   response = urllib2.urlopen(request)
   returnData = json.loads(response.read())
   return returnData
 
-#def getVersions(script):
-#  #ttps://manage.scalextreme.com/library?rid=70E1FA13-7F7D-49CE-87DA-9FBF5A9484B7&companyid=10274&user=10002&role=Admin&operation=scriptversions
-#  userinfo.check()
-#  url = userinfo.domain + '/library'
-#  payload = {
-#    'scriptid': script['scriptId'],
-#  }
-#  value = {
-#   'companyid':userinfo.companyid,
-#   'user':userinfo.userid,
-#   'role':userinfo.rolename,
-#   'operation':'scriptversions',
-#   'rid':userinfo.rid
-#  }
-#  query = urllib.urlencode(value)
-#  url = url + '?' + query
-#  request = urllib2.Request(url, urllib.urlencode(payload))
-#  request.add_header('cookie', userinfo.cookie)
-#  response = urllib2.urlopen(request)
-#  returnData = json.loads(response.read())
-#  return returnData
+def getVersions(script):
+  '''
+    API : /scripts/versions?id=1234
+    Method : GET
+  '''
+  path = '/scripts/%s/versions' % (str(script['scriptId']))
+  query = {
+  }
+  url = userinfo.geturl(path, query)
+  request = urllib2.Request(url)
+  response = urllib2.urlopen(request)
+  returnData = json.loads(response.read())
+  return returnData
 
 def run(name, script, targets, version = -1, arguments = [], scheduleType = 0,
         startTime = 0, repeatInterval = 60, endTime = 0, repeatCount = 0, cronExpr = None, timeZone = 'FIXME', scriptType = None):
   '''
+    FIXME, what about VERSION??
+    API : /jobs
+    Method : POST
+    URL structure: https://<servername>/v0/jobs
+    Input param: Following json payload
+    {
+    "name":"Sample Job",
+    "scriptId":2446,
+    "targets":[140],
+    "scriptArgs":["Test1","Test2"],
+    "type":"script",
+    "repeatCount":0,
+    "serverGroups":[],
+    "endTime":0,
+    "startTime":1339353250011,
+    "scheduleType":12,
+    "taskParameters":[],
+    "repeatInterval":0
+    }
+
   scheduleType: 0, Run Once
                 1, Recurring
                 2, Cron Schedule (Advanced)
   '''
-  userinfo.check()
   if version == -1:
     # default version
     version = script['version']
@@ -144,37 +147,37 @@ def run(name, script, targets, version = -1, arguments = [], scheduleType = 0,
   postData = 'operation=runscript&payload=' + json.dumps(payload)
   url = userinfo.domain + '/managescript?rid=' + userinfo.rid
   request = urllib2.Request(url, postData)
-  request.add_header('cookie', userinfo.cookie)
+  request.add_header('Content-Type', 'application/json')
   response = urllib2.urlopen(request)
   returnData = json.loads(response.read())
   return returnData
 
 def _isNameExists(name):
   '''
-    https://manage.scalextreme.com/library/scriptexists?rid=0&companyid=10274&user=10002&role=Admin
+FIXME
   '''
-  postData = 'scriptname=' + name
-  url = userinfo.domain + '/library/scriptexists'
-  value = {
-    'companyid':userinfo.companyid,
-    'user':userinfo.userid,
-    'role':userinfo.rolename,
-    'rid':userinfo.rid
+  path = '/scripts'
+  url = userinfo.geturl(path)
+  payload = {
+    "scriptName":name,
+    "scriptType":type,
+    "scriptDescription":base64.b64encode(description),
+    "scriptInputParams":[],
+    "tagList":[],
+    "scriptAttachments":[],
+    "scriptContent":base64.b64encode(content),
   }
-  query = urllib.urlencode(value)
-  url = url + '?' + query
+  postData = json.dumps(payload)
   request = urllib2.Request(url, postData)
-  request.add_header('cookie', userinfo.cookie)
+  request.add_header('Content-Type', 'application/json')
   response = urllib2.urlopen(request)
-  exists = False
-  if json.loads(response.read())['data'] == 'Y':
-    exists = True
-  return exists
+  returnData = json.loads(response.read())
+  return returnData
 
 def create(name, type, content, description = '', params = [], tags = []):
   '''
     FIXME, not complete
-    API : /scripts or /scripts/{id}
+    API : /scripts
     Method : POST
     URL Structure: https://<servername>/v0/scripts?access_token=<valid token generated by authentication>
     Input : Json payload like 
@@ -195,6 +198,55 @@ def create(name, type, content, description = '', params = [], tags = []):
 #    # FIXME, name exists
 #    return
   path = '/scripts'
+  url = userinfo.geturl(path)
+  payload = {
+    "scriptName":name,
+    "scriptType":type,
+    "scriptDescription":base64.b64encode(description),
+    "scriptInputParams":[],
+    "tagList":[],
+    "scriptAttachments":[],
+    "scriptContent":base64.b64encode(content),
+  }
+  postData = json.dumps(payload)
+  request = urllib2.Request(url, postData)
+  request.add_header('Content-Type', 'application/json')
+  response = urllib2.urlopen(request)
+  returnData = json.loads(response.read())
+  return returnData
+
+def delete(script):
+  '''
+    API : /scripts/1234 or /scripts?id=1234
+    Method : DELETE
+  '''
+  path = '/scripts/' + str(script['scriptId'])
+  url = userinfo.geturl(path)
+  request = urllib2.Request(url)
+  request.get_method = lambda: 'DELETE'
+  response = urllib2.urlopen(request)
+  returnData = json.loads(response.read())
+  return returnData
+
+def update(script, name = '', type = '', content = '', description = '', params = [], tags = [] ):
+  '''
+    FIXME, not complete
+    API : /scripts/1234
+    Method : POST
+    URL Structure: https://<servername>/v0/scripts?access_token=<valid token generated by authentication>
+    Input : Json payload like 
+    {
+    "scriptName":"Test script",
+    "scriptType":"bat",
+    "scriptDescription":"",
+    "scriptInputParams":[],
+    "tagList":[],
+    "scriptAttachments":[],
+    "scriptContent":"bGluZTEKbGluZTIKbGluZTMKbGluZTQKbGluZTUKZWNobyAnSGknCg=="
+    }
+  '''
+  #FIXME, no script attachments
+  path = '/scripts/' + str(script['scriptId'])
   parameters = []
   url = userinfo.geturl(path)
   payload = {
@@ -207,87 +259,8 @@ def create(name, type, content, description = '', params = [], tags = []):
     "scriptContent":base64.b64encode(content),
   }
   postData = json.dumps(payload)
-  print postData
   request = urllib2.Request(url, postData)
+  request.add_header('Content-Type', 'application/json')
   response = urllib2.urlopen(request)
   returnData = json.loads(response.read())
   return returnData
-
-def delete(script):
-  # ://manage.scalextreme.com/library?rid=a&companyid=10476&user=10473&role=Admin&operation=deletescript&scriptid=115
-  #FIXME, 
-  userinfo.check()
-
-  url = userinfo.domain + '/library'
-  value = {
-    'companyid':userinfo.companyid,
-    'user':userinfo.userid,
-    'role':userinfo.rolename,
-    'operation':'deletescript',
-    'scriptid':script['scriptId'],
-    'rid':userinfo.rid
-  }
-  query = urllib.urlencode(value)
-  url = url + '?' + query
-  request  = urllib2.Request(url, '')
-  request.add_header('cookie', userinfo.cookie)
-  response = urllib2.urlopen(request)
-  returnData = json.loads(response.read())
-  return returnData
-
-#def create(name, type, content, description = '', params = [], tags = []):
-
-def update(script, name = '', type = '', content = '', description = '', params = [], tags = [] ):
-  # ://manage.scalextreme.com/library?rid=a&companyid=10476&user=10473&role=Admin&operation=deletescript&scriptid=115
-  #FIXME, no script attachments
-  #ttps://manage.scalextreme.com/library?rid=411C2ECD-BDD0-4F61-9F37-E3718F02E084
-  #Session expired
-  userinfo.check()
-
-  url = userinfo.domain + '/library?rid=' + userinfo.rid
-  content = base64.b64encode(content)
-  description = base64.b64encode(description)
-  scriptDetail = scalex.script.getContent(script)['data']
-  if not name:
-    name = script['scriptName']
-  if not type:
-    type = scriptDetail['scriptType']
-  if not content:
-    content = scriptDetail['scriptContent'] 
-  if not description:
-    description = scriptDetail['scriptDescription'] 
-  if not params:
-    params = scriptDetail['scriptInputParams'] 
-  if not tags:
-    tags = scriptDetail['scriptTags'] 
-  value = {
-    'companyid':userinfo.companyid,
-    'operation':'updatescript',
-    'user':userinfo.userid,
-    'role':userinfo.rolename,
-    'scriptid':script['scriptId'],
-    'version':script['version'],
-    'scriptname':name,
-    'scripttype':type,
-    'scriptcontent':content,
-    'scriptdescription':description,
-    'scripttags':tags,
-    'scriptparams':params,
-    'scriptlocation':scriptDetail['scriptLocation'],
-    #
-    'inputparams':scriptDetail['inputParams'],
-    'parentCompanyId':scriptDetail['parentCompanyId'],
-    'parentScriptId':scriptDetail['parentScriptId'],
-    'purchasedFlag':scriptDetail['purchasedFlag'],
-    'parentScriptId':scriptDetail['parentScriptId'],
-    'sharedFlag':scriptDetail['sharedFlag'],
-    'viewableflag':scriptDetail['viewableFlag'],
-  }
-  request  = urllib2.Request(url, urllib.urlencode(value))
-  request.add_header('cookie', userinfo.cookie)
-  response = urllib2.urlopen(request)
-  returnData = json.loads(response.read())
-  return returnData
-
-
-

@@ -6,8 +6,9 @@ import datetime
 #
 from scalex import userinfo
 
-def getNodes():
+def getNodes(platform = '', status = ''):
   '''
+    FIXME, not add single node id 
     API : /nodes or /nodes/{id}
     Method : GET
     URL Structure: https://<servername>/v0/nodes?access_token=<valid access token>
@@ -15,19 +16,14 @@ def getNodes():
     platform (optional), valid values Windows or Liniux
     status (optional), valid values online or offline
   '''
-#  userinfo.check()
-#  
-#  url = userinfo.domain + '/scalex/acl/nodelistbyrole?rid=%s' % (userinfo.rid)
-#  value = {
-#    'companyId':userinfo.companyid,
-#    'role':userinfo.rolename,
-#    'user':userinfo.userid
-#  }
-#  postData = urllib.urlencode(value)
-#  response = urllib2.urlopen(url, postData)
-#  returnData = json.loads(response.read())
-#  return returnData
+  assert platform in ['', 'Windows', 'Linux'], 'wrong platform'
+  assert status in ['', 'online', 'offline'], 'wrong status'  
   path = '/nodes'
+  query = {}
+  if platform != '':
+    query['platform'] = platform
+  if status != '':
+    query['status'] = status
   url = userinfo.geturl(path)
   response = urllib2.urlopen(url)
   returnData = json.loads(response.read())

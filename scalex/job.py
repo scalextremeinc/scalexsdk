@@ -5,32 +5,29 @@ import json
 from scalex import userinfo
 from scalex import script
 
-def getJobs(script):
-  '''arguments: type
-    0 is myscripts
-    1 is orgscripts
-    default is 0
+def getJobs(type = 'script', object = {}):
+#, type = 'script'):
   '''
-  userinfo.check()
-  payload = {
-    'companyId': userinfo.companyid,
-    'scriptId': str(script['scriptId']),
-    'user': str(userinfo.userid),
-    'role': userinfo.rolename,
+    FIXME, currently not support template jobs
+    API : /jobs?type=<script, template etc,>&id=<id of script, id of template etc.,>
+    Method : GET
+    URL Structure: https://<servername>/v0/jobs?type=script&id=<script id>& access_token=<valid access token>
+    Input :
+    type (required), valid values are script, template, patch, update etc.,
+    id
+  '''
+#  id = str(object['scriptId'])
+  assert type in ['script', 'update', 'patch'], 'wrong type'
+  path = '/jobs'
+  query = {
+    'type': type,
   }
-  postData = 'payload=' + json.dumps(payload)
-  url = userinfo.domain + '/managejob'
-  value = {
-    'companyid':userinfo.companyid,
-    'user':userinfo.userid,
-    'role':userinfo.rolename,
-    'operation':'joblist',
-    'rid':userinfo.rid
-  }
-  query = urllib.urlencode(value)
-  url = url + '?' + query
-  request = urllib2.Request(url, postData)
-  request.add_header('cookie', userinfo.cookie)
+  if type in ['script', 'update', 'patch']:
+    assert object != {}, 'no script object'
+    #FIXME, update and patch not support
+    query['id'] = object['scriptId']
+  url = userinfo.geturl(path, query)
+  request = urllib2.Request(url)
   response = urllib2.urlopen(request)
   returnData = json.loads(response.read())
   return returnData
@@ -73,61 +70,36 @@ def getPatchJobs():
 
 def getRuns(job):
   '''
+    NOTE, no runid
+    API: /jobs/{jobid}/runinfo
+    Method: GET
+    URL structure: https://<servername>/v0/jobs/{jobid}/runinfo?access_token=<valid access token>
+    Input: runid (optional), can specify runid
+    Output:
+    [{"jobId":1814,"taskPropertyBeans":[],"status":"complete","role":"Admin","companyId":40042,"projectId":69,"runId":65,"user":"10093","runTimestamp":1339099219184}]
   '''
-  userinfo.check()
-
-  payload = {
-    'companyId': userinfo.companyid,
-    'user': str(userinfo.userid),
-    'role': userinfo.rolename,
-    'jobId': job['jobId'],
-  }
-  postData = 'payload=' + json.dumps(payload)
-  url = userinfo.domain + '/managejob'
-  value = {
-    'companyid':userinfo.companyid,
-    'user':userinfo.userid,
-    'role':userinfo.rolename,
-    'operation':'rundetail',
-    'rid':userinfo.rid,
-  }
-  query = urllib.urlencode(value)
-  url = url + '?' + query
-  request = urllib2.Request(url, postData)
-  request.add_header('cookie', userinfo.cookie)
+  path = '/jobs/%s/runinfo' % (job['jobId'])
+  url = userinfo.geturl(path)
+  request = urllib2.Request(url)
   response = urllib2.urlopen(request)
   returnData = json.loads(response.read())
   return returnData
-
+  
 def getOutputs(run):
   '''
+    API : /jobs/{jobid}/runoutput?runid=<valid runid>
+    Method : GET
+    URL structure: https://<servername>/v0/jobs/{jobid}/runoutput?runid=<validrunid>&access_token=<valid access token>
+    Input : runid(required)
   '''
-  userinfo.check()
-
-  payload = {
-  'companyId': userinfo.companyid,
-  'user': str(userinfo.userid),
-  'role': userinfo.rolename,
-  'projectRunId': run['projectRunId'],
-  'projectId': run['projectId'],
-  'jobId': run['jobId'],
+  path = '/jobs/%s/runoutput' % (str(run['jobId']))
+  query = {
+    'runid':run['runId']
   }
-  postData = 'payload=' + json.dumps(payload)
-  url = userinfo.domain + '/managejob'
-  value = {
-    'companyid':userinfo.companyid,
-    'user':userinfo.userid,
-    'role':userinfo.rolename,
-    'operation':'runoutput',
-    'rid':userinfo.rid
-  }
-  query = urllib.urlencode(value)
-  url = url + '?' + query
-  request = urllib2.Request(url, postData)
-  request.add_header('cookie', userinfo.cookie)
+  url = userinfo.geturl(path, query)
+  request = urllib2.Request(url)
   response = urllib2.urlopen(request)
-  data = json.loads(response.read())
-  returnData = data
+  returnData = json.loads(response.read())
   return returnData
 
 def update(name, script, job, targets, arguments = [], scheduleType = 0,

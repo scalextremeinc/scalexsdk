@@ -20,6 +20,7 @@ def getCompanies():
 #  returnData = json.loads(response.read())
 #  return returnData
 #  
+  assert userinfo.client_id != '' and userinfo.client_secret != '', 'you must set client_id and client_secret in userinfo.py first'
   path = '/companies'
   query = {
     'client_id':userinfo.client_id,
