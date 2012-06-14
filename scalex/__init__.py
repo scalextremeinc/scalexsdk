@@ -34,7 +34,7 @@ def auth():
   response = urllib2.urlopen(request)
   returnData = json.loads(response.read())
   userinfo.access_token = returnData['value']
-# FIXME
+# FIXME, print access_token for test only
   print userinfo.access_token
   return returnData
 

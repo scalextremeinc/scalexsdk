@@ -29,6 +29,8 @@ def getNodes(platform = '', status = ''):
   returnData = json.loads(response.read())
   return returnData
 
+#FIXME, below are not implement by REST API
+
 def isWindows(node):
   iswin = False
   if 'Windows' in str(node):

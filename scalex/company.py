@@ -9,17 +9,6 @@ def getCompanies():
   '''
     curl -k 'https://cloudmanage.scalextreme.com/v0/companies?client_id='
   '''
-#  assert userinfo.userid != '', 'you need login first'
-#  scalex.relogin()
-#  url = '%s/scalex/acl/usercompanies?rid=%s' % (userinfo.domain, userinfo.rid)
-#  value = {
-#    'userId':userinfo.userid
-#  }
-#  postData = urllib.urlencode(value)
-#  response = urllib2.urlopen(url, postData)
-#  returnData = json.loads(response.read())
-#  return returnData
-#  
   assert userinfo.client_id != '' and userinfo.client_secret != '', 'you must set client_id and client_secret in userinfo.py first'
   path = '/companies'
   query = {
