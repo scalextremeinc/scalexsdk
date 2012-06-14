@@ -76,29 +76,6 @@ def run(name, script, targets, arguments = [], type = 'script', serverGroups = [
   return scalex.job.create(name, script, targets, arguments, type, serverGroups,
                            scheduleType, startTime, repeatInterval, endTime, repeatCount)
 
-
-#def _isNameExists(name):
-#  '''
-#FIXME
-#  '''
-#  path = '/scripts'
-#  url = userinfo.geturl(path)
-#  payload = {
-#    "scriptName":name,
-#    "scriptType":type,
-#    "scriptDescription":base64.b64encode(description),
-#    "scriptInputParams":[],
-#    "tagList":[],
-#    "scriptAttachments":[],
-#    "scriptContent":base64.b64encode(content),
-#  }
-#  postData = json.dumps(payload)
-#  request = urllib2.Request(url, postData)
-#  request.add_header('Content-Type', 'application/json')
-#  response = urllib2.urlopen(request)
-#  returnData = json.loads(response.read())
-#  return returnData
-
 def create(name, type, content, description = '', params = [], tags = []):
   '''
     FIXME, not complete
@@ -142,7 +119,7 @@ def create(name, type, content, description = '', params = [], tags = []):
 
 def delete(script = '', type = ''):
   '''
-    API : /scripts/1234 or /scripts?id=1234 or
+    API : /scripts/1234
     Method : DELETE
     /scripts?type=user      Delete user scripts
     /scripts?type=org       Delete org scripts
@@ -151,7 +128,7 @@ def delete(script = '', type = ''):
   path = '/scripts'
   query = {}
   if script != '':
-    path += str(script['scriptId'])
+    path = path + '/' + str(script['scriptId'])
   else:
     assert type in ['user', 'org', 'purchase'], 'wrong script type'
     query['type'] = type
@@ -185,6 +162,7 @@ def update(script, name = '', type = '', content = '', description = '', params 
   url = userinfo.geturl(path)
   payload = {
     "scriptName":name,
+    "version":script['version'],
     "scriptType":type,
     "scriptDescription":base64.b64encode(description),
     "scriptInputParams":[],

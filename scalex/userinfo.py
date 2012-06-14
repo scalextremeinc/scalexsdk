@@ -2,8 +2,8 @@ import uuid
 import scalex
 
 #for Oauth
-client_id = 'Set Your client_id Here'
-client_secret = 'Set Your client_secret Here'
+client_id = ''
+client_secret = ''
 access_token = ''
 
 domain = 'https://cloudmanage.scalextreme.com'

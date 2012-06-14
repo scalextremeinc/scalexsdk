@@ -69,7 +69,7 @@ class scalex_cmd(cmd.Cmd):
     return
   
   def help_login(self):
-    print "login username password"
+    print "login oauth_appkey oauth_appsecret"
 
   def help_job(self):
     print "job cancel INDEX"
@@ -115,7 +115,6 @@ class scalex_cmd(cmd.Cmd):
     print 'startTime 0 means run now, or schedule time format 2012-06-02-12:12'    
     print 'example: apply update 0,1 0,1,2,3 job_name 2012-01-01-01:01'
     
-  
   def help_exit(self):
     print "exit --- exit this program"
   
@@ -124,15 +123,17 @@ class scalex_cmd(cmd.Cmd):
     if len(l)!=2:
       self.help_login();
       return 
-    username = l[0].strip();
-    password = l[1].strip();
+    appkey = l[0].strip();
+    appsecret = l[1].strip();
     sx = None;
     try :
-      ret = scalex.login( username , password )
-      if ret['result'] == 'SUCCESS':
-        print "Login Successfully"
-      else :
-        print "Login Failed: " + ret['data']
+#      scalex.login( username , password )
+      scalex.setCliendId(appkey)
+      scalex.setClientSecret(appsecret)
+#      if ret['result'] == 'SUCCESS':
+#        print "Login Successfully"
+#      else :
+#        print "Login Failed: " + ret
     except Exception,e :
       print "Login Failed:"
       print e
@@ -167,22 +168,22 @@ class scalex_cmd(cmd.Cmd):
           
       param[0] = param[0].lower()
       if ( param[0] == "companies" ):
-        coms = scalex.company.getCompanies()['data'];
+        coms = scalex.company.getCompanies();
         self.companies = coms
         for c in coms:
           print 'index: [%d] %s companyId:%d' % (coms.index(c), c['name'], c['companyId'])
       elif ( param[0] == "roles" ):
-        roles = scalex.role.getRoles()['data'];
+        roles = scalex.role.getRoles();
         self.roles = roles
         for i in roles:
           print 'index: [%d] %s' % (roles.index(i), i)
       elif ( param[0] == "myscripts" ):
-        scripts = scalex.script.getScripts()['data'];
+        scripts = scalex.script.getScripts(type='user');
         self.scripts = scripts
         for i in scripts:
           print 'index: [%d] name: %s' % (scripts.index(i), i['scriptName'])
       elif ( param[0] == "orgscripts" ):
-        scripts = scalex.script.getScripts(1)['data'];
+        scripts = scalex.script.getScripts(type='org');
         self.scripts = scripts
         for i in scripts:
           print 'index: [%d] name: %s' % (scripts.index(i), i['scriptName'])
@@ -192,7 +193,7 @@ class scalex_cmd(cmd.Cmd):
           self.help_get() 
         i = int(param[1])
         script = self.scripts[i]
-        jobs = scalex.job.getJobs(script)['data'];
+        jobs = scalex.job.getJobs(object=script);
         self.jobs = jobs
         for i in jobs:
           print 'index: [%d] name: %s' % (jobs.index(i), i['jobName'])
@@ -202,16 +203,16 @@ class scalex_cmd(cmd.Cmd):
           self.help_get()
         i = int(param[1])
         job = self.jobs[i]
-        self.runs = scalex.job.getRuns(job)['data'];
+        self.runs = scalex.job.getRuns(job);
         for i in self.runs:
-          print 'index: [%d] status: %s task name: %s' % (self.runs.index(i), i['status'], i[u'stepRunLogBeans'][0]['taskName'])
+          print 'index: [%d] status: %s task name: %s' % (self.runs.index(i), i['status'], job['jobName'])
       
       elif param[0] == 'arguments':
         if len(param) < 2:
           self.help_get()
         index = int(param[1])
         script = self.scripts[index]
-        content = scalex.script.getContent(script)['data']
+        content = scalex.script.getContent(script)
         print 'script: %s' % (content['scriptName'])
         for arg in content['scriptInputParams']:
           print 'argu: %s\ttype: %s\tdefault value: %s' % (arg['parameterKey'],arg['parameterDataType'],arg['parameterDefaultValue'])
@@ -221,9 +222,8 @@ class scalex_cmd(cmd.Cmd):
           self.help_get()
         i = int(param[1])
         run = self.runs[i]
-        data  = scalex.job.getOutputs(run)['data']
+        data  = scalex.job.getOutputs(run)
         outputs = []
-
         for index,item in enumerate(data):
             o1 = base64.b64decode(item['output'])
             truncated = 'N'
@@ -235,8 +235,9 @@ class scalex_cmd(cmd.Cmd):
                    'output': o1[0:500],
                    'truncated' :  truncated 
             })
-
-        print 'jobname:', run['stepRunLogBeans'][0]['taskName']
+#{u'status': u'running', u'stepId': 4315, u'projectRunId': 8046, u'stepTag': u'metaphas-1339649867010', u'companyId': 40034, u'stepTagLocation': u'C:/Program Files (x86)/ScaleXtreme/mitos/proc', u'stepType': u'step', u'stepExitCode': u'0', u'stepRunId': 27935, u'role': u'Admin', u'user': u'7r@gmail.com', u'stepOutputType': 1, u'taskPropertyBeans': [], u'output': u'SW4gcHJvZ3Jlc3M=', u'agentId': 278}
+# NOTE, output format has changed, as shown above, so I have to comment this line
+#        print 'jobname:', run['stepRunLogBeans'][0]['taskName']
         print 'run status:', run['status']
         from time import ctime
         print 'run time: ', ctime(int(run['runTimestamp'])/1000)
@@ -252,14 +253,14 @@ class scalex_cmd(cmd.Cmd):
                 print '-----------------'
       
       elif ( param[0] == "nodes" ):
-        self.nodes = scalex.node.getNodes()['data']
+        self.nodes = scalex.node.getNodes()
         for n in self.nodes:
           print 'index:[%d] nodeName: %s' % (self.nodes.index(n), n['nodeName'])
       elif ( param[0] == "node" ):
           if len(param) != 2 :
               self.help_get()
               return
-          self.nodes = scalex.node.getNodes()['data']
+          self.nodes = scalex.node.getNodes()
           index = int(param[1])
           if len(self.nodes) > index:
               node = self.nodes[index]
@@ -276,7 +277,7 @@ class scalex_cmd(cmd.Cmd):
           print 'this is not a windows node'
           return
         self.currentWindows = node
-        patches = scalex.node.getPatches(node)['data']
+        patches = scalex.node.getPatches(node)
         if patches == []:
           print 'node is up to date'
           return
@@ -293,7 +294,7 @@ class scalex_cmd(cmd.Cmd):
           print 'this is not a unix node'
           return
         self.currentUnix = node
-        updates = scalex.node.getUpdates(node)['data']
+        updates = scalex.node.getUpdates(node)
         if updates == []:
           print 'node is up to date'
           return
@@ -317,7 +318,7 @@ class scalex_cmd(cmd.Cmd):
         else:
           for i in param[1].split(','):
             patches.append(self.updates[int(i)])
-        others = scalex.node.getOtherAgentsWithPatch(node, patches)['data']
+        others = scalex.node.getOtherAgentsWithPatch(node, patches)
         for agent in others:
           for n in self.nodes:
             if n['agentId'] == agent:
@@ -336,7 +337,7 @@ class scalex_cmd(cmd.Cmd):
         else:
           for i in param[1].split(','):
             patches.append(self.updates[int(i)])
-        others = scalex.node.getOtherAgentsWithPatch(node, patches)['data']
+        others = scalex.node.getOtherAgentsWithPatch(node, patches)
         for agent in others:
           for n in self.nodes:
             if n['agentId'] == agent:
@@ -344,22 +345,22 @@ class scalex_cmd(cmd.Cmd):
         print 'index: [%d] nodeName: %s' % (self.nodes.index(node), node['nodeName'])
           
       elif param[0] == 'updatejobs':
-        self.updateJobs = scalex.job.getUpdateJobs()['data']
+        self.updateJobs = scalex.job.getUpdateJobs()
         for i in self.updateJobs:
           print 'index:[%d] jobname: %s' % (self.updateJobs.index(i), i['jobName'])
       elif param[0] == 'patchjobs':
-        self.patchJobs = scalex.job.getPatchJobs()['data']
+        self.patchJobs = scalex.job.getPatchJobs()
         for i in self.updateJobs:
           print 'index:[%d] jobname: %s' % (self.updateJobs.index(i), i['jobName'])
       elif param[0] == 'audits':
         node = self.nodes[int(param[1])]
         overview = scalex.node.getOverviewOfAudits(node)
-        if overview != {} and overview['data'] != {}:
-          overview = overview['data']
+        if overview != {} and overview != {}:
+          overview = overview
           print 'You have %d warnings and %d failures' % (overview['auditWarningCount'], overview['auditFailCount'])
           import time
           print 'Last check done at: ' + time.ctime(overview['auditWarningCount']/1000)
-          self.audits = scalex.node.getAudits(node)['data']
+          self.audits = scalex.node.getAudits(node)
           for audit in self.audits:
             print 'status: %s\t message: %s' % (audit['auditLevel'], audit['auditDesc'])
       else:
@@ -397,7 +398,7 @@ class scalex_cmd(cmd.Cmd):
         #        #schedule type should be one of 0 1 2
         #        startTime = param[6]
         result = scalex.script.run(name, script, targets, arguments = arguments, startTime = startTime)
-        print result['result']
+        print result
     except Exception,e:
       print "Unknown Error:" , e
   

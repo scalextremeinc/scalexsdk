@@ -14,7 +14,7 @@ import job
 import script
 import userinfo
 
-__version__ = '0.5'
+__version__ = '0.9'
 
 #auth after set role
 def auth():
@@ -34,9 +34,15 @@ def auth():
   response = urllib2.urlopen(request)
   returnData = json.loads(response.read())
   userinfo.access_token = returnData['value']
-# FIXME, print access_token for test only
-  print userinfo.access_token
   return returnData
+
+def setCliendId(id):
+  assert id != '', 'empty client id'
+  userinfo.client_id = id
+
+def setClientSecret(secret):
+  assert secret != '', 'empty client secret'
+  userinfo.client_secret = secret
 
 #function
 #def login(username, password):

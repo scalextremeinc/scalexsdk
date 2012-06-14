@@ -6,7 +6,6 @@ from scalex import userinfo
 from scalex import script
 
 def getJobs(type = 'script', object = {}):
-#, type = 'script'):
   '''
     FIXME, currently only support script jobs.
     API : /jobs?type=<script, template etc,>&id=<id of script, id of template etc.,>
