@@ -1,9 +1,9 @@
 import scalex
 
-client_id = 'y5uvy4ySubypajanuRyzadu4yXezuqyt'
-client_secret = 'eZymyXuPu4eJapa9aguZuReByJuWy2yq'
-company_id = '40034'
-rolename = 'Admin'
+client_id = ''
+client_secret = ''
+company_id = ''
+rolename = ''
 
 
 def setup():
