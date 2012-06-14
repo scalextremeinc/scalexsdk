@@ -65,6 +65,8 @@ def job():
   scripts = script_getScripts()
   s = scripts[0]
   job = job_getJobs(s)
+
+#def job_create
   
 def setup():
   coms = scalex.company.getCompanies()

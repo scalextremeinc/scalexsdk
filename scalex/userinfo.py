@@ -2,12 +2,12 @@ import uuid
 import scalex
 
 #for Oauth
-client_id = 'y5uvy4ySubypajanuRyzadu4yXezuqyt'
-client_secret = 'eZymyXuPu4eJapa9aguZuReByJuWy2yq'
+client_id = 'Set Your client_id Here'
+client_secret = 'Set Your client_secret Here'
 access_token = ''
 
 domain = 'https://cloudmanage.scalextreme.com'
-baseurl = 'https://cloudmanage.scalextreme.com/v0'
+baseurl = domain + '/v0'
 
 rid = str(uuid.uuid4())
 cookie = ''
