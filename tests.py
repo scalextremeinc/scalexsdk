@@ -1,5 +1,10 @@
 import scalex
 
+####################################################################################
+# These are dummy ids - please change this if you plan to use this to run tests     
+# This test picks up the first aviaalble company and create a script, runs it on
+# the first available machine in that company / role and deletes the script
+###################################################################################
 client_id = 'pa2yJyBamaVyLa7y6ujuZere9aRyMeDy'
 client_secret = '4ymypeZy5yDyseZemuraJuqyXuZaNyDe'
 rolename = 'Admin'
@@ -60,7 +65,7 @@ def test():
   # get ouputs for run
   scalex.job.getOutputs(runs[0])
   # delete this script
-  scalex.script.delete(script)
+  #scalex.script.delete(script)
   print 'all tests passed'
 
 if __name__ == '__main__':
