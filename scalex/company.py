@@ -13,7 +13,6 @@ def getCompanies():
   path = '/companies'
   query = {
     'client_id':userinfo.client_id,
-    'company_id':userinfo.companyid,
   }
   url = '%s%s?%s' % (userinfo.baseurl, path, urllib.urlencode(query))
   response = urllib2.urlopen(url)

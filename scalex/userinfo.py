@@ -1,4 +1,3 @@
-import uuid
 import scalex
 
 #for Oauth
@@ -6,14 +5,9 @@ client_id = ''
 client_secret = ''
 access_token = ''
 
-domain = 'https://cloudmanage.scalextreme.com'
+domain = 'https://manage.scalextreme.com'
 baseurl = domain + '/v0'
 
-rid = str(uuid.uuid4())
-cookie = ''
-username = ''
-password = ''
-userid = ''
 companyid = ''
 rolename = ''
 

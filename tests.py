@@ -1,9 +1,8 @@
 import scalex
 
-client_id = ''
-client_secret = ''
-company_id = ''
-rolename = ''
+client_id = 'pa2yJyBamaV7y6ujuZere9aRyMeDy'
+client_secret = '4ymypeZDyseZemuraJuqyXuZaNyDe'
+rolename = 'Admin'
 
 
 def setup():
@@ -13,8 +12,10 @@ def setup():
   scalex.setCliendId(client_id)
   scalex.setClientSecret(client_secret)
   coms = scalex.company.getCompanies()
-  scalex.company.set({'companyId':company_id})
+  # login with first company
+  scalex.company.set(coms[0])
   roles = scalex.role.getRoles()
+  # set Admin for role
   scalex.role.set(rolename)
 
 def test():
@@ -39,11 +40,13 @@ def test():
   scalex.script.getVersions(script)
   # run this script, same as scalex.job.create()
   scalex.script.run('jobname-test', script, nodes[0])
-  # sleep for 10 seconds, wait for job running
-  import time
-  time.sleep(10)
   # get jobs of scripts
   jobs = scalex.job.getJobs(object = script)
+  import time
+  # sleep until job running
+  while len(jobs) == 0:
+    time.sleep(5)
+    jobs = scalex.job.getJobs(object = script)
   # get first job
   assert len(jobs) != 0, 'get no jobs'
   job = jobs[0]
@@ -52,6 +55,9 @@ def test():
   scalex.job.update(job, 'new-job-name' + str(uuid.uuid4()), script, nodes[0])
   # get runs for job
   runs = scalex.job.getRuns(job)
+  while len(runs) == 0:
+    time.sleep(5)
+    runs = scalex.job.getRuns(job)
   # get ouputs for run
   scalex.job.getOutputs(runs[0])
   # delete this script
