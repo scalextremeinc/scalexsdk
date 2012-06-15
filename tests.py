@@ -1,13 +1,12 @@
 import scalex
 
-client_id = 'pa2yJyBamaV7y6ujuZere9aRyMeDy'
-client_secret = '4ymypeZDyseZemuraJuqyXuZaNyDe'
+client_id = 'pa2yJyBamaVyLa7y6ujuZere9aRyMeDy'
+client_secret = '4ymypeZy5yDyseZemuraJuqyXuZaNyDe'
 rolename = 'Admin'
 
 
 def setup():
   assert client_id != '' and client_secret != '', 'must SET Oauth key/secret'
-  assert company_id != '' and rolename != ''
   
   scalex.setCliendId(client_id)
   scalex.setClientSecret(client_secret)
@@ -65,6 +64,10 @@ def test():
   print 'all tests passed'
 
 if __name__ == '__main__':
+  import sys
+  if len(sys.argv) == 3:
+    client_id = sys.argv[1]
+    client_secret = sys.argv[2]
   setup()
   test()
 
