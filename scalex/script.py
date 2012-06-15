@@ -144,7 +144,11 @@ def run(name, script, targets, version = -1, arguments = [], scheduleType = 0,
     targets.append(t)
   agents = []
   for n in targets:
-    agents.append(n['agentId'])
+    # user can call this function with GROUP_node
+    try:
+      agents.append(n['agentId'])
+    except:
+      agents = targets
   payload = {
     "companyId": userinfo.companyid,
     "user": userinfo.userid,
