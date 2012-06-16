@@ -108,9 +108,10 @@ def getOutputs(run):
   'companyId': userinfo.companyid,
   'user': str(userinfo.userid),
   'role': userinfo.rolename,
-  'projectRunId': run['projectRunId'],
+  'jobRunOutputBeans': run['jobRunOutputBeans'],
   'projectId': run['projectId'],
   'jobId': run['jobId'],
+  'runId': run['runId'],
   }
   postData = 'payload=' + json.dumps(payload)
   url = userinfo.domain + '/managejob'
