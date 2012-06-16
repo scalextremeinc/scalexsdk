@@ -108,9 +108,10 @@ def getOutputs(run):
   'companyId': userinfo.companyid,
   'user': str(userinfo.userid),
   'role': userinfo.rolename,
-  'projectRunId': run['projectRunId'],
+  'jobRunOutputBeans': run['jobRunOutputBeans'],
   'projectId': run['projectId'],
   'jobId': run['jobId'],
+  'runId': run['runId'],
   }
   postData = 'payload=' + json.dumps(payload)
   url = userinfo.domain + '/managejob'
@@ -121,6 +122,7 @@ def getOutputs(run):
     'operation':'runoutput',
     'rid':userinfo.rid
   }
+  print postData
   query = urllib.urlencode(value)
   url = url + '?' + query
   request = urllib2.Request(url, postData)
