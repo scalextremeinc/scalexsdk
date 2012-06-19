@@ -1,5 +1,5 @@
 1. First you must setup client_id and client_secret for Oauth
-    scalex.setCliendId(client_id)
+    scalex.setClientId(client_id)
     scalex.setClientSecret(client_secret)
 
 2. Then, list all companies and select one
