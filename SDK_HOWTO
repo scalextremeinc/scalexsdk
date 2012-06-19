@@ -12,7 +12,7 @@
     # set Admin for role
     scalex.role.set(roles[0])
 
-4. Now you can use API
+4. Then make all the API calls
     # get all nodes
     nodes = scalex.node.getNodes()
     # get scripts
