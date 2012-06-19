@@ -13,7 +13,7 @@ rolename = 'Admin'
 def setup():
   assert client_id != '' and client_secret != '', 'must SET Oauth key/secret'
   
-  scalex.setCliendId(client_id)
+  scalex.setClientId(client_id)
   scalex.setClientSecret(client_secret)
   coms = scalex.company.getCompanies()
   # login with first company
