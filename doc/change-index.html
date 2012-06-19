@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Change Log</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="scalex-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th bgcolor="#70b0f0" class="navbar-select"
+          >&nbsp;&nbsp;&nbsp;Indices&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">&nbsp;</td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="change-index.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<center><b>[
+ <a href="identifier-index.html">Identifiers</a>
+| <a href="todo-index.html">To Do</a>
+| <a href="change-index.html">Changes</a>
+]</b></center><br />
+<h1 class="epydoc"><a name="change">Change Log</a></h1>
+<br />
+<div>
+<table width="100%" class="metadata-index" bgcolor="#e0e0e0"><tr><td class="metadata-index"><b>Changes in <a href="scalex-module.html">scalex</a></b>    <ul class="nomargin">
+      <li><ul>
+      <li>
+        Delete login()
+      </li>
+      <li>
+        Add setClientId()
+      </li>
+      <li>
+        Add setClientSecret()
+      </li>
+      <li>
+        API return data directly, old style API return data like 
+        scalex.role.getRoles()['data'], with new API you just need 
+        scalex.role.getRoles()
+      </li>
+      <li>
+        API error handling changed, all errors return as http status codes 
+        and <b>will raise urllib2.HTTPError</b>. Below list explains each 
+        error
+        <ul>
+          <li>
+            400  Bad input parameters or error messages. To fix this issue,
+            API consumer need to pay attention to input parameters
+          </li>
+          <li>
+            401  Bad credentials or expired token. To fix this need to 
+            authenticate with valid credentials
+          </li>
+          <li>
+            500  Internal server error. This should happen only if we are 
+            not handling errors on server side.
+          </li>
+        </ul>
+      </li>
+    </ul></li>
+    </ul>
+</table></div>
+<div>
+<table width="100%" class="metadata-index" bgcolor="#e0e0e0"><tr><td class="metadata-index"><b>Changes in <a href="scalex.job-module.html">scalex.job</a></b>    <ul class="nomargin">
+      <li><ul>
+      <li>
+        Delete update/patch relative API.
+      </li>
+      <li>
+        Delete cancel()
+      </li>
+    </ul></li>
+    </ul>
+</table></div>
+<div>
+<table width="100%" class="metadata-index" bgcolor="#e0e0e0"><tr><td class="metadata-index"><b>Changes in <a href="scalex.job-module.html#getJobs">scalex.job.getJobs</a></b>    <ul class="nomargin">
+      <li><ul>
+      <li>
+        API usage changed.
+      </li>
+      <li>
+        Add parameter <b>type</b>
+      </li>
+      <li>
+        Add parameter <b>object</b>
+      </li>
+    </ul></li>
+    </ul>
+</table></div>
+<div>
+<table width="100%" class="metadata-index" bgcolor="#e0e0e0"><tr><td class="metadata-index"><b>Changes in <a href="scalex.job-module.html#getOutputs">scalex.job.getOutputs</a></b>    <ul class="nomargin">
+      <li><ul>
+      <li>
+        Not changed
+      </li>
+    </ul></li>
+    </ul>
+</table></div>
+<div>
+<table width="100%" class="metadata-index" bgcolor="#e0e0e0"><tr><td class="metadata-index"><b>Changes in <a href="scalex.job-module.html#getRuns">scalex.job.getRuns</a></b>    <ul class="nomargin">
+      <li><ul>
+      <li>
+        Not changed
+      </li>
+    </ul></li>
+    </ul>
+</table></div>
+<div>
+<table width="100%" class="metadata-index" bgcolor="#e0e0e0"><tr><td class="metadata-index"><b>Changes in <a href="scalex.job-module.html#update">scalex.job.update</a></b>    <ul class="nomargin">
+      <li><ul>
+      <li>
+        Delete Cron Expression support
+      </li>
+    </ul></li>
+    </ul>
+</table></div>
+<div>
+<table width="100%" class="metadata-index" bgcolor="#e0e0e0"><tr><td class="metadata-index"><b>Changes in <a href="scalex.node-module.html">scalex.node</a></b>    <ul class="nomargin">
+      <li><ul>
+      <li>
+        Old API currently not support, only getNodes() is available
+      </li>
+    </ul></li>
+    </ul>
+</table></div>
+<div>
+<table width="100%" class="metadata-index" bgcolor="#e0e0e0"><tr><td class="metadata-index"><b>Changes in <a href="scalex.node-module.html#getNodes">scalex.node.getNodes</a></b>    <ul class="nomargin">
+      <li><ul>
+      <li>
+        Add parameter platform and status
+      </li>
+    </ul></li>
+    </ul>
+</table></div>
+<div>
+<table width="100%" class="metadata-index" bgcolor="#e0e0e0"><tr><td class="metadata-index"><b>Changes in <a href="scalex.script-module.html#create">scalex.script.create</a></b>    <ul class="nomargin">
+      <li><ul>
+      <li>
+        Not changed
+      </li>
+    </ul></li>
+    </ul>
+</table></div>
+<div>
+<table width="100%" class="metadata-index" bgcolor="#e0e0e0"><tr><td class="metadata-index"><b>Changes in <a href="scalex.script-module.html#delete">scalex.script.delete</a></b>    <ul class="nomargin">
+      <li><ul>
+      <li>
+        Add parameter <b>type</b>, you can delete a group of scripts now.
+      </li>
+    </ul></li>
+    </ul>
+</table></div>
+<div>
+<table width="100%" class="metadata-index" bgcolor="#e0e0e0"><tr><td class="metadata-index"><b>Changes in <a href="scalex.script-module.html#getContent">scalex.script.getContent</a></b>    <ul class="nomargin">
+      <li><ul>
+      <li>
+        Not changed
+      </li>
+    </ul></li>
+    </ul>
+</table></div>
+<div>
+<table width="100%" class="metadata-index" bgcolor="#e0e0e0"><tr><td class="metadata-index"><b>Changes in <a href="scalex.script-module.html#getScripts">scalex.script.getScripts</a></b>    <ul class="nomargin">
+      <li><ul>
+      <li>
+        Parameter type now changed. Used to be 0 or 1, now it can be one of
+        <b>user</b>, <b>org</b> and <b>purchase</b>
+      </li>
+    </ul></li>
+    </ul>
+</table></div>
+<div>
+<table width="100%" class="metadata-index" bgcolor="#e0e0e0"><tr><td class="metadata-index"><b>Changes in <a href="scalex.script-module.html#getVersions">scalex.script.getVersions</a></b>    <ul class="nomargin">
+      <li><ul>
+      <li>
+        Not changed
+      </li>
+    </ul></li>
+    </ul>
+</table></div>
+<div>
+<table width="100%" class="metadata-index" bgcolor="#e0e0e0"><tr><td class="metadata-index"><b>Changes in <a href="scalex.script-module.html#run">scalex.script.run</a></b>    <ul class="nomargin">
+      <li><ul>
+      <li>
+        Delete Cron Expression support
+      </li>
+    </ul></li>
+    </ul>
+</table></div>
+<div>
+<table width="100%" class="metadata-index" bgcolor="#e0e0e0"><tr><td class="metadata-index"><b>Changes in <a href="scalex.script-module.html#update">scalex.script.update</a></b>    <ul class="nomargin">
+      <li><ul>
+      <li>
+        Not changed
+      </li>
+    </ul></li>
+    </ul>
+</table></div>
+<br /><!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="scalex-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th bgcolor="#70b0f0" class="navbar-select"
+          >&nbsp;&nbsp;&nbsp;Indices&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Tue Jun 19 19:57:48 2012
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>
