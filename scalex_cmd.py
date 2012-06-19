@@ -128,7 +128,7 @@ class scalex_cmd(cmd.Cmd):
     sx = None;
     try :
 #      scalex.login( username , password )
-      scalex.setCliendId(appkey)
+      scalex.setClientId(appkey)
       scalex.setClientSecret(appsecret)
 #      if ret['result'] == 'SUCCESS':
 #        print "Login Successfully"
