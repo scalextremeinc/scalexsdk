@@ -1,5 +1,18 @@
 '''
   scalextreme.com python sdk
+  
+  @undocumented: userinfo
+  @undocumented: __package__
+  
+  @change:
+    - Delete login()
+    - Add setClientId()
+    - Add setClientSecret()
+    - API return data directly, old style API return data like scalex.role.getRoles()['data'], with new API you just need scalex.role.getRoles()
+    - API error handling changed, all errors return as http status codes and B{will raise urllib2.HTTPError}. Below list explains each error  
+      - 400  Bad input parameters or error messages. To fix this issue, API consumer need to pay attention to input parameters
+      - 401  Bad credentials or expired token. To fix this need to authenticate with valid credentials
+      - 500  Internal server error. This should happen only if we are not handling errors on server side.
 '''
 
 import hashlib
@@ -14,10 +27,35 @@ import job
 import script
 import userinfo
 
-__version__ = '0.9'
+__version__ = '0.6'
 
-#auth after set role
-def auth():
+def setClientId(id):
+  '''
+    Set client_id for Oauth
+    
+    @type   id: string
+    @param  id: client_id for Oauth
+    
+    @return: None
+  '''
+  assert id != '', 'empty client id'
+  userinfo.client_id = id
+
+def setClientSecret(secret):
+  '''
+    Set client_secret for Oauth
+    
+    @type   secret: string
+    @param  secret: client_secret for Oauth
+    
+    @return: None
+  '''
+ 
+  assert secret != '', 'empty client secret'
+  userinfo.client_secret = secret
+
+#auth after set role, automatically
+def _auth():
   assert userinfo.companyid != '' and userinfo.rolename != '', 'no companyid or rolename'
   
   path = '/oauth/token'
@@ -35,14 +73,6 @@ def auth():
   returnData = json.loads(response.read())
   userinfo.access_token = returnData['value']
   return returnData
-
-def setCliendId(id):
-  assert id != '', 'empty client id'
-  userinfo.client_id = id
-
-def setClientSecret(secret):
-  assert secret != '', 'empty client secret'
-  userinfo.client_secret = secret
 
 #function
 #def login(username, password):

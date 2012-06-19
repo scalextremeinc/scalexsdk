@@ -1,3 +1,6 @@
+'''
+  @undocumented: __package__
+'''
 import urllib
 import urllib2
 import json
@@ -7,6 +10,14 @@ from scalex import userinfo
 import scalex
 
 def getRoles():
+  '''
+    Get list of roles
+
+    @requires: Set company first
+    
+    @rtype: list
+    @return: list of roles
+  '''
   assert userinfo.companyid != '', 'you need set company first'
 
   path = '/roles'
@@ -19,10 +30,19 @@ def getRoles():
   returnData = json.loads(response.read())
   return returnData
 
-def set(rolename):
-  assert rolename != '', 'wrong rolename'
-  userinfo.rolename = rolename
+def set(role):
+  '''
+    Set role
+    
+    @type   role: string
+    @param  role: role returned by getRoles()
+    
+    @return: None
+  '''
+
+  assert role != '', 'wrong rolename'
+  userinfo.rolename = role
 #  get access token after set role
-  scalex.auth()
+  scalex._auth()
 
 
