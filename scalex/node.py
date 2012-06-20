@@ -60,8 +60,17 @@ def getNodesOfGroup(group):
   request.add_header('cookie', userinfo.cookie)
   response = urllib2.urlopen(request)
   returnData = json.loads(response.read())
+  if returnData['result'] == 'SUCCESS':
+    returnData['data'].sort()
+    # this is agentId of node, we convert it
+    nodes = getNodes()['data']
+    agents = []
+    for agent in returnData['data']:
+      for n in nodes:
+        if agent == n['agentId']:
+          agents.append(n)
+    returnData['data'] = agents
   return returnData
-  
 
 def isWindows(node):
   iswin = False
