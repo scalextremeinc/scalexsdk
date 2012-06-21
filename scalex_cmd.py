@@ -79,7 +79,8 @@ class scalex_cmd(cmd.Cmd):
     print "get companies => get companies"
     print "get roles => get roles"
     print "get nodes  => get nodes"
-    print "get nodegroups  => get groups of node"
+    print "get servergroups  => get groups of server"
+    print 'get nodesofservergroup INDEX => get nodes of a server group'
     print "get node INDEX => get node info"
     print "get orgscripts => get org scripts"
     print "get myscripts => get my scripts"
@@ -190,12 +191,16 @@ class scalex_cmd(cmd.Cmd):
         self.scripts = scripts
         for i in scripts:
           print 'index: [%d] name: %s' % (scripts.index(i), i['scriptName'])
-      elif param[0] == 'nodegroups':
+      elif param[0] == 'servergroups':
         groups = scalex.node.getGroups()['data']
         self.groups = groups
         for i in groups:
           print 'index: [%d] name: %s' % (groups.index(i), i['groupName'])
-            
+      elif param[0] == 'nodesofservergroup':
+        group = self.groups[int(param[1])]
+        nodes = scalex.node.getNodesOfGroup(group)['data']
+        for i in nodes:
+          print 'Node Name: %s' % (i['nodeName'])
       elif ( param[0] == "jobs" ):
         if len(param) < 2:
           self.help_get() 
