@@ -69,7 +69,7 @@ class scalex_cmd(cmd.Cmd):
     return
   
   def help_login(self):
-    print "login oauth_appkey oauth_appsecret"
+    print "login client_id client_secret"
 
   def help_job(self):
     print "job cancel INDEX"
