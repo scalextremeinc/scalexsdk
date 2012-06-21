@@ -20,6 +20,58 @@ def getNodes():
   returnData = json.loads(response.read())
   return returnData
 
+def getGroups():
+  '''
+  https://manage.scalextreme.com/group/getAllGroups?rid=&organizationId=10361&userId=10002&role=Admin
+  '''
+  userinfo.check()
+  
+  url = userinfo.domain + '/group/getAllGroups'
+  value = {
+    'rid':userinfo.rid,
+    'organizationId':userinfo.companyid,
+    'role':userinfo.rolename,
+    'userId':userinfo.userid
+  }
+  url = url + '?' + urllib.urlencode(value)
+  request = urllib2.Request(url, '')
+  request.add_header('cookie', userinfo.cookie)
+  response = urllib2.urlopen(request)
+  returnData = json.loads(response.read())
+  return returnData
+
+def getNodesOfGroup(group):
+  '''
+    https://manage.scalextreme.com/group/getallleafnodes?rid=&organizationId=10361&userId=10002&role=Admin
+    POST groupId=1
+  '''
+  userinfo.check()
+  
+  url = userinfo.domain + '/group/getallleafnodes'
+  value = {
+    'rid':userinfo.rid,
+    'organizationId':userinfo.companyid,
+    'role':userinfo.rolename,
+    'userId':userinfo.userid
+  }
+  url = url + '?' + urllib.urlencode(value)
+  postData = urllib.urlencode({'groupId':group['groupId']})
+  request = urllib2.Request(url, postData)
+  request.add_header('cookie', userinfo.cookie)
+  response = urllib2.urlopen(request)
+  returnData = json.loads(response.read())
+  if returnData['result'] == 'SUCCESS':
+    returnData['data'].sort()
+    # this is agentId of node, we convert it
+    nodes = getNodes()['data']
+    agents = []
+    for agent in returnData['data']:
+      for n in nodes:
+        if agent == n['agentId']:
+          agents.append(n)
+    returnData['data'] = agents
+  return returnData
+
 def isWindows(node):
   iswin = False
   if 'Windows' in str(node):

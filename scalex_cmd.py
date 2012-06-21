@@ -27,6 +27,7 @@ class scalex_cmd(cmd.Cmd):
   patchJobs = []
   updateJobs = []
   audits = []
+  groups = []
   
   currentWindows = ''
   currentUnix = ''
@@ -78,6 +79,8 @@ class scalex_cmd(cmd.Cmd):
     print "get companies => get companies"
     print "get roles => get roles"
     print "get nodes  => get nodes"
+    print "get servergroups  => get groups of server"
+    print 'get nodesofservergroup INDEX => get nodes of a server group'
     print "get node INDEX => get node info"
     print "get orgscripts => get org scripts"
     print "get myscripts => get my scripts"
@@ -99,10 +102,12 @@ class scalex_cmd(cmd.Cmd):
   def help_script(self):
     print 'script run job_name script_INDEX node_INDEX,node_INDEX startTime=2012-09-02-12:12 parameters=PARAM1,PARAM2'
     print 'nodes are comma separated example: 1,2'
+    print 'or you can run script using GROUP'
+    print 'script grouprun job_name script_INDEX GROUP_INDEX startTime=2012-09-02-12:12 parameters=PARAM1,PARAM2'
     print 'for instance: run script 0 at node 0,1,2 at 2012-08-01-00:00, two parameters, install and -v'
     print '>>script run test_run 0 0,1,2 startTime=2012-08-01-00:00 parameters=install,-v'
     print 'run script 0 at node 0 now, two parameters, foo bar and -v'
-    print '>>script run test_run_now 0 0 parameters=foo bar,-v'
+    print '>>script grouprun test_run_now 0 0 parameters=foo bar,-v'
     #print 'startTime 0 means run now, or schedule time format 2012-06-02-12:12'
     #print 'parameters are space separated example: argument1 argument2'
   
@@ -186,7 +191,16 @@ class scalex_cmd(cmd.Cmd):
         self.scripts = scripts
         for i in scripts:
           print 'index: [%d] name: %s' % (scripts.index(i), i['scriptName'])
-      
+      elif param[0] == 'servergroups':
+        groups = scalex.node.getGroups()['data']
+        self.groups = groups
+        for i in groups:
+          print 'index: [%d] name: %s' % (groups.index(i), i['groupName'])
+      elif param[0] == 'nodesofservergroup':
+        group = self.groups[int(param[1])]
+        nodes = scalex.node.getNodesOfGroup(group)['data']
+        for i in nodes:
+          print 'Node Name: %s' % (i['nodeName'])
       elif ( param[0] == "jobs" ):
         if len(param) < 2:
           self.help_get() 
@@ -373,11 +387,17 @@ class scalex_cmd(cmd.Cmd):
       if len(param) < 4:
         self.help_script()
         return
-      if ( param[0] == "run" ):
+            
+      if param[0] in ["run", 'grouprun']:
         script = self.scripts[int(param[2])]
+        
         targets = []
-        for i in param[3].split(','):
-          targets.append(self.nodes[int(i)])
+        if param[0] == 'run':
+          for i in param[3].split(','):
+            targets.append(self.nodes[int(i)])
+        else:
+          targets = scalex.node.getNodesOfGroup(self.groups[int(param[3])])['data']
+#        print targets
         name = param[1]
         arguments = []
         startTime = 0
@@ -397,7 +417,8 @@ class scalex_cmd(cmd.Cmd):
         #        #schedule type should be one of 0 1 2
         #        startTime = param[6]
         result = scalex.script.run(name, script, targets, arguments = arguments, startTime = startTime)
-        print result['result']
+#        print result['result']
+        print result
     except Exception,e:
       print "Unknown Error:" , e
   

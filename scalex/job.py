@@ -122,6 +122,7 @@ def getOutputs(run):
     'operation':'runoutput',
     'rid':userinfo.rid
   }
+  print postData
   query = urllib.urlencode(value)
   url = url + '?' + query
   request = urllib2.Request(url, postData)

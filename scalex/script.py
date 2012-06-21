@@ -102,9 +102,9 @@ def getVersions(script):
   returnData = json.loads(response.read())
   return returnData
 
-def run(name, script, targets, version = -1, arguments = [], scheduleType = 0,
-        startTime = 0, repeatInterval = 60, endTime = 0, repeatCount = 0, cronExpr = None, timeZone = 'FIXME', scriptType = None):
+def run(name, script, targets, targetType = 'node', version = -1, arguments = [], scheduleType = 0, startTime = 0, repeatInterval = 60, endTime = 0, repeatCount = 0, cronExpr = None, timeZone = 'FIXME', scriptType = None):
   '''
+  targetType : valid values are node and group
   scheduleType: 0, Run Once
                 1, Recurring
                 2, Cron Schedule (Advanced)
@@ -138,13 +138,26 @@ def run(name, script, targets, version = -1, arguments = [], scheduleType = 0,
   #    params = getContent(scriptid, version)['data']
   #    for p in params['scriptInputParams']:
   #      arguments.append(p['parameterDefaultValue'])
+  assert targetType in ['node', 'group'], 'targetType must be node or group'
+  if targetType == 'group':
+    nodes = []
+    for target in targets:
+      groupNodes = scalex.node.getNodesOfGroup(target)['data']
+      if groupNodes != []:
+        nodes += groupNodes
+    targets = nodes
   if not isinstance(targets, list):
     t = targets
     targets = []
     targets.append(t)
   agents = []
   for n in targets:
-    agents.append(n['agentId'])
+    # user can call this function with GROUP_node
+    try:
+      agents.append(n['agentId'])
+    except:
+      agents = targets
+  agents = list(set(agents))
   payload = {
     "companyId": userinfo.companyid,
     "user": userinfo.userid,
