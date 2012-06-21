@@ -67,7 +67,7 @@ def scriptAndJobSample():
   content = scalex.script.getContent(script)['data']
 #  content = scalex.script.getContent(script, version = versions[0]['version']) #with a different version
   
-  #run a script at a given node
+  #run a script on a given node
   nodes = scalex.node.getNodes()['data']
   node = nodes[0]
   
@@ -75,7 +75,18 @@ def scriptAndJobSample():
 #  scalex.script.run('python_sdk_test_run', script, node, scheduleType=1, repeatInterval = 60, repeatCount=2) #recurring schedule, start now, repeat every 60 mins, end after 2 occurences
 #  scalex.script.run('python_sdk_test_run', script, node, scheduleType=1, repeatInterval = 60, endTime='2014-06-04-16:30') #recurring schedule, start now, repeat every 60 mins, end by 2014-06-04-16:30
 #  scalex.script.run('python_sdk_test_run', script, node, scheduleType=2, cronExpr='0 0 0 * 6 ?') #cron schedule
+  
+  # run a script at multi nodes
+  scalex.script.run('python_sdk_test_run', script, nodes)  #run now
 
+  # get server groups
+  groups = scalex.node.getGroups()['data']
+  if len(groups) > 0:
+    group = groups[0]
+    # run a script on a given server group
+    # same as run script on node, just 
+    scalex.script.run('grouprun_job', script, group)
+  
   # get jobs for a script
   jobs = scalex.job.getJobs(script)['data']
   if len(jobs) > 0:
