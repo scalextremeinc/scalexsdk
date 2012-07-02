@@ -72,6 +72,7 @@ def _auth():
   response = urllib2.urlopen(request)
   returnData = json.loads(response.read())
   userinfo.access_token = returnData['value']
+  print userinfo.access_token
   return returnData
 
 #function

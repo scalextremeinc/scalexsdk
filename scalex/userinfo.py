@@ -8,11 +8,15 @@ client_id = ''
 client_secret = ''
 access_token = ''
 
-domain = 'https://manage.scalextreme.com'
+domain = 'https://cloudmanage.scalextreme.com'
 baseurl = domain + '/v0'
 
 companyid = ''
 rolename = ''
+userid = ''
+
+import uuid
+rid = str(uuid.uuid4())
 
 def geturl(path, query = {}):
   assert path != ''

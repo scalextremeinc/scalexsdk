@@ -18,6 +18,21 @@ import json
 from scalex import userinfo
 from scalex import script
 
+# JOB API
+# FIXME, this module not finished
+#  3.25 -         //restJobController.testCreateJob();
+#  3.26 -         restJobController.testRunInfo();
+#  3.27 -        //restJobController.testJobRunOutput();
+#  3.28 -         //restJobController.testJobList();
+#  3.29 +        // restJobController.testCreateJob();
+#  3.30 +        // restJobController.testRunInfo();
+#  3.31 +        // restJobController.testJobRunOutput();
+#  3.32 +        // restJobController.testJobList();
+#  3.33          // restJobController.testEditjob();
+#  3.34          // restJobController.testDeleteJob();
+#  3.35 +        // restJobController.testCreatePatchJob();
+#  3.36 +        restJobController.testCancelJob();
+
 def getJobs(type = 'script', object = {}):
   '''
     Get jobs of a given script

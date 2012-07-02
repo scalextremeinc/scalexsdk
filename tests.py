@@ -21,6 +21,7 @@ def setup():
   roles = scalex.role.getRoles()
   # set Admin for role
   scalex.role.set(rolename)
+  print scalex.userinfo.access_token
 
 def test():
   scriptName = 'name-script-test'
