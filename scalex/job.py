@@ -4,11 +4,9 @@
   
   @todo:
     - Add support for update/patch.
-    - Add support for cancel job.
   
   @change:
     - Delete update/patch relative API.
-    - Delete cancel()
 '''
 
 import urllib
@@ -20,10 +18,6 @@ from scalex import script
 
 # JOB API
 # FIXME, this module not finished
-#  3.25 -         //restJobController.testCreateJob();
-#  3.26 -         restJobController.testRunInfo();
-#  3.27 -        //restJobController.testJobRunOutput();
-#  3.28 -         //restJobController.testJobList();
 #  3.29 +        // restJobController.testCreateJob();
 #  3.30 +        // restJobController.testRunInfo();
 #  3.31 +        // restJobController.testJobRunOutput();
@@ -84,7 +78,7 @@ def _create_or_update_job(path, name, script, targets, arguments = [], type = 's
     For Internal Use ONLY
   '''
 #    For Internal Use ONLY
-#    FIXME, what about VERSION??
+#    FIXME, Version can be a new parameter
 #    API : /jobs
 #    Method : POST
 #    URL structure: https://<servername>/v0/jobs
@@ -286,9 +280,6 @@ def getOutputs(run):
     @rtype: list
     @return: List of outputs
     
-    @change:
-      - Not changed
-
   '''
 #    API : /jobs/{jobid}/runoutput?runid=<valid runid>
 #    Method : GET
@@ -304,38 +295,52 @@ def getOutputs(run):
   response = urllib2.urlopen(request)
   returnData = json.loads(response.read())
   return returnData
-#
-#def cancel(job):
-#  '''
-#    //manage.scalextreme.com/managejob?rid=1&companyid=10274&user=10002&role=Admin&operation=canceljob
-#  '''
-#  userinfo.check()
-#
-#  payload = {
-#    'companyId': userinfo.companyid,
-#    'user': str(userinfo.userid),
-#    'role': userinfo.rolename,
-#    'jobId':job['jobId'],
-#  }
-#  postData = 'payload=' + json.dumps(payload)
-#  url = userinfo.domain + '/managejob'
-#  value = {
-#    'companyid':userinfo.companyid,
-#    'user':userinfo.userid,
-#    'role':userinfo.rolename,
-#    'operation':'canceljob',
-#    'rid':userinfo.rid
-#  }
-#  query = urllib.urlencode(value)
-#  url = url + '?' + query
-#  request = urllib2.Request(url, postData)
-#  request.add_header('cookie', userinfo.cookie)
-#  response = urllib2.urlopen(request)
-#  returnData = json.loads(response.read())
-#  return returnData
-#  
 
+def cancel(run):
+  '''
+    Cancel future runs
+    
+    @param run: The run you want to cancel
+    
+  '''
+#  /jobs/1234/cancel/
+  jobid = run['jobId']
+  runid = run['runId']
+  path = '/jobs/%s/cancel/' % (str(jobid))
+  query = {
+    'runid':runid,
+  }
+  url = userinfo.geturl(path, query)
+  
+  request = urllib2.Request(url, '')
+  response = urllib2.urlopen(request)
+  returnData = json.loads(response.read())
+  return returnData
+  
+def delete(job):
+  '''
+    Delete a job
+    
+    @param job: The job you want to delete
+    
+  '''
+  path = '/jobs'
+  query = {}
+#  if script != '':
+  path = path + '/' + str(job['jobId'])
+#  else:
+#    assert type in ['user', 'org', 'purchase'], 'wrong script type'
+#    query['type'] = type
+  url = userinfo.geturl(path, query)
+  request = urllib2.Request(url)
+  request.get_method = lambda: 'DELETE'
+  response = urllib2.urlopen(request)
+  returnData = json.loads(response.read())
+  return returnData
 
+def _createPatchJob():
+#  FIXME, need more info and time to finish this function
+  pass
 
 
 
