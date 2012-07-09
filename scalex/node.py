@@ -1,8 +1,9 @@
 '''
   @undocumented: __package__
   
-  @change:
-    - Old API currently not support, only getNodes() is available
+  @todo:
+    - create, update, delete groups
+  
 '''
 import urllib
 import urllib2
@@ -53,6 +54,12 @@ def getNodes(platform = '', status = ''):
   response = urllib2.urlopen(url)
   returnData = json.loads(response.read())
   return returnData
+
+# Group
+#
+# FIXME
+# no create or update groups
+# no delete a group
 
 def getGroups():
   '''
@@ -116,12 +123,19 @@ def getPatches(node):
     '''
   return getUpdates(node)
 
-def getAudits(node):
+def getAudits(node, type = ''):
   '''
-    Get audits of a given linux node
+    Get a list of Audit for a single node
     
     @param node: A linux node
     
+    @type   type: string
+    @param  type: Optional, valid values:
+      - B{script}
+      - B{template}
+      - B{patch}
+      - B{update}
+
     @rtype: list
     @return: list of audits
 
@@ -129,6 +143,9 @@ def getAudits(node):
   agentid = node['agentId']
   path = '/nodes/%s/audit' % (str(agentid))
   query = {}
+  if type != '':
+    assert type in ['script', 'template', 'patch', 'update'], 'type invalid'
+    query['type'] = type
   url = userinfo.geturl(path, query)
   response = urllib2.urlopen(url)
   returnData = json.loads(response.read())
@@ -136,7 +153,16 @@ def getAudits(node):
 
 def getAllAgentsWithPatch(patch):
   '''
-    FIXME, not finished
+    Get a list of machines which have the same patches/updates missing    
+    
+    @param patch: Valid values:
+      - patch
+      - list of patches
+      - update
+      - list of updates
+    
+    @rtype: list
+    @return: list of agentId
     
     @change:
       - Old API getOtherAgentsWithPatch(node,patch)
@@ -152,4 +178,114 @@ def getAllAgentsWithPatch(patch):
   response = urllib2.urlopen(url, postData)
   returnData = json.loads(response.read())
   return returnData
+
+def applyPatches(name, target, patches, startTime = 0):
+  '''
+    Apply patches for nodes
+    
+    @param name: Job name
+    
+    @param target: Target Node
+    
+    @param patches: patch/patches
+    
+    @param startTime:
+    
+    @rtype: dict
+    @return: job info
+    
+  '''
+  assert name != '', 'empty job name'
+  #  scriptInfo = {'scriptId':0, 'version':None}
   
+  if not isinstance(patches, list):
+    t = patches
+    patches = []
+    patches.append(t)
+  arguments = []
+  for u in patches:
+    #    a = list()
+    #    a.append(u['name'])
+    arguments.append(u['name'].replace(' ', '+'))
+  return _scheduleUpdateOrPatches(name, target, arguments, 'applypatch', startTime)
+
+def applyUpdates(name, target, updates, startTime = 0):
+  '''
+    Apply updates for nodes
+    
+    @param name: Job name
+    
+    @param target: Target Node
+    
+    @param updates: update/updates
+    
+    @param startTime:
+    
+    @rtype: dict
+    @return: job info
+    
+  '''
+  assert name != '', 'empty job name'
+  
+  if not isinstance(updates, list):
+    t = updates
+    updates = []
+    updates.append(t)
+  arguments = []
+  for u in updates:
+    a = list()
+    a.append(u['name'])
+    a.append(u['arch'])
+    a.append(u['updateversion'])
+    a.append(u['updaterelease'])
+    arguments.append('%25%5E%26'.join(a))
+#      FIXME, used to be applyupdate
+  return _scheduleUpdateOrPatches(name, target, arguments, 'applyupdate', startTime)
+#  return _scheduleUpdateOrPatches(name, target, arguments, 'linuxupdate', startTime)
+
+def _scheduleUpdateOrPatches(name, targets, arguments, scriptType, startTime):
+  '''
+  '''
+  if not isinstance(targets, list):
+    t = targets
+    targets = []
+    targets.append(t)
+  
+  agents = []
+  for n in targets:
+    agents.append(n['agentId'])
+  if startTime != 0:
+    d = datetime.datetime.strptime(startTime, "%Y-%m-%d-%H:%M")
+    startTime = int(time.mktime(d.timetuple())*1000)
+  
+  payload = {
+#    "companyId": userinfo.companyid,
+#    "user": str(userinfo.userid),
+#    "role": userinfo.rolename,
+    "scriptId": 0,
+    "version": None,
+    "scriptArgs": arguments,
+    "targets": agents,
+    "destInstallDir": None,
+    "scheduleType": 12,
+    "startTime": startTime,
+    "endTime": 0,
+    "repeatCount": 0,
+    "repeatInterval": 0,
+    "cronExpr": None,
+    "timeZone": None,
+    "name": name,
+    "description": name,
+    "jobId": 0,
+    "jobName": name,
+    "scriptType": scriptType
+  }
+  path = '/jobs'
+  url = userinfo.geturl(path)
+  postData = json.dumps(payload)
+  request = urllib2.Request(url, postData)
+  request.add_header('Content-Type', 'application/json')
+  response = urllib2.urlopen(request)
+  returnData = json.loads(response.read())
+  return returnData
+

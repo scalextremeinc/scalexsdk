@@ -18,10 +18,13 @@ scalex.node	scalex.node-module.html
 scalex.node.getAudits	scalex.node-module.html#getAudits
 scalex.node.getNodesOfGroup	scalex.node-module.html#getNodesOfGroup
 scalex.node.getGroups	scalex.node-module.html#getGroups
+scalex.node.applyUpdates	scalex.node-module.html#applyUpdates
 scalex.node.getAllAgentsWithPatch	scalex.node-module.html#getAllAgentsWithPatch
 scalex.node.getNodes	scalex.node-module.html#getNodes
 scalex.node.getPatches	scalex.node-module.html#getPatches
 scalex.node.getUpdates	scalex.node-module.html#getUpdates
+scalex.node.applyPatches	scalex.node-module.html#applyPatches
+scalex.node._scheduleUpdateOrPatches	scalex.node-module.html#_scheduleUpdateOrPatches
 scalex.role	scalex.role-module.html
 scalex.role.set	scalex.role-module.html#set
 scalex.role.getRoles	scalex.role-module.html#getRoles

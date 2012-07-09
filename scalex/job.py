@@ -49,6 +49,8 @@ def getJobs(type = 'script', object = {}):
       - Add parameter B{object}
   '''
 #    FIXME, currently only support script jobs.
+#    How to get update/patch jobs?
+#  
 #    API : /jobs?type=<script, template etc,>&id=<id of script, id of template etc.,>
 #    Method : GET
 #    URL Structure: https://<servername>/v0/jobs?type=script&id=<script id>& access_token=<valid access token>
@@ -72,13 +74,11 @@ def getJobs(type = 'script', object = {}):
   returnData = json.loads(response.read())
   return returnData
 
-def _create_or_update_job(path, name, script, targets, arguments = [], type = 'script', serverGroups = [], 
-                          scheduleType = 0, startTime = 0, repeatInterval = 60, endTime = 0, repeatCount = 0):
+def _create_or_update_job(path, name, targets, script = None, arguments = [], type = 'script', version = -1, serverGroups = [], scheduleType = 0, startTime = 0, repeatInterval = 60, endTime = 0, repeatCount = 0):
   '''
     For Internal Use ONLY
   '''
 #    For Internal Use ONLY
-#    FIXME, Version can be a new parameter
 #    API : /jobs
 #    Method : POST
 #    URL structure: https://<servername>/v0/jobs
@@ -123,12 +123,18 @@ def _create_or_update_job(path, name, script, targets, arguments = [], type = 's
   agents = []
   for n in targets:
     agents.append(n['agentId'])
+  
+  scriptid = 0
+  if type == 'script' and version == -1:
+    version = script['version']
+    script = script['scriptId']
   payload = {
     "name":name,
-    "scriptId":script['scriptId'],
+    "scriptId":scriptid,
     "targets":agents,
     "scriptArgs":arguments,
     "type":type,
+    "version":version,
     "repeatCount":repeatCount,
     "serverGroups":serverGroups,
     "endTime":endTime,
@@ -145,15 +151,13 @@ def _create_or_update_job(path, name, script, targets, arguments = [], type = 's
   returnData = json.loads(response.read())
   return returnData
 
-def create(name, script, targets, arguments = [], type = 'script', serverGroups = [], 
-           scheduleType = 0, startTime = 0, repeatInterval = 60, endTime = 0, repeatCount = 0):
+def create(name, script, targets, arguments = [], type = 'script', version = -1, serverGroups = [], scheduleType = 0, startTime = 0, repeatInterval = 60, endTime = 0, repeatCount = 0):
   
   path = '/jobs'
-  return _create_or_update_job(path, name, script, targets, arguments, type, serverGroups,
-                               scheduleType, startTime, repeatInterval, endTime, repeatCount)
+  return _create_or_update_job(path, name, script, targets, arguments, type, version, serverGroups, scheduleType, startTime, repeatInterval, endTime, repeatCount)
 
 
-def update(job, name, script, targets, arguments = [], type = 'script', serverGroups = [], 
+def update(job, name, script, targets, arguments = [], type = 'script', version = -1, serverGroups = [], 
            scheduleType = 0, startTime = 0, repeatInterval = 60, endTime = 0, repeatCount = 0):
   '''
     Update a job
@@ -196,14 +200,8 @@ def update(job, name, script, targets, arguments = [], type = 'script', serverGr
       - Delete Cron Expression support
     
   '''
-#    FIXME
-#    scheduleType: 0, Run Once
-#    1, Recurring
-#    2, Cron Schedule (Advanced)
-#    '''
   path = '/jobs/' + str(job['jobId'])
-  return _create_or_update_job(path, name, script, targets, arguments, type, serverGroups,
-                               scheduleType, startTime, repeatInterval, endTime, repeatCount)
+  return _create_or_update_job(path, name, script, targets, arguments, type, version, serverGroups, scheduleType, startTime, repeatInterval, endTime, repeatCount)
 #
 #def _appliedUpdatesOrPatches(path):
 #  '''
@@ -340,6 +338,7 @@ def delete(job):
 
 def _createPatchJob():
 #  FIXME, need more info and time to finish this function
+  request.add_header('Content-Type', 'application/json')
   pass
 
 

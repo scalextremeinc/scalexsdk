@@ -108,7 +108,7 @@ def getVersions(script):
   returnData = json.loads(response.read())
   return returnData
 
-def run(name, script, targets, arguments = [], type = 'script', serverGroups = [], 
+def run(name, script, targets, arguments = [], type = 'script', version = -1, serverGroups = [], 
         scheduleType = 0, startTime = 0, repeatInterval = 60, endTime = 0, repeatCount = 0):
   '''
     Run script
@@ -125,6 +125,15 @@ def run(name, script, targets, arguments = [], type = 'script', serverGroups = [
     
     @type   arguments: list
     @param  arguments: Arguments of the script, default is []
+    
+    @type   type: string
+    @param  type: Job type, default is 'script'
+    
+    @type   version: int
+    @param  version: Version of script
+    
+    @type   serverGroups: list
+    @param  serverGroups: Server groups of node
     
     @type   scheduleType: int
     @param  scheduleType: Schedule type of job, default is 0, valid values are:
@@ -148,8 +157,7 @@ def run(name, script, targets, arguments = [], type = 'script', serverGroups = [
       - Delete Cron Expression support
 
   '''
-  # FIXME, version support
-  return scalex.job.create(name, script, targets, arguments, type, serverGroups,
+  return scalex.job.create(name, script, targets, arguments, type, version, serverGroups,
                            scheduleType, startTime, repeatInterval, endTime, repeatCount)
 
 def create(name, type, content, description = '', params = [], tags = []):
@@ -195,9 +203,6 @@ def create(name, type, content, description = '', params = [], tags = []):
   #FIXME, no script attachments, no tags, no params
   #ttps://manage.scalextreme.com/library?rid=411C2ECD-BDD0-4F61-9F37-E3718F02E084
   
-#  if _isNameExists(name):
-#    # FIXME, name exists
-#    return
   path = '/scripts'
   url = userinfo.geturl(path)
   payload = {
