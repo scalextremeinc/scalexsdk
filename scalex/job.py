@@ -2,11 +2,6 @@
   @undocumented: __package__
   @undocumented: create
   
-  @todo:
-    - Add support for update/patch.
-  
-  @change:
-    - Delete update/patch relative API.
 '''
 
 import urllib
@@ -305,9 +300,8 @@ def cancel(run):
     Cancel future runs
     
     @param run: The run you want to cancel
-    
   '''
-#  FIXME, why we need a runID????
+#  NOTE, why we need a runID????
 #  /jobs/1234/cancel/
   jobid = run['jobId']
   runid = run['runId']

@@ -26,7 +26,8 @@ def test():
 #  getruns and getoutputs
   time.sleep(10)
   runs = scalex.job.getRuns(scriptJobs[0])
-  scalex.job.getOutputs(runs[0])
+  if runs != []:
+    scalex.job.getOutputs(runs[0])
 # update
   import uuid
   scalex.job.update(scriptJobs[0], 'name-updated'+str(uuid.uuid4()), scripts[0], nodes[0], startTime = '2013-12-12-00:00')

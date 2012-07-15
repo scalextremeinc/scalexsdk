@@ -6,9 +6,11 @@
 
 import scalex
 
-client_id = 'y5uvy4ySubypajanuRyzadu4yXezuqyt'
-client_secret = 'eZymyXuPu4eJapa9aguZuReByJuWy2yq'
+holder = 'REPLACE ME'
+client_id = holder
+client_secret = holder
 
+assert client_id != holder or client_secret != holder, 'Please add client_id and client_secret in __init__.py before test'
 scalex.setClientId(client_id)
 scalex.setClientSecret(client_secret)
 

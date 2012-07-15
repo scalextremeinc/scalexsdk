@@ -357,12 +357,10 @@ class scalex_cmd(cmd.Cmd):
         for i in self.updateJobs:
           print 'index:[%d] jobname: %s' % (self.updateJobs.index(i), i['jobName'])
       elif param[0] == 'audits':
-#        FIXME, 
         node = self.nodes[int(param[1])]
         self.audits = scalex.node.getAudits(node)
         for audit in self.audits:
-          print 'audit: ', audit
-#          print 'status: %s\t message: %s' % (audit['auditLevel'], audit['auditDesc'])
+          print 'name: ', audit['name']
       else:
         self.help_get()
     except Exception,e:

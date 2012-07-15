@@ -44,7 +44,6 @@ def CRUD():
   if nodes == []:
     sys.stderr.write('**ERROR: NO nodes\n')
     return
-  print nodes[0]
   scalex.script.run(jobName, script, nodes[0])
 # delete
   scalex.script.delete(script)

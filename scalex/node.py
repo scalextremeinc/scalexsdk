@@ -1,5 +1,8 @@
 '''
   @undocumented: __package__
+  @undocumented: createGroup
+  @undocumented: updateGroup
+  @undocumented: deleteGroup
   
   @todo:
     - Add create/update/delete groups
@@ -11,12 +14,6 @@ import time
 import datetime
 #
 from scalex import userinfo
-
-# NODE API
-#  4.26 +         //  restNodeController.testgetAllNodes();
-#  4.27 +           // restNodeController.testgetNode();
-#  4.28 +        restNodeController.testgetNodeupdates();
-#  4.29 +         //   restNodeController.testgetNodeAudits();
 
 def getNodes(platform = '', status = ''):
   '''
@@ -34,7 +31,7 @@ def getNodes(platform = '', status = ''):
     @change: 
       - Add parameter platform and status
   '''
-#    FIXME, not add single node id 
+#    NOTE, not add single node id 
 #    API : /nodes or /nodes/{id}
 #    Method : GET
 #    URL Structure: https://<servername>/v0/nodes?access_token=<valid access token>
@@ -83,42 +80,28 @@ def getPatches(node):
     '''
   return getUpdates(node)
 
-def getAudits(node, type = ''):
+def getAudits(node, type = 'updates'):
   '''
     Get a list of Audit for a single node
     
-    @param node: A linux node
+    @param node: A node
     
     @type   type: string
-    @param  type: Optional, valid values:
-      - B{script}
-      - B{template}
-      - B{patch}
-      - B{update}
+    @param  type: Optional, default value is B{updates}, valid values:
+      - B{updates}
 
     @rtype: list
     @return: list of audits
 
   '''
-  '''
-    FIXME, this function need more info
-    b) To get a list of Audit for a single node
-    
-    API :  nodes/{id}/audit
-    Method : GET
-    URL Structure: https://<servername>/v0/nodes/<id>/updates?access_token=<valid access token>
-    //Input : type (optional), valid values are script, template, patch, update etc.,
-    Output :
-    [{"auditDesc":"Checking listening processes ","auditCheckId":28609,"auditCheckCount":6,"auditLevel":"Warning"},{"auditDesc":"Performing check of `cron' entries...","auditCheckId":28588,"auditCheckCount":2,"auditLevel":"Warning"},{"auditDesc":"Performing common access checks for root (in /etc/default/login, /securetty, and /etc/ttytab...","auditCheckId":28582,"auditCheckCount":2,"auditLevel":"Warning"},{"auditDesc":"Checking accounts from /etc/passwd.","auditCheckId":28575,"auditCheckCount":2,"auditLevel":"Warning"},{"auditDesc":"Checking device permissions...","auditCheckId":28598,"auditCheckCount":7,"auditLevel":"Fail"},{"auditDesc":"Checking for correct umask settings...","auditCheckId":28607,"auditCheckCount":1,"auditLevel":"Fail"},{"auditDesc":"Checking entries from /etc/passwd.","auditCheckId":28549,"auditCheckCount":23,"auditLevel":"Warning"},{"auditDesc":"Performing common access checks for root...","auditCheckId":28621,"auditCheckCount":1,"auditLevel":"Fail"},{"auditDesc":"Checking sshd_config configuration files...","auditCheckId":28617,"auditCheckCount":1,"auditLevel":"Warning"}]
-  '''
   agentid = node['agentId']
   path = '/nodes/%s/%s' % (str(agentid), str(type))
   query = {}
-  if type != '':
-#    assert type in ['script', 'template', 'patch', 'update'], 'type invalid'
-    query['type'] = type
+#  if type != '':
+##    FIXME, add assert
+##    assert type in ['script', 'template', 'patch', 'update'], 'type invalid'
+#    query['type'] = type
   url = userinfo.geturl(path, query)
-  print url
   response = urllib2.urlopen(url)
   returnData = json.loads(response.read())
   return returnData
@@ -139,7 +122,6 @@ def getAllAgentsWithPatch(patch):
     @change:
       - Old API getOtherAgentsWithPatch(node,patch)
   '''
-#    FIXME, BUG with HTTPError: HTTP Error 400: Invalid update list
   path = '/missingupdates'
   query = {
     'type':'PATCH',
@@ -147,8 +129,26 @@ def getAllAgentsWithPatch(patch):
   if 'updaterelease' in str(patch):
     query['type'] = 'UPDATE'
   url = userinfo.geturl(path, query)
-  postData = 'list=' + json.dumps(patch)
-  response = urllib2.urlopen(url, postData)
+  if not isinstance(patch, list):
+    p = patch
+    patch = []
+    patch.append(p)
+#
+  patches = []
+  for i in patch:
+    d = {}
+    d['name'] = i['name']
+    if query['type'] == 'UPDATE':
+      d['arch'] = i['arch']
+      d['updateVersion'] = i['updateversion']
+      d['updateRelease'] = i['updaterelease']
+    patches.append(d)
+  postData = json.dumps(patches)
+  request = urllib2.Request(url, postData)
+  request.add_header('Content-Type', 'application/json')
+#  print patch
+#  print postData
+  response = urllib2.urlopen(request)
   returnData = json.loads(response.read())
   return returnData
 
@@ -302,7 +302,6 @@ def createGroup(name, parentGroup):
 
 def updateGroup(group):
   '''
-    FIXME, not finished
   '''
   pass
 

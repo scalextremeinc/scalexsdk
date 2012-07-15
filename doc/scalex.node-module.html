@@ -129,7 +129,7 @@
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td><span class="summary-sig"><a href="scalex.node-module.html#getAudits" class="summary-sig-name">getAudits</a>(<span class="summary-sig-arg">node</span>,
-        <span class="summary-sig-arg">type</span>=<span class="summary-sig-default"><code class="variable-quote">'</code><code class="variable-string"></code><code class="variable-quote">'</code></span>)</span><br />
+        <span class="summary-sig-arg">type</span>=<span class="summary-sig-default"><code class="variable-quote">'</code><code class="variable-string">updates</code><code class="variable-quote">'</code></span>)</span><br />
       Get a list of Audit for a single node</td>
           <td align="right" valign="top">
             
@@ -188,58 +188,6 @@
         <span class="summary-sig-arg">updates</span>,
         <span class="summary-sig-arg">startTime</span>=<span class="summary-sig-default">0</span>)</span><br />
       Apply updates for nodes</td>
-          <td align="right" valign="top">
-            
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a name="createGroup"></a><span class="summary-sig-name">createGroup</span>(<span class="summary-sig-arg">name</span>,
-        <span class="summary-sig-arg">parentGroup</span>)</span><br />
-      FIXME, not finished</td>
-          <td align="right" valign="top">
-            
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a name="updateGroup"></a><span class="summary-sig-name">updateGroup</span>(<span class="summary-sig-arg">group</span>)</span><br />
-      FIXME, not finished</td>
-          <td align="right" valign="top">
-            
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a href="scalex.node-module.html#deleteGroup" class="summary-sig-name">deleteGroup</a>(<span class="summary-sig-arg">group</span>)</span><br />
-      Delete a server group</td>
           <td align="right" valign="top">
             
             
@@ -385,7 +333,7 @@
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
   <h3 class="epydoc"><span class="sig"><span class="sig-name">getAudits</span>(<span class="sig-arg">node</span>,
-        <span class="sig-arg">type</span>=<span class="sig-default"><code class="variable-quote">'</code><code class="variable-string"></code><code class="variable-quote">'</code></span>)</span>
+        <span class="sig-arg">type</span>=<span class="sig-default"><code class="variable-quote">'</code><code class="variable-string">updates</code><code class="variable-quote">'</code></span>)</span>
   </h3>
   </td><td align="right" valign="top"
     >&nbsp;
@@ -396,20 +344,11 @@
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>node</code></strong> - A linux node</li>
-        <li><strong class="pname"><code>type</code></strong> (string) - Optional, valid values:
+        <li><strong class="pname"><code>node</code></strong> - A node</li>
+        <li><strong class="pname"><code>type</code></strong> (string) - Optional, default value is <b>updates</b>, valid values:
           <ul>
             <li>
-              <b>script</b>
-            </li>
-            <li>
-              <b>template</b>
-            </li>
-            <li>
-              <b>patch</b>
-            </li>
-            <li>
-              <b>update</b>
+              <b>updates</b>
             </li>
           </ul></li>
     </ul></dd>
@@ -526,29 +465,6 @@
   </dl>
 </td></tr></table>
 </div>
-<a name="deleteGroup"></a>
-<div>
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-  <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">deleteGroup</span>(<span class="sig-arg">group</span>)</span>
-  </h3>
-  </td><td align="right" valign="top"
-    >&nbsp;
-    </td>
-  </tr></table>
-  
-  <p>Delete a server group</p>
-  <dl class="fields">
-    <dt>Parameters:</dt>
-    <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>group</code></strong> - The group you want to delete</li>
-    </ul></dd>
-  </dl>
-</td></tr></table>
-</div>
 <a name="getGroups"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
@@ -622,7 +538,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Sun Jul 15 14:10:51 2012
+    Generated by Epydoc 3.0.1 on Sun Jul 15 23:23:48 2012
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"
