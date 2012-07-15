@@ -35,7 +35,8 @@ def test():
 # delete()
   jobs = scalex.job.getJobs(object = scripts[0])
   runs = scalex.job.getRuns(jobs[0])
-  scalex.job.cancel(runs[0])
+  if runs != []:
+    scalex.job.cancel(runs[0])
   scalex.job.delete(jobs[0])
 
 #nodes = scalex.node.getNodes()
