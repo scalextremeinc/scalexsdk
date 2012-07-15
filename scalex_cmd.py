@@ -327,7 +327,6 @@ class scalex_cmd(cmd.Cmd):
           for n in self.nodes:
             if n['agentId'] == agent:
               print 'index: [%d] nodeName: %s' % (self.nodes.index(n), n['nodeName'])
-        print 'index: [%d] nodeName: %s' % (self.nodes.index(node), node['nodeName'])
 
       elif param[0] == 'nodesforupdate':
         if len(param) < 2:
