@@ -58,7 +58,7 @@
 <div class="fields">      <p><strong>To Do:</strong>
         <ul>
       <li>
-        create, update, delete groups
+        Add create/update/delete groups
       </li>
     </ul>
       </p>
@@ -79,40 +79,6 @@
           <td><span class="summary-sig"><a href="scalex.node-module.html#getNodes" class="summary-sig-name">getNodes</a>(<span class="summary-sig-arg">platform</span>=<span class="summary-sig-default"><code class="variable-quote">'</code><code class="variable-string"></code><code class="variable-quote">'</code></span>,
         <span class="summary-sig-arg">status</span>=<span class="summary-sig-default"><code class="variable-quote">'</code><code class="variable-string"></code><code class="variable-quote">'</code></span>)</span><br />
       Get nodes</td>
-          <td align="right" valign="top">
-            
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">list</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a href="scalex.node-module.html#getGroups" class="summary-sig-name">getGroups</a>()</span><br />
-      Get groups</td>
-          <td align="right" valign="top">
-            
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">list</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a href="scalex.node-module.html#getNodesOfGroup" class="summary-sig-name">getNodesOfGroup</a>(<span class="summary-sig-arg">group</span>)</span><br />
-      Get nodes of a given group</td>
           <td align="right" valign="top">
             
             
@@ -231,6 +197,92 @@
       
     </td>
   </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="createGroup"></a><span class="summary-sig-name">createGroup</span>(<span class="summary-sig-arg">name</span>,
+        <span class="summary-sig-arg">parentGroup</span>)</span><br />
+      FIXME, not finished</td>
+          <td align="right" valign="top">
+            
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="updateGroup"></a><span class="summary-sig-name">updateGroup</span>(<span class="summary-sig-arg">group</span>)</span><br />
+      FIXME, not finished</td>
+          <td align="right" valign="top">
+            
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="scalex.node-module.html#deleteGroup" class="summary-sig-name">deleteGroup</a>(<span class="summary-sig-arg">group</span>)</span><br />
+      Delete a server group</td>
+          <td align="right" valign="top">
+            
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">list</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="scalex.node-module.html#getGroups" class="summary-sig-name">getGroups</a>()</span><br />
+      Get server groups</td>
+          <td align="right" valign="top">
+            
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">list</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="scalex.node-module.html#getNodesOfGroup" class="summary-sig-name">getNodesOfGroup</a>(<span class="summary-sig-arg">group</span>)</span><br />
+      Get nodes of a given group</td>
+          <td align="right" valign="top">
+            
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
 </table>
 <!-- ==================== FUNCTION DETAILS ==================== -->
 <a name="section-FunctionDetails"></a>
@@ -274,52 +326,6 @@
     </ul>
       </p>
 </div></td></tr></table>
-</div>
-<a name="getGroups"></a>
-<div>
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-  <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">getGroups</span>()</span>
-  </h3>
-  </td><td align="right" valign="top"
-    >&nbsp;
-    </td>
-  </tr></table>
-  
-  <p>Get groups</p>
-  <dl class="fields">
-    <dt>Returns: list</dt>
-        <dd>list of groups</dd>
-  </dl>
-</td></tr></table>
-</div>
-<a name="getNodesOfGroup"></a>
-<div>
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-  <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">getNodesOfGroup</span>(<span class="sig-arg">group</span>)</span>
-  </h3>
-  </td><td align="right" valign="top"
-    >&nbsp;
-    </td>
-  </tr></table>
-  
-  <p>Get nodes of a given group</p>
-  <dl class="fields">
-    <dt>Parameters:</dt>
-    <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>group</code></strong> - A group returned by getGroups()</li>
-    </ul></dd>
-    <dt>Returns: list</dt>
-        <dd>list of nodes</dd>
-  </dl>
-</td></tr></table>
 </div>
 <a name="getUpdates"></a>
 <div>
@@ -482,7 +488,7 @@
         <li><strong class="pname"><code>name</code></strong> - Job name</li>
         <li><strong class="pname"><code>target</code></strong> - Target Node</li>
         <li><strong class="pname"><code>patches</code></strong> - patch/patches</li>
-        <li><strong class="pname"><code>startTime</code></strong></li>
+        <li><strong class="pname"><code>startTime</code></strong> - Start time formatted like <b>2012-12-12-00:00</b>, default is now</li>
     </ul></dd>
     <dt>Returns: dict</dt>
         <dd>job info</dd>
@@ -513,10 +519,79 @@
         <li><strong class="pname"><code>name</code></strong> - Job name</li>
         <li><strong class="pname"><code>target</code></strong> - Target Node</li>
         <li><strong class="pname"><code>updates</code></strong> - update/updates</li>
-        <li><strong class="pname"><code>startTime</code></strong></li>
+        <li><strong class="pname"><code>startTime</code></strong> - Start time formatted like <b>2012-12-12-00:00</b>, default is now</li>
     </ul></dd>
     <dt>Returns: dict</dt>
         <dd>job info</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="deleteGroup"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">deleteGroup</span>(<span class="sig-arg">group</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    >&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Delete a server group</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>group</code></strong> - The group you want to delete</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="getGroups"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">getGroups</span>()</span>
+  </h3>
+  </td><td align="right" valign="top"
+    >&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Get server groups</p>
+  <dl class="fields">
+    <dt>Returns: list</dt>
+        <dd>list of groups</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="getNodesOfGroup"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">getNodesOfGroup</span>(<span class="sig-arg">group</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    >&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Get nodes of a given group</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>group</code></strong> - A group returned by getGroups()</li>
+    </ul></dd>
+    <dt>Returns: list</dt>
+        <dd>list of nodes</dd>
   </dl>
 </td></tr></table>
 </div>
@@ -547,7 +622,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Mon Jul  9 21:36:38 2012
+    Generated by Epydoc 3.0.1 on Sun Jul 15 14:10:51 2012
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

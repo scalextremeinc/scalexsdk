@@ -12,12 +12,13 @@
 import urllib
 import urllib2
 import json
+import datetime
+import time
 #
 from scalex import userinfo
 from scalex import script
 
 # JOB API
-# FIXME, this module not finished
 #  3.29 +        // restJobController.testCreateJob();
 #  3.30 +        // restJobController.testRunInfo();
 #  3.31 +        // restJobController.testJobRunOutput();
@@ -30,12 +31,18 @@ from scalex import script
 def getJobs(type = 'script', object = {}):
   '''
     Get jobs of a given script
+    Example:
+      - getJobs(type='patch') # get applied patch jobs
+      - getJobs(type='script', object=script) # get script jobs
     
     @note: Currently support script jobs only.
     @todo: Add support for update/patch job
     
     @type   type: string
-    @param  type: Job type, default is B{script}. Valid value is B{script}.
+    @param  type: Job type, default is B{script}. Valid values are:
+      - B{script}, get script jobs
+      - B{patch}, get applied patch jobs
+      - B{update}, get applied update jobs
     
     @type   object: dict
     @param  object: If type is script, object is the script returned by scalex.script.getScripts()
@@ -48,8 +55,6 @@ def getJobs(type = 'script', object = {}):
       - Add parameter B{type}
       - Add parameter B{object}
   '''
-#    FIXME, currently only support script jobs.
-#    How to get update/patch jobs?
 #  
 #    API : /jobs?type=<script, template etc,>&id=<id of script, id of template etc.,>
 #    Method : GET
@@ -64,17 +69,19 @@ def getJobs(type = 'script', object = {}):
   query = {
     'type': type,
   }
-  if type in ['script', 'update', 'patch']:
+  if type in ['script']:
     assert object != {}, 'no script object'
-    #FIXME, update and patch not support
     query['id'] = object['scriptId']
+  else:
+    query['id'] = 0
+    query['type'] = 'apply' + type
   url = userinfo.geturl(path, query)
   request = urllib2.Request(url)
   response = urllib2.urlopen(request)
   returnData = json.loads(response.read())
   return returnData
 
-def _create_or_update_job(path, name, targets, script = None, arguments = [], type = 'script', version = -1, serverGroups = [], scheduleType = 0, startTime = 0, repeatInterval = 60, endTime = 0, repeatCount = 0):
+def _create_or_update_job(path, name, script = None, targets = None, arguments = [], type = 'script', version = -1, serverGroups = [], scheduleType = 0, startTime = 0, repeatInterval = 60, endTime = 0, repeatCount = 0):
   '''
     For Internal Use ONLY
   '''
@@ -122,12 +129,12 @@ def _create_or_update_job(path, name, targets, script = None, arguments = [], ty
     targets.append(t)
   agents = []
   for n in targets:
-    agents.append(n['agentId'])
+    agents.append(n['nodeId'])
   
   scriptid = 0
   if type == 'script' and version == -1:
     version = script['version']
-    script = script['scriptId']
+    scriptid = script['scriptId']
   payload = {
     "name":name,
     "scriptId":scriptid,
@@ -162,7 +169,7 @@ def update(job, name, script, targets, arguments = [], type = 'script', version 
   '''
     Update a job
     
-    @todo: params and tags not implement
+    @todo: params and tags not implement, server will return 404 ERROR if name exists
     
     @type   job: dict
     @param  job: Job returned by getJobs()
@@ -183,12 +190,11 @@ def update(job, name, script, targets, arguments = [], type = 'script', version 
       - B{0}, Run Once
       - B{1}, Recurring
     
-    @param  startTime: Start time formatted like B{2012-12-12-00:00}, default is now, 
+    @param  startTime: Start time formatted like B{2012-12-12-00:00}, default is now
     
     @param  repeatInterval: Repeat interval of recurring schedule, default is 60 mins. 
     
-    @param  endTime: End time of recurring schedule, formatted like B{2012-12-12-00:00}.
-    You must specify this argument if you want to schedule a recurring job and with a repeat interval.
+    @param  endTime: End time of recurring schedule, formatted like B{2012-12-12-00:00}. You must specify this argument if you want to schedule a recurring job and with a repeat interval.
     
     @type   repeatCount: int
     @param  repeatCount: Repeat count of a recurring scheduled job.
@@ -301,6 +307,7 @@ def cancel(run):
     @param run: The run you want to cancel
     
   '''
+#  FIXME, why we need a runID????
 #  /jobs/1234/cancel/
   jobid = run['jobId']
   runid = run['runId']
@@ -336,10 +343,6 @@ def delete(job):
   returnData = json.loads(response.read())
   return returnData
 
-def _createPatchJob():
-#  FIXME, need more info and time to finish this function
-  request.add_header('Content-Type', 'application/json')
-  pass
 
 
 

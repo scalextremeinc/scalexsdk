@@ -144,8 +144,7 @@ def run(name, script, targets, arguments = [], type = 'script', version = -1, se
 
     @param  repeatInterval: Repeat interval of recurring schedule, default is 60 mins. 
 
-    @param  endTime: End time of recurring schedule, formatted like B{2012-12-12-00:00}.
-    You must specify this argument if you want to schedule a recurring job and with a repeat interval.
+    @param  endTime: End time of recurring schedule, formatted like B{2012-12-12-00:00}. You must specify this argument if you want to schedule a recurring job and with a repeat interval.
 
     @type   repeatCount: int
     @param  repeatCount: Repeat count of a recurring scheduled job.
@@ -299,11 +298,23 @@ def update(script, name = '', type = '', content = '', description = '', params 
 #    "scriptAttachments":[],
 #    "scriptContent":"bGluZTEKbGluZTIKbGluZTMKbGluZTQKbGluZTUKZWNobyAnSGknCg=="
 #    }
-#  '''
-  #FIXME, no script attachments
+  #  '''def update(script, name = '', type = '', content = '', description = '', params = [], tags = [] ):
+
+#  FIXME, no script attachments
+#  FIXME, incomplete params/tags/attachments
   path = '/scripts/' + str(script['scriptId'])
   parameters = []
   url = userinfo.geturl(path)
+  script = getContent(script)
+  # script contents
+  if name == '':
+    name = script['scriptName']
+  if type == '':
+    type = script['scriptType']
+  if content == '':
+    content = script['scriptContent']
+  else:
+    content = base64.b64encode(content)
   payload = {
     "scriptName":name,
     "version":script['version'],
@@ -312,7 +323,7 @@ def update(script, name = '', type = '', content = '', description = '', params 
     "scriptInputParams":[],
     "tagList":[],
     "scriptAttachments":[],
-    "scriptContent":base64.b64encode(content),
+    "scriptContent":content,
   }
   postData = json.dumps(payload)
   request = urllib2.Request(url, postData)
