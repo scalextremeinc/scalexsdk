@@ -253,8 +253,8 @@ class scalex_cmd(cmd.Cmd):
                 print 'output (truncated - more than 500 chars):'
             else: 
                 print 'output:'
-                print output['output'] 
-                print '-----------------'
+            print output['output'] 
+            print '-----------------'
       
       elif ( param[0] == "nodes" ):
         self.nodes = scalex.node.getNodes()
