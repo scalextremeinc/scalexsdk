@@ -1,7 +1,7 @@
 scalexsdk
 =========
 
-sdk for scalextreme - v 0.91a
+sdk for scalextreme - v 0.92
 
 Software Requirements
 ============
@@ -11,5 +11,5 @@ More Info
 =========
 SDK Wiki https://github.com/scalextremeinc/scalexsdk/wiki
 
-CLI How To: https://github.com/scalextremeinc/scalexsdk/wiki/CLI-How-to-for-SDK-0.91a
+CLI How To: https://github.com/scalextremeinc/scalexsdk/wiki/CLI-How-to-for-SDK-0.92
 .

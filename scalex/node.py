@@ -1,3 +1,12 @@
+'''
+  @undocumented: __package__
+  @undocumented: createGroup
+  @undocumented: updateGroup
+  @undocumented: deleteGroup
+  
+  @todo:
+    - Add create/update/delete groups
+'''
 import urllib
 import urllib2
 import json
@@ -6,233 +15,188 @@ import datetime
 #
 from scalex import userinfo
 
-def getNodes():
-  userinfo.check()
-  
-  url = userinfo.domain + '/scalex/acl/nodelistbyrole?rid=%s' % (userinfo.rid)
-  value = {
-    'companyId':userinfo.companyid,
-    'role':userinfo.rolename,
-    'user':userinfo.userid
-  }
-  postData = urllib.urlencode(value)
-  response = urllib2.urlopen(url, postData)
-  returnData = json.loads(response.read())
-  return returnData
-
-def getGroups():
+def getNodes(platform = '', status = ''):
   '''
-  https://manage.scalextreme.com/group/getAllGroups?rid=&organizationId=10361&userId=10002&role=Admin
-  '''
-  userinfo.check()
-  
-  url = userinfo.domain + '/group/getAllGroups'
-  value = {
-    'rid':userinfo.rid,
-    'organizationId':userinfo.companyid,
-    'role':userinfo.rolename,
-    'userId':userinfo.userid
-  }
-  url = url + '?' + urllib.urlencode(value)
-  request = urllib2.Request(url, '')
-  request.add_header('cookie', userinfo.cookie)
-  response = urllib2.urlopen(request)
-  returnData = json.loads(response.read())
-  return returnData
-
-def getNodesOfGroup(group):
-  '''
-    https://manage.scalextreme.com/group/getallleafnodes?rid=&organizationId=10361&userId=10002&role=Admin
-    POST groupId=1
-  '''
-  userinfo.check()
-  
-  url = userinfo.domain + '/group/getallleafnodes'
-  value = {
-    'rid':userinfo.rid,
-    'organizationId':userinfo.companyid,
-    'role':userinfo.rolename,
-    'userId':userinfo.userid
-  }
-  url = url + '?' + urllib.urlencode(value)
-  postData = urllib.urlencode({'groupId':group['groupId']})
-  request = urllib2.Request(url, postData)
-  request.add_header('cookie', userinfo.cookie)
-  response = urllib2.urlopen(request)
-  returnData = json.loads(response.read())
-  if returnData['result'] == 'SUCCESS':
-    returnData['data'].sort()
-    # this is agentId of node, we convert it
-    nodes = getNodes()['data']
-    agents = []
-    for agent in returnData['data']:
-      for n in nodes:
-        if agent == n['agentId']:
-          agents.append(n)
-    returnData['data'] = agents
-  return returnData
-
-def isWindows(node):
-  iswin = False
-  if 'Windows' in str(node):
-    iswin = True
-  return iswin
-
-def isUnix(node):
-  return not isWindows(node)
-
-def getOverviewOfAudits(node):
-  '''
-  https://manage.scalextreme.com/scalex/tigeraudit/auditoverview?rid=A&companyid=10274&user=10002&role=Admin&agentid=40
-  '''
-  userinfo.check()
-  path = '/scalex/tigeraudit/auditoverview'
-  url = userinfo.domain + path
-  
-  value = {
-      'companyid':userinfo.companyid,
-      'role':userinfo.rolename,
-      'user':userinfo.userid,
-      'rid':userinfo.rid,
-      'agentid':node['agentId'],
-  }
-  query = urllib.urlencode(value)
-  url = url + '?' + query
-  request = urllib2.Request(url, '')
-  request.add_header('cookie', userinfo.cookie)
-  response = urllib2.urlopen(request)
-  returnData = json.loads(response.read())
-  return returnData
-
-def getAudits(node):
-  '''
-  https://manage.scalextreme.com/scalex/tigeraudit/auditresults?rid=22A&companyid=10274&user=10002&role=Admin&agentid=40&auditanalid=196
-  '''
-  userinfo.check()
-
-  overview = getOverviewOfAudits(node)['data']
-  if overview == {}:
-    return {u'data': [], u'result': u'SUCCESS'}
+    Get nodes
     
-  path = '/scalex/tigeraudit/auditresults'
-  url = userinfo.domain + path
-  
-  value = {
-      'companyid':userinfo.companyid,
-      'role':userinfo.rolename,
-      'user':userinfo.userid,
-      'rid':userinfo.rid,
-      'agentid':node['agentId'],
-      'auditanalid':overview['auditAnalId'],
-  }
-  query = urllib.urlencode(value)
-  url = url + '?' + query
-  request = urllib2.Request(url, '')
-  request.add_header('cookie', userinfo.cookie)
-  response = urllib2.urlopen(request)
-  returnData = json.loads(response.read())
-  return returnData
-
-def getOtherAgentsWithPatch(node, patches):
-  '''
-https://manage.scalextreme.com/scalex/search/searchOtherAgentsWithPatch?
-    rid=0F72B45B-935E-44BD-89D6-0F6EACE26C08&
-    organizationId=10274&
-    user=10002&
-    role=Admin&
-    agentId=181&
-    clause=AND&
-    type=UPDATE
-https://manage.scalextreme.com/scalex/search/searchOtherAgentsWithPatch?
-    organizationId=10274&
-    clause=AND&
-    role=Admin&
-    user=10002&
-    rid=39305f26-2e81-435e-8177-3f5a1371db8a&
-    agentid=40&
-    type=UPDATE
-
-
-    windows
+    @type   platform: string
+    @param  platform: optional, valid values are B{Windows} or B{Linux}
     
-    https://manage.scalextreme.com/scalex/search/searchOtherAgentsWithPatch?rid=0F72B45B-935E-44BD-89D6-0F6EACE26C08&organizationId=10274&user=10002&role=Admin&agentId=88&clause=AND&type=PATCH
-    
-    patchList=[{"name":"Security Update for Microsoft .NET Framework 3.5.1 on Windows 7 and Windows Server 2008 R2 SP1 for x64-based Systems (KB2633873)"}]
-  '''
-  userinfo.check()
-  
-  path = '/scalex/search/searchOtherAgentsWithPatch'
-  url = userinfo.domain + path
-  if isWindows(node):
-    type = 'PATCH'
-  else:
-    type = 'UPDATE'
-  value = {
-    'organizationId':userinfo.companyid,
-    'role':userinfo.rolename,
-    'user':userinfo.userid,
-    'rid':userinfo.rid,
-    'agentId':node['agentId'],
-    'clause':'AND',
-    'type':type,
-  }
-  query = urllib.urlencode(value)
-  url = url + '?' + query
-#      
-  updates = []
-  if not isinstance(patches, list):
-    p = patches
-    patches = []
-    patches.append(p)
-  for u in patches:
-    d = {}
-    d['name'] = u['name']
-    if isUnix(node):
-      d['arch'] = u['arch']
-      d['updateVersion'] = u['updateversion']
-      d['updateRelease'] = u['updaterelease']
-    updates.append(d)
+    @type   status: string
+    @param  status: optional, valid values are B{online} or B{offline}
 
-  postData = 'patchList=' + json.dumps(updates)
-  request = urllib2.Request(url, postData)
-  request.add_header('cookie', userinfo.cookie)
-  response = urllib2.urlopen(request)
+    @rtype: list
+    @return: list of nodes
+    
+    @change: 
+      - Add parameter platform and status
+  '''
+#    NOTE, not add single node id 
+#    API : /nodes or /nodes/{id}
+#    Method : GET
+#    URL Structure: https://<servername>/v0/nodes?access_token=<valid access token>
+#    Input params: 
+#    platform (optional), valid values Windows or Linux
+#    status (optional), valid values online or offline
+  assert platform in ['', 'Windows', 'Linux'], 'wrong platform'
+  assert status in ['', 'online', 'offline'], 'wrong status'  
+  path = '/nodes'
+  query = {}
+  if platform != '':
+    query['platform'] = platform
+  if status != '':
+    query['status'] = status
+  url = userinfo.geturl(path, query)
+  response = urllib2.urlopen(url)
   returnData = json.loads(response.read())
   return returnData
 
 def getUpdates(node):
   '''
-  https://manage.scalextreme.com/patchupdate/updatelist?rid=042F8639-FF15-445A-95F9-E03B7DABA6F0&companyid=10274&user=10002&role=Admin&agentid=40&patchanalysisid=316
-  '''
-  return _getlist(node)
+    Get updates of a given node
+    
+    @param node: A node
+    
+    @rtype: list
+    @return: list of updates
+    '''
+  agentid = node['agentId']
+  path = '/nodes/%s/updates' % (str(agentid))
+  query = {}
+  url = userinfo.geturl(path, query)
+  response = urllib2.urlopen(url)
+  returnData = json.loads(response.read())
+  return returnData
 
 def getPatches(node):
   '''
-  https://manage.scalextreme.com/patchupdate/patchlist?rid=042F8639-FF15-445A-95F9-E03B7DABA6F0&companyid=10274&user=10002&role=Admin&agentid=88&patchanalysisid=167
-  '''
-  return _getlist(node)
+    Get patches of a given node
 
-def applyPatches(name, node, patches, startTime = 0):
+    @param node: A node
+    
+    @rtype: list
+    @return: list of patchest
+
+    '''
+  return getUpdates(node)
+
+def getAudits(node, type = 'updates'):
   '''
-  windows
+    Get a list of Audit for a single node
+    
+    @param node: A node
+    
+    @type   type: string
+    @param  type: Optional, default value is B{updates}, valid values:
+      - B{updates}
+
+    @rtype: list
+    @return: list of audits
+
+  '''
+  agentid = node['agentId']
+  path = '/nodes/%s/%s' % (str(agentid), str(type))
+  query = {}
+#  if type != '':
+##    FIXME, add assert
+##    assert type in ['script', 'template', 'patch', 'update'], 'type invalid'
+#    query['type'] = type
+  url = userinfo.geturl(path, query)
+  response = urllib2.urlopen(url)
+  returnData = json.loads(response.read())
+  return returnData
+
+def getAllAgentsWithPatch(patch):
+  '''
+    Get a list of machines which have the same patches/updates missing    
+    
+    @param patch: Valid values:
+      - patch
+      - list of patches
+      - update
+      - list of updates
+    
+    @rtype: list
+    @return: list of agentId
+    
+    @change:
+      - Old API getOtherAgentsWithPatch(node,patch)
+  '''
+  path = '/missingupdates'
+  query = {
+    'type':'PATCH',
+  }
+  if 'updaterelease' in str(patch):
+    query['type'] = 'UPDATE'
+  url = userinfo.geturl(path, query)
+  if not isinstance(patch, list):
+    p = patch
+    patch = []
+    patch.append(p)
+#
+  patches = []
+  for i in patch:
+    d = {}
+    d['name'] = i['name']
+    if query['type'] == 'UPDATE':
+      d['arch'] = i['arch']
+      d['updateVersion'] = i['updateversion']
+      d['updateRelease'] = i['updaterelease']
+    patches.append(d)
+  postData = json.dumps(patches)
+  request = urllib2.Request(url, postData)
+  request.add_header('Content-Type', 'application/json')
+#  print patch
+#  print postData
+  response = urllib2.urlopen(request)
+  returnData = json.loads(response.read())
+  return returnData
+
+def applyPatches(name, target, patches, startTime = 0):
+  '''
+    Apply patches for nodes
+    
+    @param name: Job name
+    
+    @param target: Target Node
+    
+    @param patches: patch/patches
+    
+    @param startTime: Start time formatted like B{2012-12-12-00:00}, default is now
+    
+    @rtype: dict
+    @return: job info
+    
   '''
   assert name != '', 'empty job name'
-  scriptInfo = {'scriptId':0, 'version':None}
-
+  #  scriptInfo = {'scriptId':0, 'version':None}
+  
   if not isinstance(patches, list):
     t = patches
     patches = []
     patches.append(t)
   arguments = []
   for u in patches:
-#    a = list()
-#    a.append(u['name'])
+    #    a = list()
+    #    a.append(u['name'])
     arguments.append(u['name'].replace(' ', '+'))
-  return _scheduleUpdateOrPatches(name, node, arguments, 'applypatch', startTime)
-                                  
-def applyUpdates(name, node, updates, startTime = 0):
+  return _scheduleUpdateOrPatches(name, target, arguments, 'applypatch', startTime)
+
+def applyUpdates(name, target, updates, startTime = 0):
   '''
-    unix
+    Apply updates for nodes
+    
+    @param name: Job name
+    
+    @param target: Target Node
+    
+    @param updates: update/updates
+    
+    @param startTime: Start time formatted like B{2012-12-12-00:00}, default is now
+    
+    @rtype: dict
+    @return: job info
+    
   '''
   assert name != '', 'empty job name'
   
@@ -248,50 +212,27 @@ def applyUpdates(name, node, updates, startTime = 0):
     a.append(u['updateversion'])
     a.append(u['updaterelease'])
     arguments.append('%25%5E%26'.join(a))
-  return _scheduleUpdateOrPatches(name, node, arguments, 'applyupdate', startTime)
+  return _scheduleUpdateOrPatches(name, target, arguments, 'applyupdate', startTime)
 
 def _scheduleUpdateOrPatches(name, targets, arguments, scriptType, startTime):
   '''
-    payload = {
-    "companyId": 10274,
-    "user": "10002",
-    "role": "Admin",
-    "scriptId": 0,
-    "version": null,
-    "scriptArgs": ["aws-apitools-as%25%5E%26noarch%25%5E%261.0.49.1%25%5E%261.6.amzn1"],
-    "targets": [40],
-    "destInstallDir": null,
-    "scheduleType": 12,
-    "startTime": 1342260060000,
-    "endTime": 0,
-    "repeatCount": 0,
-    "repeatInterval": 0,
-    "cronExpr": null,
-    "timeZone": null,
-    "name": "asdfsadfasdf",
-    "description": "asdfsadfasdf",
-    "jobId": 0,
-    "jobName": null,
-    "scriptType": "applyupdate"
-  }
   '''
-  userinfo.check()
-  
   if not isinstance(targets, list):
     t = targets
     targets = []
     targets.append(t)
-
+  
   agents = []
   for n in targets:
     agents.append(n['agentId'])
   if startTime != 0:
     d = datetime.datetime.strptime(startTime, "%Y-%m-%d-%H:%M")
     startTime = int(time.mktime(d.timetuple())*1000)
+  
   payload = {
-    "companyId": userinfo.companyid,
-    "user": str(userinfo.userid),
-    "role": userinfo.rolename,
+#    "companyId": userinfo.companyid,
+#    "user": str(userinfo.userid),
+#    "role": userinfo.rolename,
     "scriptId": 0,
     "version": None,
     "scriptArgs": arguments,
@@ -307,77 +248,106 @@ def _scheduleUpdateOrPatches(name, targets, arguments, scriptType, startTime):
     "name": name,
     "description": name,
     "jobId": 0,
-    "jobName": None,
+    "jobName": name,
     "scriptType": scriptType
   }
-  postData = 'payload=' + json.dumps(payload)
-  url = userinfo.domain + '/managescript/runscript?rid=' + userinfo.rid
+  path = '/jobs'
+  url = userinfo.geturl(path)
+  postData = json.dumps(payload)
   request = urllib2.Request(url, postData)
-  request.add_header('cookie', userinfo.cookie)
+  request.add_header('Content-Type', 'application/json')
   response = urllib2.urlopen(request)
   returnData = json.loads(response.read())
   return returnData
 
-def getOverviewOfUpdatesOrPatches(node):
-  '''
-    os: 0 is *nix by default, 1 is windows
-  https://manage.scalextreme.com/patchupdate/updateoverview?rid=1&companyid=&user=&role=Admin&agentid=40
-  https://manage.scalextreme.com/patchupdate/patchoverview?rid=1&companyid=&user=&role=Admin&agentid=82
-  '''
-  userinfo.check()
-  if 'Windows' in str(node):
-    os = 1
-  else:
-    os = 0
-  path = ['/patchupdate/updateoverview', '/patchupdate/patchoverview']
-  url = userinfo.domain + path[os]
+# Group
+#
+# FIXME
+# no create or update groups
+# no delete a group
 
-  value = {
-    'companyid':userinfo.companyid,
-    'role':userinfo.rolename,
-    'user':userinfo.userid,
-    'rid':userinfo.rid,
-    'agentid':node['agentId'],
+def createGroup(name, parentGroup):
+  '''
+    FIXME, not finished
+  '''
+  '''  {\"groupType\":0,
+  \"groupId\":0, 
+  \"groupName\":\"PacaficServers\",
+  \"parentGroupId\":1,
+  \"groupParent\":\"All Servers\",
+  \"companyId\":0,
+  \"organizationId\":0,
+  \"groupItemList\":[{\"groupId\":0,  \"companyId\":0,  \"groupItem\":\"124\",  \"organizationId\":0,  \"groupItemType\":0}]
+  }"
+  '''
+  path = '/groups'
+  url = userinfo.geturl(path)
+  payload = {
+    "groupType": 0,
+    "groupId": 0,
+    "groupName": None,
+    "PacaficServers": arguments,
+    "parentGroupId": agents,
+    "groupParent": None,
+    "companyId": 12,
+    "organizationId": startTime,
+    "groupItemList": 0,
   }
-  query = urllib.urlencode(value)
-  url = url + '?' + query
-  request = urllib2.Request(url, '')
-  request.add_header('cookie', userinfo.cookie)
+  postData = json.dumps(payload)
+  request = urllib2.Request(url, postData)
+  request.add_header('Content-Type', 'application/json')
   response = urllib2.urlopen(request)
   returnData = json.loads(response.read())
   return returnData
 
-def _getlist(node):
+def updateGroup(group):
   '''
-    For Internal Use ONLY
+  '''
+  pass
+
+def deleteGroup(group):
+  '''
+    Delete a server group
     
-    https://manage.scalextreme.com/patchupdate/patchlist?rid=042F8639-FF15-445A-95F9-E03B7DABA6F0&companyid=10274&user=10002&role=Admin&agentid=88&patchanalysisid=167
+    @param group: The group you want to delete
+  '''
+  path = '/groups/' + str(group['groupId'])
+  url = userinfo.geturl(path)
+  request = urllib2.Request(url)
+  request.get_method = lambda: 'DELETE'
+  response = urllib2.urlopen(request)
+  returnData = json.loads(response.read())
+  return returnData
+
+def getGroups():
+  '''
+    Get server groups
     
-    https://manage.scalextreme.com/patchupdate/updatelist?rid=042F8639-FF15-445A-95F9-E03B7DABA6F0&companyid=10274&user=10002&role=Admin&agentid=40&patchanalysisid=316
+    @rtype: list
+    @return: list of groups
+  '''
+  path = '/groups'
+  query = {}
+  url = userinfo.geturl(path, query)
+  response = urllib2.urlopen(url)
+  returnData = json.loads(response.read())
+  return returnData
+
+def getNodesOfGroup(group):
+  '''
+    Get nodes of a given group
+    
+    @param  group: A group returned by getGroups()
+    
+    @rtype: list
+    @return: list of nodes
     '''
-  overview = getOverviewOfUpdatesOrPatches(node)['data']
-  if overview == {}:
-    return {u'data': [], u'result': u'SUCCESS'}
-
-  if 'Windows' in str(node):
-    os = 1
-  else:
-    os = 0
-  path = ['/patchupdate/updatelist', '/patchupdate/patchlist']
-  url = userinfo.domain + path[os]
-  value = {
-    'companyid':userinfo.companyid,
-    'role':userinfo.rolename,
-    'user':userinfo.userid,
-    'rid':userinfo.rid,
-    'agentid':node['agentId'],
-    'patchanalysisid':overview['patchanalysisid'],
-  }
-  query = urllib.urlencode(value)
-  url = url + '?' + query
-  request = urllib2.Request(url, '')
-  request.add_header('cookie', userinfo.cookie)
-  response = urllib2.urlopen(request)
+  groupid = group['groupId']
+  path = '/groups/%s/nodes' % (str(groupid))
+  query = {}
+  url = userinfo.geturl(path, query)
+  response = urllib2.urlopen(url)
   returnData = json.loads(response.read())
+  #  
   return returnData
 

@@ -1,0 +1,22 @@
+1. First you must setup client_id and client_secret for Oauth
+    scalex.setClientId(client_id)
+    scalex.setClientSecret(client_secret)
+
+2. Then, list all companies and select one
+    coms = scalex.company.getCompanies()
+    # login with first company
+    scalex.company.set(coms[0])
+
+3. List all roles and select one
+    roles = scalex.role.getRoles()
+    # set Admin for role
+    scalex.role.set(roles[0])
+
+4. Then make all the API calls
+    # get all nodes
+    nodes = scalex.node.getNodes()
+    # get scripts
+    myscripts = scalex.script.getScripts(type='user')	# my scripts
+    myscripts = scalex.script.getScripts(type='org')	# org scripts
+    myscripts = scalex.script.getScripts(type='purchase') # purchased scripts
+

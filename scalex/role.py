@@ -1,3 +1,6 @@
+'''
+  @undocumented: __package__
+'''
 import urllib
 import urllib2
 import json
@@ -7,22 +10,39 @@ from scalex import userinfo
 import scalex
 
 def getRoles():
+  '''
+    Get list of roles
+
+    @requires: Set company first
+    
+    @rtype: list
+    @return: list of roles
+  '''
   assert userinfo.companyid != '', 'you need set company first'
-  scalex.relogin()
-  url = '%s/scalex/acl/userroles?rid=%s' % (userinfo.domain, userinfo.rid)
-  value = {
-    'user':userinfo.username,
-    'companyId':userinfo.companyid
+
+  path = '/roles'
+  query = {
+    'client_id':userinfo.client_id,
+    'company_id':userinfo.companyid,
   }
-  postData = urllib.urlencode(value)
-  response = urllib2.urlopen(url, postData)
+  url = '%s%s?%s' % (userinfo.baseurl, path, urllib.urlencode(query))
+  response = urllib2.urlopen(url)
   returnData = json.loads(response.read())
-  if returnData['result'] == 'SUCCESS' and len(returnData['data']) > 0:
-    for i in range(0, len(returnData['data'])):
-      returnData['data'][i] = base64.b64decode(returnData['data'][i])
   return returnData
 
-def set(rolename):
-  assert rolename != '', 'wrong rolename'
-  userinfo.rolename = rolename
+def set(role):
+  '''
+    Set role
+    
+    @type   role: string
+    @param  role: role returned by getRoles()
+    
+    @return: None
+  '''
+
+  assert role != '', 'wrong rolename'
+  userinfo.rolename = role
+#  get access token after set role
+  scalex._auth()
+
 

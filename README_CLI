@@ -1,0 +1,15 @@
+CLI has changed to login user oauth client_id and client_secret now.
+use like below:
+
+set client_id CLIENT_ID
+set client_secret CLIENT_SECRET
+
+get companies
+set company 0
+get roles
+set role 0
+get nodes
+get myscripts
+get jobs 0
+get runs 0
+get output 0

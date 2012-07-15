@@ -1,17 +1,27 @@
-import uuid
+'''
+  
+'''
 import scalex
 
-domain = 'https://manage.scalextreme.com'
-rid = str(uuid.uuid4())
-cookie = ''
-username = ''
-password = ''
-userid = ''
+#for Oauth
+client_id = ''
+client_secret = ''
+access_token = ''
+
+domain = 'https://cloudmanage.scalextreme.com'
+baseurl = domain + '/v0'
+
 companyid = ''
 rolename = ''
+userid = ''
 
-def check():
-  assert userid != '', 'you need login first'
-  assert companyid != '','you need setCompany first'
-  assert rolename != '', 'you need setRole first'
-  scalex.relogin()
+import uuid
+rid = str(uuid.uuid4())
+
+def geturl(path, query = {}):
+  assert path != ''
+  import urllib
+  query['access_token'] = access_token
+  query = urllib.urlencode(query)
+  url = baseurl + path + '?' + query
+  return url

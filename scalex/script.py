@@ -1,3 +1,7 @@
+'''
+  @undocumented: __package__
+'''
+
 import urllib
 import urllib2
 import json
@@ -8,334 +12,318 @@ import base64
 from scalex import userinfo
 import scalex
 
-def getScripts(type = 0):
-  '''arguments: type
-    0 is myscripts
-    1 is orgscripts
-    default is 0
+def getScripts(type = ''):
+  '''
+    Get scripts
     
-    RETURN DATA:
-    {
-    "result": "SUCCESS",
-    "data": [
-    {
-    "parentCompanyId": 0,
-    "scriptName": "python_sdk_testcase_scriptname_38882",
-    "parentScriptId": 0,
-    "scriptDescription": "ZGVzY3JpcHRpb24=",
-    "scriptInputParams": [],
-    "role": "Admin",
-    "companyId": 10361,
-    "scriptId": "81",
-    "tagList": [],
-    "user": "10002",
-    "scriptAttachments": [],
-    "version": "1"
-    },
-    '''
-  userinfo.check()
-  operation = ['userscripts', 'orgscripts']
-  if type < 0 or type > len(operation) - 1:
-    return
-  url = userinfo.domain + '/library'
-  value = {
-    'companyid':userinfo.companyid,
-    'role':userinfo.rolename,
-    'user':userinfo.username,
-    'rid':userinfo.rid,
-    'operation':operation[type]
-  }
-  query = urllib.urlencode(value)
-  url = url + '?' + query
-  request = urllib2.Request(url, '')
-  request.add_header('cookie', userinfo.cookie)
+    @type   type: string
+    @param  type: Optional, valid values are B{user}, B{org} or B{purchase}
+    
+    @rtype: list
+    @return: List of scripts
+    
+    @change:
+      - Parameter type now changed. Used to be 0 or 1, now it can be one of B{user}, B{org} and B{purchase}
+  '''
+#    API : /scripts
+#    Method : GET
+#    URL structure : https://<servername>/v0/scripts?access_token=<valid access token>
+#    Input params :
+#    version (optional) parameter
+#    type (optional) 
+#    type=user     Return my scripts
+#    type=org      Return org scripts
+#    type=purchase Return purchase scripts
+
+  assert type in ['', 'user', 'org', 'purchase'], "script type must be one of ['', 'user', 'org', 'purchase']"
+  path = '/scripts'
+  query = {}
+  if type != '':
+    query['type'] = type
+#  elif script != '':
+#    path = '/scripts/' + str(script['scriptId'])
+#    if version != 0:
+#      query['version'] = version
+  url = userinfo.geturl(path, query)
+  request = urllib2.Request(url)
   response = urllib2.urlopen(request)
   returnData = json.loads(response.read())
   return returnData
 
 def getContent(script, version = -1):
   '''
+    Get script content
+    
+    @type   script: dict
+    @param  script: Script returned by getScripts()
+
+    @type   version: int
+    @param  version: Optional
+
+    @rtype: dict
+    @return: Content of script
+    
+    @change: 
+      - Not changed
   '''
-  userinfo.check()
-  if version == -1:
-    #default version
-    version = script['version']
-  payload = {
-    'scriptid': script['scriptId'],
-    'version': version,
+#    API : /scripts/{id}
+#    Method : GET
+#    URL structure : https://<servername>/v0/scripts?access_token=<valid access token>
+#    Input params : version (optional) parameter
+#  '''
+  scriptid = script['scriptId']
+  path = '/scripts/%s' % (str(scriptid))
+  query = {
   }
-  url = userinfo.domain + '/library'
-  value = {
-    'companyid':userinfo.companyid,
-    'user':userinfo.userid,
-    'role':userinfo.rolename,
-    'operation':'scriptcontent',
-    'rid':userinfo.rid
-  }
-  query = urllib.urlencode(value)
-  url = url + '?' + query
-  request = urllib2.Request(url, urllib.urlencode(payload))
-  request.add_header('cookie', userinfo.cookie)
+  if version != -1:
+    query['version'] = version
+  url = userinfo.geturl(path, query)
+  request = urllib2.Request(url)
   response = urllib2.urlopen(request)
   returnData = json.loads(response.read())
   return returnData
 
 def getVersions(script):
-  #ttps://manage.scalextreme.com/library?rid=70E1FA13-7F7D-49CE-87DA-9FBF5A9484B7&companyid=10274&user=10002&role=Admin&operation=scriptversions
-  userinfo.check()
-  url = userinfo.domain + '/library'
-  payload = {
-    'scriptid': script['scriptId'],
+  '''
+    Get script content
+    
+    @type   script: dict
+    @param  script: Script returned by getScripts()
+    
+    @rtype: list
+    @return: Versions of specific script
+    
+    @change: 
+      - Not changed
+  '''
+#    API : /scripts/versions?id=1234
+#    Method : GET
+#  '''
+  path = '/scripts/%s/versions' % (str(script['scriptId']))
+  query = {
   }
-  value = {
-   'companyid':userinfo.companyid,
-   'user':userinfo.userid,
-   'role':userinfo.rolename,
-   'operation':'scriptversions',
-   'rid':userinfo.rid
-  }
-  query = urllib.urlencode(value)
-  url = url + '?' + query
-  request = urllib2.Request(url, urllib.urlencode(payload))
-  request.add_header('cookie', userinfo.cookie)
+  url = userinfo.geturl(path, query)
+  request = urllib2.Request(url)
   response = urllib2.urlopen(request)
   returnData = json.loads(response.read())
   return returnData
 
-def run(name, script, targets, targetType = 'node', version = -1, arguments = [], scheduleType = 0, startTime = 0, repeatInterval = 60, endTime = 0, repeatCount = 0, cronExpr = None, timeZone = 'FIXME', scriptType = None):
+def run(name, script, targets, arguments = [], type = 'script', version = -1, serverGroups = [], 
+        scheduleType = 0, startTime = 0, repeatInterval = 60, endTime = 0, repeatCount = 0):
   '''
-  targetType : valid values are node and group
-  scheduleType: 0, Run Once
-                1, Recurring
-                2, Cron Schedule (Advanced)
-  '''
-  userinfo.check()
-  if version == -1:
-    # default version
-    version = script['version']
-  # 
-  type = [12, 14, 2]
-  if scheduleType == 0:
-    if startTime != 0:
-      d = datetime.datetime.strptime(startTime, "%Y-%m-%d-%H:%M")
-      startTime = int(time.mktime(d.timetuple())*1000)
-  elif scheduleType == 1:
-    if repeatCount == 0 and endTime == 0:
-      #wrong
-      pass
-    if endTime != 0:
-      d = datetime.datetime.strptime(endTime, "%Y-%m-%d-%H:%M")
-      endTime = int(time.mktime(d.timetuple())*1000)
-    pass
-  elif scheduleType == 2:
-    #nothing to do 
-    pass
-  else:
-    #wrong argument
-    pass
-  #  if len(arguments) == 0:
-  #    #FIXME
-  #    params = getContent(scriptid, version)['data']
-  #    for p in params['scriptInputParams']:
-  #      arguments.append(p['parameterDefaultValue'])
-  assert targetType in ['node', 'group'], 'targetType must be node or group'
-  if targetType == 'group':
-    nodes = []
-    for target in targets:
-      groupNodes = scalex.node.getNodesOfGroup(target)['data']
-      if groupNodes != []:
-        nodes += groupNodes
-    targets = nodes
-  if not isinstance(targets, list):
-    t = targets
-    targets = []
-    targets.append(t)
-  agents = []
-  for n in targets:
-    # user can call this function with GROUP_node
-    try:
-      agents.append(n['agentId'])
-    except:
-      agents = targets
-  agents = list(set(agents))
-  payload = {
-    "companyId": userinfo.companyid,
-    "user": userinfo.userid,
-    "role": userinfo.rolename,
-    "scriptId": script['scriptId'],
-    "version": str(version),
-    "scriptArgs": arguments,
-    "targets": agents,
-    "destInstallDir": None,
-    "scheduleType": type[scheduleType],
-    "startTime": startTime,
-    "endTime": endTime,
-    "repeatCount": repeatCount,
-    "repeatInterval": repeatInterval,
-    "cronExpr": cronExpr,
-    "timeZone": timeZone,
-    "name": name,
-    "description": name,
-    "jobId": 0,
-    "jobName": None,
-    "scriptType": scriptType
-  }
-  postData = 'operation=runscript&payload=' + json.dumps(payload)
-  url = userinfo.domain + '/managescript?rid=' + userinfo.rid
-  request = urllib2.Request(url, postData)
-  request.add_header('cookie', userinfo.cookie)
-  response = urllib2.urlopen(request)
-  returnData = json.loads(response.read())
-  return returnData
+    Run script
+    
+    @todo: Version support
+    
+    @type   name: string
+    @param  name: Job Name 
+    
+    @type   script: dict
+    @param  script: Script returned by getScripts()
+    
+    @param  targets: Targets returned by scalex.node.getNodes() or a single node.
+    
+    @type   arguments: list
+    @param  arguments: Arguments of the script, default is []
+    
+    @type   type: string
+    @param  type: Job type, default is 'script'
+    
+    @type   version: int
+    @param  version: Version of script
+    
+    @type   serverGroups: list
+    @param  serverGroups: Server groups of node
+    
+    @type   scheduleType: int
+    @param  scheduleType: Schedule type of job, default is 0, valid values are:
+      - B{0}, Run Once
+      - B{1}, Recurring
+    
+    @param  startTime: Start time formatted like B{2012-12-12-00:00}, default is now, 
 
-def _isNameExists(name):
+    @param  repeatInterval: Repeat interval of recurring schedule, default is 60 mins. 
+
+    @param  endTime: End time of recurring schedule, formatted like B{2012-12-12-00:00}. You must specify this argument if you want to schedule a recurring job and with a repeat interval.
+
+    @type   repeatCount: int
+    @param  repeatCount: Repeat count of a recurring scheduled job.
+    
+    @rtype: dict
+    @return: Job just scheduled
+    
+    @change: 
+      - Delete Cron Expression support
+
   '''
-    https://manage.scalextreme.com/library/scriptexists?rid=0&companyid=10274&user=10002&role=Admin
-  '''
-  postData = 'scriptname=' + name
-  url = userinfo.domain + '/library/scriptexists'
-  value = {
-    'companyid':userinfo.companyid,
-    'user':userinfo.userid,
-    'role':userinfo.rolename,
-    'rid':userinfo.rid
-  }
-  query = urllib.urlencode(value)
-  url = url + '?' + query
-  request = urllib2.Request(url, postData)
-  request.add_header('cookie', userinfo.cookie)
-  response = urllib2.urlopen(request)
-  exists = False
-  if json.loads(response.read())['data'] == 'Y':
-    exists = True
-  return exists
+  return scalex.job.create(name, script, targets, arguments, type, version, serverGroups,
+                           scheduleType, startTime, repeatInterval, endTime, repeatCount)
 
 def create(name, type, content, description = '', params = [], tags = []):
   '''
-    params format
-    [
-    {"parameterKey":"first int key", "parameterDefaultValue":"1", "parameterDataType":"int", "description":"desc", "requiredFlag":"Y"},
-    {"parameterKey":"second str key", "parameterDefaultValue":"string2",  "parameterDataType":"string", "description":"desc", "requiredFlag":"Y"},
-    ]
-    scripttags	[{"tagName":"amazon ec2", "tagType":null, "activeFlag":null},]
+    Create a script
+    
+    @todo: params and tags not implement
+    
+    @type   name: string
+    @param  name: Script Name 
+    
+    @type   type: string
+    @param  type: Script type(filename extension)
+    
+    @type   content: string
+    @param  content: Script content
+    
+    @type   description: string
+    @param  description: Script description
+    
+    @rtype: dict
+    @return: script just created
+    
+    @change:
+      - Not changed
   '''
-  userinfo.check()
-
-  #FIXME, no script attachments
-  #ttps://manage.scalextreme.com/library?rid=411C2ECD-BDD0-4F61-9F37-E3718F02E084
   
-  if _isNameExists(name):
-    # FIXME, name exists
-    return
-  parameters = []
-  d = { "taskId":0, "taskParameterId":0, "parameterType":"INPUT", "parameterValue":None }
-  if params != []:
-    i = 1
-    for p in params:
-      for k in p:
-        d[k] = p[k]
-      d['sequenceNumber'] = i
-      i += 1
-      parameters.append(d)
-      
-  url = userinfo.domain + '/library?rid=' + userinfo.rid
-  value = {
-    'companyid':userinfo.companyid,
-    'operation':'createscript',
-    'user':userinfo.userid,
-    'role':userinfo.rolename,
-    'scriptname':name,
-    'scripttype':type,
-    'scriptcontent':base64.b64encode(content),
-    'scriptdescription':base64.b64encode(description),
-    'scripttags':tags,
-    'scriptparams':parameters,
-    #
-    'inputparams':0,
-    'parentCompanyId':0,
-    'parentScriptId':0,
+#FIXME, no script attachments, no tags, no params
+#ttps://manage.scalextreme.com/library?rid=411C2ECD-BDD0-4F61-9F37-E3718F02E084
+#    API : /scripts
+#    Method : POST
+#    URL Structure: https://<servername>/v0/scripts?access_token=<valid token generated by authentication>
+#    Input : Json payload like 
+#    {
+#    "scriptName":"Test script",
+#    "scriptType":"bat",
+#    "scriptDescription":"",
+#    "scriptInputParams":[],
+#    "tagList":[],
+#    "scriptAttachments":[],
+#    "scriptContent":"bGluZTEKbGluZTIKbGluZTMKbGluZTQKbGluZTUKZWNobyAnSGknCg=="
+#    }
+#  '''
+  
+  path = '/scripts'
+  url = userinfo.geturl(path)
+  payload = {
+    "scriptName":name,
+    "scriptType":type,
+    "scriptDescription":base64.b64encode(description),
+    "scriptInputParams":[],
+    "tagList":[],
+    "scriptAttachments":[],
+    "scriptContent":base64.b64encode(content),
   }
-  request  = urllib2.Request(url, urllib.urlencode(value))
-  request.add_header('cookie', userinfo.cookie)
+  postData = json.dumps(payload)
+  request = urllib2.Request(url, postData)
+  request.add_header('Content-Type', 'application/json')
   response = urllib2.urlopen(request)
   returnData = json.loads(response.read())
   return returnData
 
-def delete(script):
-  # ://manage.scalextreme.com/library?rid=a&companyid=10476&user=10473&role=Admin&operation=deletescript&scriptid=115
-  #FIXME, 
-  userinfo.check()
+def delete(script = '', type = ''):
+  '''
+    Delete a script or a group of scripts
+    
+    @todo: Add return info about this API
+    
+    @type   script: dict
+    @param  script: Script returned by getScripts()
+    
+    @type   type: string
+    @param  type: Valid values are B{user}, B{org} or B{purchase}
+    
+    @change:
+      - Add parameter B{type}, you can delete a group of scripts now.
+  '''
 
-  url = userinfo.domain + '/library'
-  value = {
-    'companyid':userinfo.companyid,
-    'user':userinfo.userid,
-    'role':userinfo.rolename,
-    'operation':'deletescript',
-    'scriptid':script['scriptId'],
-    'rid':userinfo.rid
-  }
-  query = urllib.urlencode(value)
-  url = url + '?' + query
-  request  = urllib2.Request(url, '')
-  request.add_header('cookie', userinfo.cookie)
+#    API : /scripts/1234
+#    Method : DELETE
+#    /scripts?type=user      Delete user scripts
+#    /scripts?type=org       Delete org scripts
+#    /scripts?type=purchase  Delete purchase scripts
+  
+  path = '/scripts'
+  query = {}
+  if script != '':
+    path = path + '/' + str(script['scriptId'])
+  else:
+    assert type in ['user', 'org', 'purchase'], 'wrong script type'
+    query['type'] = type
+  url = userinfo.geturl(path, query)
+  request = urllib2.Request(url)
+  request.get_method = lambda: 'DELETE'
   response = urllib2.urlopen(request)
   returnData = json.loads(response.read())
   return returnData
-
-#def create(name, type, content, description = '', params = [], tags = []):
 
 def update(script, name = '', type = '', content = '', description = '', params = [], tags = [] ):
-  # ://manage.scalextreme.com/library?rid=a&companyid=10476&user=10473&role=Admin&operation=deletescript&scriptid=115
-  #FIXME, no script attachments
-  #ttps://manage.scalextreme.com/library?rid=411C2ECD-BDD0-4F61-9F37-E3718F02E084
-  #Session expired
-  userinfo.check()
-
-  url = userinfo.domain + '/library?rid=' + userinfo.rid
-  content = base64.b64encode(content)
-  description = base64.b64encode(description)
-  scriptDetail = scalex.script.getContent(script)['data']
-  if not name:
+  '''
+    Update a script
+    
+    @todo: params and tags not implement
+    
+    @type   script: dict
+    @param  script: Script will be updated
+    
+    @type   name: string
+    @param  name: Script Name 
+    
+    @type   type: string
+    @param  type: Script type(filename extension)
+    
+    @type   content: string
+    @param  content: Script content
+    
+    @type   description: string
+    @param  description: Script description
+    
+    @rtype: dict
+    @return: script just created
+    
+    @change:
+      - Not changed
+  '''
+    
+#    API : /scripts/1234
+#    Method : POST
+#    URL Structure: https://<servername>/v0/scripts?access_token=<valid token generated by authentication>
+#    Input : Json payload like 
+#    {
+#    "scriptName":"Test script",
+#    "scriptType":"bat",
+#    "scriptDescription":"",
+#    "scriptInputParams":[],
+#    "tagList":[],
+#    "scriptAttachments":[],
+#    "scriptContent":"bGluZTEKbGluZTIKbGluZTMKbGluZTQKbGluZTUKZWNobyAnSGknCg=="
+#    }
+#  '''def update(script, name = '', type = '', content = '', description = '', params = [], tags = [] ):
+#  FIXME, no script attachments, incomplete params/tags/attachments
+  path = '/scripts/' + str(script['scriptId'])
+  parameters = []
+  url = userinfo.geturl(path)
+  script = getContent(script)
+  # script contents
+  if name == '':
     name = script['scriptName']
-  if not type:
-    type = scriptDetail['scriptType']
-  if not content:
-    content = scriptDetail['scriptContent'] 
-  if not description:
-    description = scriptDetail['scriptDescription'] 
-  if not params:
-    params = scriptDetail['scriptInputParams'] 
-  if not tags:
-    tags = scriptDetail['scriptTags'] 
-  value = {
-    'companyid':userinfo.companyid,
-    'operation':'updatescript',
-    'user':userinfo.userid,
-    'role':userinfo.rolename,
-    'scriptid':script['scriptId'],
-    'version':script['version'],
-    'scriptname':name,
-    'scripttype':type,
-    'scriptcontent':content,
-    'scriptdescription':description,
-    'scripttags':tags,
-    'scriptparams':params,
-    'scriptlocation':scriptDetail['scriptLocation'],
-    #
-    'inputparams':scriptDetail['inputParams'],
-    'parentCompanyId':scriptDetail['parentCompanyId'],
-    'parentScriptId':scriptDetail['parentScriptId'],
-    'purchasedFlag':scriptDetail['purchasedFlag'],
-    'parentScriptId':scriptDetail['parentScriptId'],
-    'sharedFlag':scriptDetail['sharedFlag'],
-    'viewableflag':scriptDetail['viewableFlag'],
+  if type == '':
+    type = script['scriptType']
+  if content == '':
+    content = script['scriptContent']
+  else:
+    content = base64.b64encode(content)
+  payload = {
+    "scriptName":name,
+    "version":script['version'],
+    "scriptType":type,
+    "scriptDescription":base64.b64encode(description),
+    "scriptInputParams":[],
+    "tagList":[],
+    "scriptAttachments":[],
+    "scriptContent":content,
   }
-  request  = urllib2.Request(url, urllib.urlencode(value))
-  request.add_header('cookie', userinfo.cookie)
+  postData = json.dumps(payload)
+  request = urllib2.Request(url, postData)
+  request.add_header('Content-Type', 'application/json')
   response = urllib2.urlopen(request)
   returnData = json.loads(response.read())
   return returnData
-
-
-

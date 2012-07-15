@@ -1,0 +1,9 @@
+We use nose for test
+
+Install nose using setuptools/distribute:
+$easy_install nose
+Or pip:
+$pip install nose
+
+usage: 
+$nosetests
