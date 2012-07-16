@@ -357,9 +357,12 @@ class scalex_cmd(cmd.Cmd):
           print 'index:[%d] jobname: %s' % (self.updateJobs.index(i), i['jobName'])
       elif param[0] == 'audits':
         node = self.nodes[int(param[1])]
+        if 'Linux' not in str(node):
+          print 'Not a Linux node'
+          return
         self.audits = scalex.node.getAudits(node)
         for audit in self.audits:
-          print 'name: ', audit['name']
+          print 'status: %s\t message: %s' % (audit['auditLevel'], audit['auditDesc'])                                                                    
       else:
         self.help_get()
     except Exception,e:

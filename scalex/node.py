@@ -80,22 +80,18 @@ def getPatches(node):
     '''
   return getUpdates(node)
 
-def getAudits(node, type = 'updates'):
+def getAudits(node):
   '''
-    Get a list of Audit for a single node
+    Get a list of Audit for a Linux node
     
-    @param node: A node
+    @param node: A Linux node
     
-    @type   type: string
-    @param  type: Optional, default value is B{updates}, valid values:
-      - B{updates}
-
     @rtype: list
     @return: list of audits
 
   '''
   agentid = node['agentId']
-  path = '/nodes/%s/%s' % (str(agentid), str(type))
+  path = '/nodes/%s/audit' % (str(agentid))
   query = {}
 #  if type != '':
 ##    FIXME, add assert
