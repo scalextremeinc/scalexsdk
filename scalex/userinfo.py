@@ -8,7 +8,7 @@ client_id = ''
 client_secret = ''
 access_token = ''
 
-domain = 'https://cloudmanage.scalextreme.com'
+domain = 'https://manage.scalextreme.com'
 baseurl = domain + '/v0'
 
 companyid = ''
