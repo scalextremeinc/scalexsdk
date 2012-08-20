@@ -25,6 +25,7 @@ import role
 import node
 import job
 import script
+import template
 import userinfo
 
 __version__ = '0.6'
