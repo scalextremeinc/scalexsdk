@@ -1,6 +1,9 @@
 '''
   @undocumented: __package__
+  
+  
   '''
+
 import urllib
 import urllib2
 import json
@@ -15,7 +18,7 @@ def getTemplates():
     
     @rtype: list
     @return: list of templates
-    '''
+  '''
   
   path = '/templates'
   url = userinfo.geturl(path)
@@ -26,10 +29,13 @@ def getTemplates():
 
 def getInfo(template):
   '''
-    Get process info about the template
+    Get template info
     
+    @type   template: dict
+    @param  template: template object returned by getTemplates()
+
     @rtype: dict
-    '''
+  '''
   
   path = '/templates/' + str(template['processId'])
   url = userinfo.geturl(path)
@@ -38,19 +44,75 @@ def getInfo(template):
   returnData = json.loads(response.read())
   return returnData
 
-def launch(template, parameter = ''):
+def getParameters(template):
   '''
-    FIXME, not complete, no parameter support
-    '''
+    Get template parameters
+    
+    @type   template: dict
+    @param  template: template object returned by getTemplates()
+
+    @rtype: list
+  '''
+  
+  info = getInfo(template)
+  params = []
+  for a in info['tasks']:
+    scriptObject = {'scriptId': a['parentTaskId']}
+    scriptContent = script.getContent(scriptObject)
+    scriptParams = scriptContent['scriptInputParams']
+    for b in scriptParams:
+      b['parameterValue'] = b['parameterDefaultValue']
+    paramInfo = {
+      'scriptId': a['parentTaskId'],
+      'taskName': scriptContent['scriptName'],
+      'taskParameters': scriptParams
+    }
+    params.append(paramInfo)
+  return params
+
+def launch(template, targets = [], parameter = []):
+  '''
+    Launch a template
+    
+    @type   template: dict
+    @param  template: template object returned by getTemplates()
+    
+    @type   targets: list
+    @param  targets: target node list, node returned by node.getNodes()
+    
+    @type   parameter: list
+    @param  parameter: parameters of template
+    
+    @rtype: dict
+  '''
   #  HTTP Method: GET when launch without any script parameters
   #  HTTP Method: POST when launch with any script parameters
   path = '/templates/%s/launch' % (str(template['processId']))
   url = userinfo.geturl(path)
   #  
   postData = None
-  if parameter != '':
-    pass
+  info = getInfo(template)
+#  targets
+  if not isinstance(targets, list):
+    t = targets
+    targets = []
+    targets.append(t)
+  agents = []
+  for n in targets:
+    agents.append(n['nodeId'])
+  info['targets'] = list(set(info['targets'] + agents))
+#  parameter
+  if parameter != []:
+    for a in parameter:
+      for b in info['tasks']:
+        if a['scriptId'] == b['parentTaskId']:
+          b['taskParameters'] = a['taskParameters']
+          break
+#    
+  postData = json.dumps(info)
+#
   request = urllib2.Request(url, postData)
+  request.add_header('Content-Type', 'application/json')
   response = urllib2.urlopen(request)
   returnData = json.loads(response.read())
   return returnData

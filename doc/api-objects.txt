@@ -17,6 +17,7 @@ scalex.node	scalex.node-module.html
 scalex.node.getAudits	scalex.node-module.html#getAudits
 scalex.node.getNodesOfGroup	scalex.node-module.html#getNodesOfGroup
 scalex.node.getGroups	scalex.node-module.html#getGroups
+scalex.node.getNodeInfo	scalex.node-module.html#getNodeInfo
 scalex.node.applyUpdates	scalex.node-module.html#applyUpdates
 scalex.node.getAllAgentsWithPatch	scalex.node-module.html#getAllAgentsWithPatch
 scalex.node.getNodes	scalex.node-module.html#getNodes
@@ -42,4 +43,5 @@ scalex.template._getTasks	scalex.template-module.html#_getTasks
 scalex.template.update	scalex.template-module.html#update
 scalex.template.launch	scalex.template-module.html#launch
 scalex.template.getTemplates	scalex.template-module.html#getTemplates
+scalex.template.getParameters	scalex.template-module.html#getParameters
 scalex.template.delete	scalex.template-module.html#delete

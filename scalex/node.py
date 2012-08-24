@@ -51,6 +51,15 @@ def getNodes(platform = '', status = ''):
   returnData = json.loads(response.read())
   return returnData
 
+def getNodeInfo(nodeId):
+  '''
+  '''
+  path = '/nodes/' + str(nodeId)
+  url = userinfo.geturl(path)
+  response = urllib2.urlopen(url)
+  returnData = json.loads(response.read())
+  return returnData
+
 def getUpdates(node):
   '''
     Get updates of a given node

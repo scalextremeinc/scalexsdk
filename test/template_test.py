@@ -10,11 +10,6 @@ def normalFunction():
   scalex.template.getInfo(templates[0])
 #  scalex.template.launch(templates[0])
 
-# getContent()
-# getVersions()
-# run()
-# update()
-# delete()
 def CRUD():
   scripts = scalex.script.getScripts()
 #  

@@ -85,8 +85,8 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="getInfo"></a><span class="summary-sig-name">getInfo</span>(<span class="summary-sig-arg">template</span>)</span><br />
-      Get process info about the template</td>
+          <td><span class="summary-sig"><a href="scalex.template-module.html#getInfo" class="summary-sig-name">getInfo</a>(<span class="summary-sig-arg">template</span>)</span><br />
+      Get template info</td>
           <td align="right" valign="top">
             
             
@@ -98,13 +98,31 @@
   </tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
+      <span class="summary-type">list</span>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="launch"></a><span class="summary-sig-name">launch</span>(<span class="summary-sig-arg">template</span>,
-        <span class="summary-sig-arg">parameter</span>=<span class="summary-sig-default"><code class="variable-quote">'</code><code class="variable-string"></code><code class="variable-quote">'</code></span>)</span><br />
-      FIXME, not complete, no parameter support</td>
+          <td><span class="summary-sig"><a href="scalex.template-module.html#getParameters" class="summary-sig-name">getParameters</a>(<span class="summary-sig-arg">template</span>)</span><br />
+      Get template parameters</td>
+          <td align="right" valign="top">
+            
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">dict</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="scalex.template-module.html#launch" class="summary-sig-name">launch</a>(<span class="summary-sig-arg">template</span>,
+        <span class="summary-sig-arg">targets</span>=<span class="summary-sig-default"><code class="variable-group">[</code><code class="variable-group">]</code></span>,
+        <span class="summary-sig-arg">parameter</span>=<span class="summary-sig-default"><code class="variable-group">[</code><code class="variable-group">]</code></span>)</span><br />
+      Launch a template</td>
           <td align="right" valign="top">
             
             
@@ -200,6 +218,82 @@
   <dl class="fields">
     <dt>Returns: list</dt>
         <dd>list of templates</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="getInfo"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">getInfo</span>(<span class="sig-arg">template</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    >&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Get template info</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>template</code></strong> (dict) - template object returned by getTemplates()</li>
+    </ul></dd>
+    <dt>Returns: dict</dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="getParameters"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">getParameters</span>(<span class="sig-arg">template</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    >&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Get template parameters</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>template</code></strong> (dict) - template object returned by getTemplates()</li>
+    </ul></dd>
+    <dt>Returns: list</dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="launch"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">launch</span>(<span class="sig-arg">template</span>,
+        <span class="sig-arg">targets</span>=<span class="sig-default"><code class="variable-group">[</code><code class="variable-group">]</code></span>,
+        <span class="sig-arg">parameter</span>=<span class="sig-default"><code class="variable-group">[</code><code class="variable-group">]</code></span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    >&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Launch a template</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>template</code></strong> (dict) - template object returned by getTemplates()</li>
+        <li><strong class="pname"><code>targets</code></strong> (list) - target node list, node returned by node.getNodes()</li>
+        <li><strong class="pname"><code>parameter</code></strong> (list) - parameters of template</li>
+    </ul></dd>
+    <dt>Returns: dict</dt>
   </dl>
 </td></tr></table>
 </div>
@@ -317,7 +411,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Mon Aug 20 22:55:43 2012
+    Generated by Epydoc 3.0.1 on Fri Aug 24 20:23:26 2012
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

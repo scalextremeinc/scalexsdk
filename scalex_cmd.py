@@ -26,6 +26,7 @@ class scalex_cmd(cmd.Cmd):
   patchJobs = []
   updateJobs = []
   audits = []
+  templates = []
   
   currentWindows = ''
   currentUnix = ''
@@ -63,6 +64,7 @@ class scalex_cmd(cmd.Cmd):
       print "\t script"
       print "\t job"
       print "\t apply"
+      print "\t template"
       print "\t exit"
       print "help COMMAND for more information on a specific command."
     return
@@ -72,7 +74,10 @@ class scalex_cmd(cmd.Cmd):
 
   def help_job(self):
     print "job cancel INDEX"
-  
+  def help_template(self):
+    print "template info INDEX"
+    print 'template launch INDEX [targets=NODE_INDEX,NODE_INDEX] [parameters=COMMA,SEPARATED,VALUES]'
+
   def help_get(self):
     print "get companies => get companies"
     print "get roles => get roles"
@@ -90,6 +95,8 @@ class scalex_cmd(cmd.Cmd):
     print 'get patches INDEX => get missing patches for a node'
     print 'get updatejobs => get all update jobs'
     print 'get patchjobs => get all patch jobs'
+    print 'get templates => get all templates'
+    
   
   def help_set(self):
     print 'set company INDEX'
@@ -181,6 +188,11 @@ class scalex_cmd(cmd.Cmd):
         self.roles = roles
         for i in roles:
           print 'index: [%d] %s' % (roles.index(i), i)
+      elif ( param[0] == "templates" ):
+        templates = scalex.template.getTemplates();
+        self.templates = templates
+        for i in templates:
+          print 'index: [%d] %s' % (templates.index(i), i['processName'])
       elif ( param[0] == "myscripts" ):
         scripts = scalex.script.getScripts(type='user');
         self.scripts = scripts
@@ -191,7 +203,6 @@ class scalex_cmd(cmd.Cmd):
         self.scripts = scripts
         for i in scripts:
           print 'index: [%d] name: %s' % (scripts.index(i), i['scriptName'])
-      
       elif ( param[0] == "jobs" ):
         if len(param) < 2:
           self.help_get() 
@@ -201,7 +212,6 @@ class scalex_cmd(cmd.Cmd):
         self.jobs = jobs
         for i in jobs:
           print 'index: [%d] name: %s' % (jobs.index(i), i['jobName'])
-      
       elif ( param[0] == "runs" ):
         if len(param) < 2:
           self.help_get()
@@ -210,7 +220,6 @@ class scalex_cmd(cmd.Cmd):
         self.runs = scalex.job.getRuns(job);
         for i in self.runs:
           print 'index: [%d] status: %s task name: %s' % (self.runs.index(i), i['status'], job['jobName'])
-      
       elif param[0] == 'arguments':
         if len(param) < 2:
           self.help_get()
@@ -368,6 +377,61 @@ class scalex_cmd(cmd.Cmd):
     except Exception,e:
       print "Unknown Error:" , e
   
+  def do_template(self, s):
+    try:
+      param = s.split()
+      if len(param) < 2:
+        self.help_template()
+      elif param[0] == "info":
+        i = int(param[1])
+        template = self.templates[i]
+#       Provider
+        templateInfo = scalex.template.getInfo(template)
+        targets = templateInfo['targets']
+        print 'Existing Servers Total:(%d)' % (len(targets))
+        for t in targets:
+          node = scalex.node.getNodeInfo(t)
+          print ' node:', node['nodeName']
+#       Scripts     
+        parameters = scalex.template.getParameters(template)
+        print '\nScripts:(%d)' % (len(parameters))
+        for a in parameters:
+          print 'Script:', a['taskName']
+          for b in a['taskParameters']:
+            print '--------------------------------'
+            print ' Parameter:     ', b['parameterKey']
+            print ' Data Type:     ', b['parameterDataType']
+            print ' Default Value: ', b['parameterDefaultValue']
+            print ' Required:      ', b['requiredFlag']
+          print '--------------------------------'
+      elif param[0] == 'launch':
+#       targets and parameters
+        i = int(param[1])
+        template = self.templates[i]
+        templateInfo = scalex.template.getInfo(template)
+        parameters = scalex.template.getParameters(template)
+        agents = []
+        taskParameters = []
+        for a in param[2:]:
+          parameter = a.split('=')
+          if parameter[0] == 'targets':
+            agents = parameter[1].split(',')
+            for i in range(0, len(agents)):
+              agents[i] = int(i)
+          if parameter[0] == 'parameter':
+            taskParameters = parameter[1].split(',')
+            index = 0
+            for a in parameters:
+              print 'Script:', a['taskName']
+              for b in a['taskParameters']:
+                if index < len(taskParameters):
+                  b['parameterValue']  = taskParameters[index]
+                  index += 1
+#        launch
+        print scalex.template.launch(template, agents, taskParameters)
+    except Exception, e:
+      print 'Unknown Error:', e
+        
   def do_script(self,s):
     try :
       param = s.split()
@@ -416,6 +480,7 @@ class scalex_cmd(cmd.Cmd):
       print result
     except:
       pass
+
   def do_apply(self,s):
     try:
       param = s.split()
