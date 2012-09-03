@@ -26,6 +26,7 @@ import node
 import job
 import script
 import template
+import budget
 import userinfo
 
 __version__ = '0.6'

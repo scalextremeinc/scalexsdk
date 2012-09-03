@@ -2,6 +2,15 @@ scalex	scalex-module.html
 scalex._auth	scalex-module.html#_auth
 scalex.setClientId	scalex-module.html#setClientId
 scalex.setClientSecret	scalex-module.html#setClientSecret
+scalex.budget	scalex.budget-module.html
+scalex.budget.getLimitBean	scalex.budget-module.html#getLimitBean
+scalex.budget._getUsers	scalex.budget-module.html#_getUsers
+scalex.budget.getInfo	scalex.budget-module.html#getInfo
+scalex.budget.create	scalex.budget-module.html#create
+scalex.budget.update	scalex.budget-module.html#update
+scalex.budget._getRoles	scalex.budget-module.html#_getRoles
+scalex.budget.getBudgets	scalex.budget-module.html#getBudgets
+scalex.budget.delete	scalex.budget-module.html#delete
 scalex.company	scalex.company-module.html
 scalex.company.set	scalex.company-module.html#set
 scalex.company.getCompanies	scalex.company-module.html#getCompanies
