@@ -27,6 +27,9 @@ import job
 import script
 import template
 import budget
+import provider
+import group
+import monitor
 import userinfo
 
 __version__ = '0.6'
