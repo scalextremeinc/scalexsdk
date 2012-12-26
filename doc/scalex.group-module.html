@@ -3,7 +3,7 @@
           "DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-  <title>scalex.template</title>
+  <title>scalex.group</title>
   <link rel="stylesheet" href="epydoc.css" type="text/css" />
   <script type="text/javascript" src="epydoc.js"></script>
 </head>
@@ -38,7 +38,7 @@
     <td width="100%">
       <span class="breadcrumbs">
         <a href="scalex-module.html">Package&nbsp;scalex</a> ::
-        Module&nbsp;template
+        Module&nbsp;group
       </span>
     </td>
     <td>
@@ -46,14 +46,14 @@
         <!-- hide/show private -->
         <tr><td align="right"><span class="options"
             >[<a href="frames.html" target="_top">frames</a
-            >]&nbsp;|&nbsp;<a href="scalex.template-module.html"
+            >]&nbsp;|&nbsp;<a href="scalex.group-module.html"
             target="_top">no&nbsp;frames</a>]</span></td></tr>
       </table>
     </td>
   </tr>
 </table>
 <!-- ==================== MODULE DESCRIPTION ==================== -->
-<h1 class="epydoc">Module template</h1><p class="nomargin-top"></p>
+<h1 class="epydoc">Module group</h1><p class="nomargin-top"></p>
 <!-- ==================== FUNCTIONS ==================== -->
 <a name="section-Functions"></a>
 <table class="summary" border="1" cellpadding="3"
@@ -68,8 +68,8 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="scalex.template-module.html#getTemplates" class="summary-sig-name">getTemplates</a>()</span><br />
-      Get list of templates</td>
+          <td><span class="summary-sig"><a href="scalex.group-module.html#getGroups" class="summary-sig-name">getGroups</a>()</span><br />
+      Get list of groups</td>
           <td align="right" valign="top">
             
             
@@ -85,8 +85,8 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="scalex.template-module.html#getInfo" class="summary-sig-name">getInfo</a>(<span class="summary-sig-arg">template</span>)</span><br />
-      Get template info</td>
+          <td><span class="summary-sig"><a href="scalex.group-module.html#getInfo" class="summary-sig-name">getInfo</a>(<span class="summary-sig-arg">budget</span>)</span><br />
+      Gets budget information for a particular budget</td>
           <td align="right" valign="top">
             
             
@@ -102,8 +102,8 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="scalex.template-module.html#getParameters" class="summary-sig-name">getParameters</a>(<span class="summary-sig-arg">template</span>)</span><br />
-      Get template parameters</td>
+          <td><span class="summary-sig"><a href="scalex.group-module.html#getLimitBean" class="summary-sig-name">getLimitBean</a>(<span class="summary-sig-arg">budgetLevel</span>)</span><br />
+      Get limit bean for the given budgetLevel</td>
           <td align="right" valign="top">
             
             
@@ -119,30 +119,15 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="scalex.template-module.html#launch" class="summary-sig-name">launch</a>(<span class="summary-sig-arg">template</span>,
-        <span class="summary-sig-arg">targets</span>=<span class="summary-sig-default"><code class="variable-group">[</code><code class="variable-group">]</code></span>,
-        <span class="summary-sig-arg">parameter</span>=<span class="summary-sig-default"><code class="variable-group">[</code><code class="variable-group">]</code></span>)</span><br />
-      Launch a template</td>
-          <td align="right" valign="top">
-            
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">dict</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a href="scalex.template-module.html#create" class="summary-sig-name">create</a>(<span class="summary-sig-arg">name</span>=<span class="summary-sig-default"><code class="variable-quote">'</code><code class="variable-string"></code><code class="variable-quote">'</code></span>,
-        <span class="summary-sig-arg">targets</span>=<span class="summary-sig-default"><code class="variable-group">[</code><code class="variable-group">]</code></span>,
+          <td><span class="summary-sig"><a href="scalex.group-module.html#create" class="summary-sig-name">create</a>(<span class="summary-sig-arg">name</span>=<span class="summary-sig-default"><code class="variable-quote">'</code><code class="variable-string"></code><code class="variable-quote">'</code></span>,
         <span class="summary-sig-arg">description</span>=<span class="summary-sig-default"><code class="variable-quote">'</code><code class="variable-string"></code><code class="variable-quote">'</code></span>,
-        <span class="summary-sig-arg">scripts</span>=<span class="summary-sig-default"><code class="variable-group">[</code><code class="variable-group">]</code></span>)</span><br />
-      Create a template</td>
+        <span class="summary-sig-arg">providerAccountId</span>=<span class="summary-sig-default">-999</span>,
+        <span class="summary-sig-arg">periodType</span>=<span class="summary-sig-default"><code class="variable-quote">'</code><code class="variable-string">monthly</code><code class="variable-quote">'</code></span>,
+        <span class="summary-sig-arg">budgetLevel</span>=<span class="summary-sig-default"><code class="variable-quote">'</code><code class="variable-string">org</code><code class="variable-quote">'</code></span>,
+        <span class="summary-sig-arg">startTime</span>=<span class="summary-sig-default">0</span>,
+        <span class="summary-sig-arg">endTime</span>=<span class="summary-sig-default">0</span>,
+        <span class="summary-sig-arg">limits</span>=<span class="summary-sig-default"><code class="variable-group">{</code><code class="variable-group">}</code></span>)</span><br />
+      Create a budget</td>
           <td align="right" valign="top">
             
             
@@ -158,12 +143,14 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="scalex.template-module.html#update" class="summary-sig-name">update</a>(<span class="summary-sig-arg">template</span>,
+          <td><span class="summary-sig"><a href="scalex.group-module.html#update" class="summary-sig-name">update</a>(<span class="summary-sig-arg">budget</span>,
         <span class="summary-sig-arg">name</span>=<span class="summary-sig-default"><code class="variable-quote">'</code><code class="variable-string"></code><code class="variable-quote">'</code></span>,
-        <span class="summary-sig-arg">targets</span>=<span class="summary-sig-default"><code class="variable-group">[</code><code class="variable-group">]</code></span>,
         <span class="summary-sig-arg">description</span>=<span class="summary-sig-default"><code class="variable-quote">'</code><code class="variable-string"></code><code class="variable-quote">'</code></span>,
-        <span class="summary-sig-arg">scripts</span>=<span class="summary-sig-default"><code class="variable-group">[</code><code class="variable-group">]</code></span>)</span><br />
-      Update a template</td>
+        <span class="summary-sig-arg">startTime</span>=<span class="summary-sig-default">0</span>,
+        <span class="summary-sig-arg">endTime</span>=<span class="summary-sig-default">0</span>,
+        <span class="summary-sig-arg">limits</span>=<span class="summary-sig-default"><code class="variable-group">{</code><code class="variable-group">}</code></span>)</span><br />
+      Update a budget Provider Account, Period Type and Budget Level can't 
+      be updated</td>
           <td align="right" valign="top">
             
             
@@ -179,8 +166,8 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="scalex.template-module.html#delete" class="summary-sig-name">delete</a>(<span class="summary-sig-arg">template</span>)</span><br />
-      Delete a template</td>
+          <td><span class="summary-sig"><a href="scalex.group-module.html#delete" class="summary-sig-name">delete</a>(<span class="summary-sig-arg">budget</span>)</span><br />
+      Delete a budget</td>
           <td align="right" valign="top">
             
             
@@ -200,24 +187,24 @@
     <span class="table-header">Function Details</span></td>
 </tr>
 </table>
-<a name="getTemplates"></a>
+<a name="getGroups"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
        cellspacing="0" width="100%" bgcolor="white">
 <tr><td>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">getTemplates</span>()</span>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">getGroups</span>()</span>
   </h3>
   </td><td align="right" valign="top"
     >&nbsp;
     </td>
   </tr></table>
   
-  <p>Get list of templates</p>
+  <p>Get list of groups</p>
   <dl class="fields">
     <dt>Returns: list</dt>
-        <dd>list of templates</dd>
+        <dd>list of all groups for a Role and User</dd>
   </dl>
 </td></tr></table>
 </div>
@@ -228,72 +215,57 @@
 <tr><td>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">getInfo</span>(<span class="sig-arg">template</span>)</span>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">getInfo</span>(<span class="sig-arg">budget</span>)</span>
   </h3>
   </td><td align="right" valign="top"
     >&nbsp;
     </td>
   </tr></table>
   
-  <p>Get template info</p>
+  <p>Gets budget information for a particular budget</p>
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>template</code></strong> (dict) - template object returned by getTemplates()</li>
+        <li><strong class="pname"><code>budget</code></strong> (dict) - budget object returned by getBudgets()</li>
     </ul></dd>
     <dt>Returns: dict</dt>
+        <dd>budget information for the budget</dd>
   </dl>
 </td></tr></table>
 </div>
-<a name="getParameters"></a>
+<a name="getLimitBean"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
        cellspacing="0" width="100%" bgcolor="white">
 <tr><td>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">getParameters</span>(<span class="sig-arg">template</span>)</span>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">getLimitBean</span>(<span class="sig-arg">budgetLevel</span>)</span>
   </h3>
   </td><td align="right" valign="top"
     >&nbsp;
     </td>
   </tr></table>
   
-  <p>Get template parameters</p>
+  <p>Get limit bean for the given budgetLevel</p>
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>template</code></strong> (dict) - template object returned by getTemplates()</li>
+        <li><strong class="pname"><code>budgetLevel</code></strong> (string) - Budget Level, default value is <b>org</b>. Valid values are:
+          <ul>
+            <li>
+              <b>org</b>, Organization
+            </li>
+            <li>
+              <b>user</b>, User
+            </li>
+            <li>
+              <b>role</b>, Role
+            </li>
+          </ul></li>
     </ul></dd>
     <dt>Returns: list</dt>
-  </dl>
-</td></tr></table>
-</div>
-<a name="launch"></a>
-<div>
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-  <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">launch</span>(<span class="sig-arg">template</span>,
-        <span class="sig-arg">targets</span>=<span class="sig-default"><code class="variable-group">[</code><code class="variable-group">]</code></span>,
-        <span class="sig-arg">parameter</span>=<span class="sig-default"><code class="variable-group">[</code><code class="variable-group">]</code></span>)</span>
-  </h3>
-  </td><td align="right" valign="top"
-    >&nbsp;
-    </td>
-  </tr></table>
-  
-  <p>Launch a template</p>
-  <dl class="fields">
-    <dt>Parameters:</dt>
-    <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>template</code></strong> (dict) - template object returned by getTemplates()</li>
-        <li><strong class="pname"><code>targets</code></strong> (list) - target node list, node returned by node.getNodes()</li>
-        <li><strong class="pname"><code>parameter</code></strong> (list) - parameters of template</li>
-    </ul></dd>
-    <dt>Returns: dict</dt>
+        <dd>Limit bean</dd>
   </dl>
 </td></tr></table>
 </div>
@@ -305,28 +277,61 @@
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
   <h3 class="epydoc"><span class="sig"><span class="sig-name">create</span>(<span class="sig-arg">name</span>=<span class="sig-default"><code class="variable-quote">'</code><code class="variable-string"></code><code class="variable-quote">'</code></span>,
-        <span class="sig-arg">targets</span>=<span class="sig-default"><code class="variable-group">[</code><code class="variable-group">]</code></span>,
         <span class="sig-arg">description</span>=<span class="sig-default"><code class="variable-quote">'</code><code class="variable-string"></code><code class="variable-quote">'</code></span>,
-        <span class="sig-arg">scripts</span>=<span class="sig-default"><code class="variable-group">[</code><code class="variable-group">]</code></span>)</span>
+        <span class="sig-arg">providerAccountId</span>=<span class="sig-default">-999</span>,
+        <span class="sig-arg">periodType</span>=<span class="sig-default"><code class="variable-quote">'</code><code class="variable-string">monthly</code><code class="variable-quote">'</code></span>,
+        <span class="sig-arg">budgetLevel</span>=<span class="sig-default"><code class="variable-quote">'</code><code class="variable-string">org</code><code class="variable-quote">'</code></span>,
+        <span class="sig-arg">startTime</span>=<span class="sig-default">0</span>,
+        <span class="sig-arg">endTime</span>=<span class="sig-default">0</span>,
+        <span class="sig-arg">limits</span>=<span class="sig-default"><code class="variable-group">{</code><code class="variable-group">}</code></span>)</span>
   </h3>
   </td><td align="right" valign="top"
     >&nbsp;
     </td>
   </tr></table>
   
-  <p>Create a template</p>
+  <p>Create a budget</p>
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>name</code></strong> (string) - Template name</li>
-        <li><strong class="pname"><code>targets</code></strong> (list) - Target node list</li>
-        <li><strong class="pname"><code>description</code></strong> (string) - Template description</li>
-        <li><strong class="pname"><code>scripts</code></strong> (list) - Scripts of template, returned by scalex.script.getScripts()</li>
+        <li><strong class="pname"><code>name</code></strong> (string) - Budget name</li>
+        <li><strong class="pname"><code>description</code></strong> (string) - Budget description</li>
+        <li><strong class="pname"><code>periodType</code></strong> (string) - Period Type of budget, default value is <b>monthly</b>. Valid 
+          values are:
+          <ul>
+            <li>
+              <b>monthly</b>
+            </li>
+            <li>
+              <b>weekly</b>
+            </li>
+          </ul></li>
+        <li><strong class="pname"><code>budgetLevel</code></strong> (string) - Budget Level, default value is <b>org</b>. Valid values are:
+          <ul>
+            <li>
+              <b>org</b>, Organization
+            </li>
+            <li>
+              <b>user</b>, User
+            </li>
+            <li>
+              <b>role</b>, Role
+            </li>
+          </ul></li>
+        <li><strong class="pname"><code>startTime</code></strong> - Start time formatted like <b>2012-12-12-00:00</b>, default is now</li>
+        <li><strong class="pname"><code>endTime</code></strong> - End time formatted like <b>2012-12-12-00:00</b>, default is one 
+          year later</li>
+        <li><strong class="pname"><code>limits</code></strong> (list) - Soft and Hard Limits in your local currency. Default is 0, get 
+          limits use scalex.budget.getLimitBean(budgetLevel), change it's 
+          softLimit and hardLimit.</li>
     </ul></dd>
     <dt>Returns: dict</dt>
-        <dd>Template just created</dd>
+        <dd>Budget just created</dd>
   </dl>
-</td></tr></table>
+<div class="fields">      <p><strong>To Do:</strong>
+        Support provider account
+      </p>
+</div></td></tr></table>
 </div>
 <a name="update"></a>
 <div>
@@ -335,29 +340,32 @@
 <tr><td>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">update</span>(<span class="sig-arg">template</span>,
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">update</span>(<span class="sig-arg">budget</span>,
         <span class="sig-arg">name</span>=<span class="sig-default"><code class="variable-quote">'</code><code class="variable-string"></code><code class="variable-quote">'</code></span>,
-        <span class="sig-arg">targets</span>=<span class="sig-default"><code class="variable-group">[</code><code class="variable-group">]</code></span>,
         <span class="sig-arg">description</span>=<span class="sig-default"><code class="variable-quote">'</code><code class="variable-string"></code><code class="variable-quote">'</code></span>,
-        <span class="sig-arg">scripts</span>=<span class="sig-default"><code class="variable-group">[</code><code class="variable-group">]</code></span>)</span>
+        <span class="sig-arg">startTime</span>=<span class="sig-default">0</span>,
+        <span class="sig-arg">endTime</span>=<span class="sig-default">0</span>,
+        <span class="sig-arg">limits</span>=<span class="sig-default"><code class="variable-group">{</code><code class="variable-group">}</code></span>)</span>
   </h3>
   </td><td align="right" valign="top"
     >&nbsp;
     </td>
   </tr></table>
   
-  <p>Update a template</p>
+  <p>Update a budget Provider Account, Period Type and Budget Level can't 
+  be updated</p>
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>template</code></strong> (dict) - The template you want to update</li>
-        <li><strong class="pname"><code>name</code></strong> (string) - Template name</li>
-        <li><strong class="pname"><code>targets</code></strong> (list) - Target node list</li>
-        <li><strong class="pname"><code>description</code></strong> (string) - Template description</li>
-        <li><strong class="pname"><code>scripts</code></strong> (list) - Scripts of template, returned by scalex.script.getScripts()</li>
+        <li><strong class="pname"><code>budget</code></strong> - The budget you want to update</li>
+        <li><strong class="pname"><code>name</code></strong> (string) - Budget name</li>
+        <li><strong class="pname"><code>description</code></strong> (string) - Budget description</li>
+        <li><strong class="pname"><code>startTime</code></strong> - Start time formatted like <b>2012-12-12-00:00</b>, default is now</li>
+        <li><strong class="pname"><code>endTime</code></strong> - End time formatted like <b>2012-12-12-00:00</b>, default is one 
+          year later</li>
     </ul></dd>
     <dt>Returns: dict</dt>
-        <dd>Template just updated</dd>
+        <dd>budget just updated</dd>
   </dl>
 </td></tr></table>
 </div>
@@ -368,18 +376,18 @@
 <tr><td>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">delete</span>(<span class="sig-arg">template</span>)</span>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">delete</span>(<span class="sig-arg">budget</span>)</span>
   </h3>
   </td><td align="right" valign="top"
     >&nbsp;
     </td>
   </tr></table>
   
-  <p>Delete a template</p>
+  <p>Delete a budget</p>
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>template</code></strong> - The template you want to delete</li>
+        <li><strong class="pname"><code>budget</code></strong> - The budget you want to delete</li>
     </ul></dd>
   </dl>
 </td></tr></table>
