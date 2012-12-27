@@ -9,8 +9,8 @@ each API call return a dict like this
     result may be 'SUCCESS' or 'FAILURE'
     data may be list/dict/string 
 '''
-USERNAME = ''
-PASSWORD = ''
+USERNAME = 'karthik@scalextreme.com'
+PASSWORD = 'T3st1234'
 
 assert USERNAME != '' and PASSWORD != '', 'you must setup username and password in %s' % (__file__)
 

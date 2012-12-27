@@ -24,15 +24,17 @@ def login(username, password):
   userinfo.username = username
   userinfo.password = password
   pwd = hashlib.md5(password).hexdigest()
-  url = '%s/scalex/acl/authenticate?type=scalex&rid=%s' % (userinfo.domain, userinfo.rid)
+  url = '%s/acl/authvalidate' % (userinfo.domain)
   value = {
     'user':username,
     'password':pwd
   }
+  print url
   postData = urllib.urlencode(value)
   response = urllib2.urlopen(url, postData)
   userinfo.cookie = response.headers.get('Set-Cookie')
   returnData = json.loads(response.read())
+  print returnData
   if returnData['result'] == 'SUCCESS':
     userinfo.userid = returnData['data']['userID']
   return returnData

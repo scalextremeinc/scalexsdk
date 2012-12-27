@@ -10,7 +10,7 @@ def getCompanies():
   '''
   assert userinfo.userid != '', 'you need login first'
   scalex.relogin()
-  url = '%s/scalex/acl/usercompanies?rid=%s' % (userinfo.domain, userinfo.rid)
+  url = '%s/acl/usercompanies?rid=%s' % (userinfo.domain, userinfo.rid)
   value = {
     'userId':userinfo.userid
   }
