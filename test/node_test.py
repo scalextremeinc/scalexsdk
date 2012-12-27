@@ -5,22 +5,22 @@ winNodes = []
 linuxNodes = []
 nodes = []
 
-# getNodes()
-def test_getNodes():
+def setup():
   global winNodes
   global linuxNodes
   global nodes
-#
   winNodes = scalex.node.getNodes(platform = 'Windows')
   linuxNodes = scalex.node.getNodes(platform = 'Linux')
-  nodes = []
   nodes.extend(linuxNodes)
   nodes.extend(winNodes)
 
+
+# getNodes()
+# def test_getNodes():
+#
+
 # getUpdates() and applyUpdates()
 def test_getUpdates():
-  if linuxNodes == []:
-    test_getNodes()
   if linuxNodes == []:
     sys.stderr.write('**ERROR: NO Linux nodes, skip getUpdates_test()\n')
     return
@@ -38,8 +38,6 @@ def test_getUpdates():
 
 # getPatches() and applyPatches()
 def test_getPatches():
-  if winNodes == []:
-    test_getNodes()
   if winNodes == []:
     sys.stderr.write('**ERROR: NO Windows nodes, skip getPatches_test()\n')
     return
@@ -59,16 +57,12 @@ def test_getPatches():
 # getAudits()
 def getAudits_test():
   if linuxNodes == []:
-    test_getNodes()
-  if linuxNodes == []:
     sys.stderr.write('**ERROR: NO Linux nodes, skip getAudits_test()\n')
     return
   scalex.node.getAudits(linuxNodes[0])
 
 # getAllAgentsWithPatch()
 def getAllAgentsWithPatch_test():
-  if nodes == []:
-    test_getNodes()
   if nodes == []:
     sys.stderr.write('**ERROR: NO nodes, skip getAllAgentsWithPatch_test()\n')
     return
