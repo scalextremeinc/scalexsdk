@@ -68,7 +68,7 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="scalex.monitor-module.html#getAlerts" class="summary-sig-name">getAlerts</a>(<span class="summary-sig-arg">page</span>=<span class="summary-sig-default">1</span>,
+          <td><span class="summary-sig"><a href="scalex.monitor-module.html#getRollupAlerts" class="summary-sig-name">getRollupAlerts</a>(<span class="summary-sig-arg">page</span>=<span class="summary-sig-default">1</span>,
         <span class="summary-sig-arg">limit</span>=<span class="summary-sig-default">30</span>)</span><br />
       Gets a list of all alerts in the organization</td>
           <td align="right" valign="top">
@@ -103,9 +103,7 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="enable"></a><span class="summary-sig-name">enable</span>(<span class="summary-sig-arg">node</span>,
-        <span class="summary-sig-arg">enable</span>)</span><br />
-      /monitor/{id}</td>
+          <td><span class="summary-sig"><a name="enableMonitoring"></a><span class="summary-sig-name">enableMonitoring</span>(<span class="summary-sig-arg">node</span>)</span></td>
           <td align="right" valign="top">
             
             
@@ -121,8 +119,7 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="getEvents"></a><span class="summary-sig-name">getEvents</span>(<span class="summary-sig-arg">node</span>)</span><br />
-      /monitor/{id}/events</td>
+          <td><span class="summary-sig"><a name="disableMonitoring"></a><span class="summary-sig-name">disableMonitoring</span>(<span class="summary-sig-arg">node</span>)</span></td>
           <td align="right" valign="top">
             
             
@@ -138,8 +135,78 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="getMetrics"></a><span class="summary-sig-name">getMetrics</span>(<span class="summary-sig-arg">node</span>)</span><br />
-      /monitor/{id}/metrics</td>
+          <td><span class="summary-sig"><a href="scalex.monitor-module.html#getAlertsForNode" class="summary-sig-name">getAlertsForNode</a>(<span class="summary-sig-arg">node</span>)</span><br />
+      Gets alerts for a node/agent</td>
+          <td align="right" valign="top">
+            
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="scalex.monitor-module.html#enableAlerts" class="summary-sig-name">enableAlerts</a>(<span class="summary-sig-arg">node</span>)</span><br />
+      Enable alerts for a node</td>
+          <td align="right" valign="top">
+            
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="scalex.monitor-module.html#disableAlerts" class="summary-sig-name">disableAlerts</a>(<span class="summary-sig-arg">node</span>)</span><br />
+      Disable alerts for a node</td>
+          <td align="right" valign="top">
+            
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="scalex.monitor-module.html#getEvents" class="summary-sig-name">getEvents</a>(<span class="summary-sig-arg">node</span>,
+        <span class="summary-sig-arg">limit</span>=<span class="summary-sig-default">25</span>,
+        <span class="summary-sig-arg">timestamp</span>=<span class="summary-sig-default">0</span>)</span><br />
+      Get events for a node</td>
+          <td align="right" valign="top">
+            
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="scalex.monitor-module.html#getMetrics" class="summary-sig-name">getMetrics</a>(<span class="summary-sig-arg">node</span>)</span><br />
+      Get metrics for a node</td>
           <td align="right" valign="top">
             
             
@@ -159,14 +226,14 @@
     <span class="table-header">Function Details</span></td>
 </tr>
 </table>
-<a name="getAlerts"></a>
+<a name="getRollupAlerts"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
        cellspacing="0" width="100%" bgcolor="white">
 <tr><td>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">getAlerts</span>(<span class="sig-arg">page</span>=<span class="sig-default">1</span>,
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">getRollupAlerts</span>(<span class="sig-arg">page</span>=<span class="sig-default">1</span>,
         <span class="sig-arg">limit</span>=<span class="sig-default">30</span>)</span>
   </h3>
   </td><td align="right" valign="top"
@@ -211,6 +278,126 @@
   </dl>
 </td></tr></table>
 </div>
+<a name="getAlertsForNode"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">getAlertsForNode</span>(<span class="sig-arg">node</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    >&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Gets alerts for a node/agent</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>node</code></strong> (dict) - A node</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="enableAlerts"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">enableAlerts</span>(<span class="sig-arg">node</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    >&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Enable alerts for a node</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>node</code></strong> (dict) - A node</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="disableAlerts"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">disableAlerts</span>(<span class="sig-arg">node</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    >&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Disable alerts for a node</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>node</code></strong> (dict) - A node</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="getEvents"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">getEvents</span>(<span class="sig-arg">node</span>,
+        <span class="sig-arg">limit</span>=<span class="sig-default">25</span>,
+        <span class="sig-arg">timestamp</span>=<span class="sig-default">0</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    >&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Get events for a node</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>node</code></strong> (dict) - A node</li>
+        <li><strong class="pname"><code>limit</code></strong> (int) - limit number of records shown, default is 25.</li>
+        <li><strong class="pname"><code>timestamp</code></strong> (int) - end time in the form of epoch time in milliseconds (ex: 
+          1348784568), default is current time</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="getMetrics"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">getMetrics</span>(<span class="sig-arg">node</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    >&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Get metrics for a node</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>node</code></strong> (dict) - A node</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
 <br />
 <!-- ==================== NAVIGATION BAR ==================== -->
 <table class="navbar" border="0" width="100%" cellpadding="0"
@@ -238,7 +425,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Thu Dec 27 01:10:35 2012
+    Generated by Epydoc 3.0.1 on Thu Dec 27 17:39:37 2012
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

@@ -12,7 +12,7 @@ import datetime
 #
 from scalex import userinfo
 
-def getAlerts(page = 1, limit = 30):
+def getRollupAlerts(page = 1, limit = 30):
   '''
     Gets a list of all alerts in the organization
     
@@ -52,26 +52,113 @@ def getStatus(node):
   request = urllib2.Request(url)
   response = urllib2.urlopen(request)
   returnData = json.loads(response.read())
-
   return returnData
 
-def enable(node, enable):
+def _enable(node, enable):
   '''
-  /monitor/{id}
+    Enables/disables monitoring on a node/agent
 
+    @type   node: dict
+    @param  node: A node
+
+    @type   enable: bool
+    @param  enable: 
   '''
-  pass
+  path = '/monitor/' + str(node['agentId'])
+  url = userinfo.geturl(path)
+  request = urllib2.Request(url)
+  params = {
+    'enable' : 'Y' if enable else 'N',
+  }
+  postData = urllib.urlencode(params)
+  response = urllib2.urlopen(request, postData)
+  returnData = json.loads(response.read())
+  return returnData
 
+def enableMonitoring(node):
+  _enable(node, True)
 
-def getEvents(node):
+def disableMonitoring(node):
+  _enable(node, False)
+
+def getAlertsForNode(node):
   '''
-  /monitor/{id}/events
+    Gets alerts for a node/agent
 
+    @type   node: dict
+    @param  node: A node
   '''
-  pass
+  path = '/monitor/%s/alerts' % (str(node['agentId']))
+  url = userinfo.geturl(path)
+  request = urllib2.Request(url)
+  response = urllib2.urlopen(request)
+  returnData = json.loads(response.read())
+  return returnData
+
+def enableAlerts(node):
+  '''
+    Enable alerts for a node
+
+    @type   node: dict
+    @param  node: A node
+  '''
+  path = '/monitor/%s/alerts/enable' % (str(node['agentId']))
+  url = userinfo.geturl(path)
+  request = urllib2.Request(url)
+  response = urllib2.urlopen(request)
+  returnData = json.loads(response.read())
+  return returnData
+
+def disableAlerts(node):
+  '''
+    Disable alerts for a node
+
+    @type   node: dict
+    @param  node: A node
+  '''
+  path = '/monitor/%s/alerts/disable' % (str(node['agentId']))
+  url = userinfo.geturl(path)
+  request = urllib2.Request(url)
+  response = urllib2.urlopen(request)
+  returnData = json.loads(response.read())
+  return returnData
+
+def getEvents(node, limit = 25, timestamp = 0):
+  '''
+    Get events for a node
+
+    @type   node: dict
+    @param  node: A node
+
+    @type   limit: int
+    @param  limit: limit number of records shown, default is 25.
+
+    @type   timestamp: int
+    @param  timestamp: end time in the form of epoch time in milliseconds (ex: 1348784568), default is current time
+  '''
+  path = '/monitor/%s/events' % (str(node['agentId']))
+  query = {
+    'limit' : limit
+  }
+  if timestamp != 0:
+    query['timestamp'] = timestamp
+
+  url = userinfo.geturl(path, query)
+  request = urllib2.Request(url)
+  response = urllib2.urlopen(request)
+  returnData = json.loads(response.read())
+  return returnData
 
 def getMetrics(node):
   '''
-  /monitor/{id}/metrics
+    Get metrics for a node
+
+    @type   node: dict
+    @param  node: A node
   '''
-  pass
+  path = '/monitor/%s/metrics' % (str(node['agentId']))
+  url = userinfo.geturl(path)
+  request = urllib2.Request(url)
+  response = urllib2.urlopen(request)
+  returnData = json.loads(response.read())
+  return returnData
