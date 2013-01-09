@@ -81,76 +81,12 @@
   </tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">dict</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a href="scalex.group-module.html#getInfo" class="summary-sig-name">getInfo</a>(<span class="summary-sig-arg">budget</span>)</span><br />
-      Gets budget information for a particular budget</td>
-          <td align="right" valign="top">
-            
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">list</span>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="scalex.group-module.html#getLimitBean" class="summary-sig-name">getLimitBean</a>(<span class="summary-sig-arg">budgetLevel</span>)</span><br />
-      Get limit bean for the given budgetLevel</td>
-          <td align="right" valign="top">
-            
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">dict</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a href="scalex.group-module.html#create" class="summary-sig-name">create</a>(<span class="summary-sig-arg">name</span>=<span class="summary-sig-default"><code class="variable-quote">'</code><code class="variable-string"></code><code class="variable-quote">'</code></span>,
-        <span class="summary-sig-arg">description</span>=<span class="summary-sig-default"><code class="variable-quote">'</code><code class="variable-string"></code><code class="variable-quote">'</code></span>,
-        <span class="summary-sig-arg">providerAccountId</span>=<span class="summary-sig-default">-999</span>,
-        <span class="summary-sig-arg">periodType</span>=<span class="summary-sig-default"><code class="variable-quote">'</code><code class="variable-string">monthly</code><code class="variable-quote">'</code></span>,
-        <span class="summary-sig-arg">budgetLevel</span>=<span class="summary-sig-default"><code class="variable-quote">'</code><code class="variable-string">org</code><code class="variable-quote">'</code></span>,
-        <span class="summary-sig-arg">startTime</span>=<span class="summary-sig-default">0</span>,
-        <span class="summary-sig-arg">endTime</span>=<span class="summary-sig-default">0</span>,
-        <span class="summary-sig-arg">limits</span>=<span class="summary-sig-default"><code class="variable-group">{</code><code class="variable-group">}</code></span>)</span><br />
-      Create a budget</td>
-          <td align="right" valign="top">
-            
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">dict</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a href="scalex.group-module.html#update" class="summary-sig-name">update</a>(<span class="summary-sig-arg">budget</span>,
-        <span class="summary-sig-arg">name</span>=<span class="summary-sig-default"><code class="variable-quote">'</code><code class="variable-string"></code><code class="variable-quote">'</code></span>,
-        <span class="summary-sig-arg">description</span>=<span class="summary-sig-default"><code class="variable-quote">'</code><code class="variable-string"></code><code class="variable-quote">'</code></span>,
-        <span class="summary-sig-arg">startTime</span>=<span class="summary-sig-default">0</span>,
-        <span class="summary-sig-arg">endTime</span>=<span class="summary-sig-default">0</span>,
-        <span class="summary-sig-arg">limits</span>=<span class="summary-sig-default"><code class="variable-group">{</code><code class="variable-group">}</code></span>)</span><br />
-      Update a budget Provider Account, Period Type and Budget Level can't 
-      be updated</td>
+          <td><span class="summary-sig"><a href="scalex.group-module.html#getNodesOfGroup" class="summary-sig-name">getNodesOfGroup</a>(<span class="summary-sig-arg">group</span>)</span><br />
+      Get nodes of a given group</td>
           <td align="right" valign="top">
             
             
@@ -166,8 +102,8 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="scalex.group-module.html#delete" class="summary-sig-name">delete</a>(<span class="summary-sig-arg">budget</span>)</span><br />
-      Delete a budget</td>
+          <td><span class="summary-sig"><a href="scalex.group-module.html#delete" class="summary-sig-name">delete</a>(<span class="summary-sig-arg">group</span>)</span><br />
+      Delete a server group</td>
           <td align="right" valign="top">
             
             
@@ -208,164 +144,28 @@
   </dl>
 </td></tr></table>
 </div>
-<a name="getInfo"></a>
+<a name="getNodesOfGroup"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
        cellspacing="0" width="100%" bgcolor="white">
 <tr><td>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">getInfo</span>(<span class="sig-arg">budget</span>)</span>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">getNodesOfGroup</span>(<span class="sig-arg">group</span>)</span>
   </h3>
   </td><td align="right" valign="top"
     >&nbsp;
     </td>
   </tr></table>
   
-  <p>Gets budget information for a particular budget</p>
+  <p>Get nodes of a given group</p>
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>budget</code></strong> (dict) - budget object returned by getBudgets()</li>
-    </ul></dd>
-    <dt>Returns: dict</dt>
-        <dd>budget information for the budget</dd>
-  </dl>
-</td></tr></table>
-</div>
-<a name="getLimitBean"></a>
-<div>
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-  <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">getLimitBean</span>(<span class="sig-arg">budgetLevel</span>)</span>
-  </h3>
-  </td><td align="right" valign="top"
-    >&nbsp;
-    </td>
-  </tr></table>
-  
-  <p>Get limit bean for the given budgetLevel</p>
-  <dl class="fields">
-    <dt>Parameters:</dt>
-    <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>budgetLevel</code></strong> (string) - Budget Level, default value is <b>org</b>. Valid values are:
-          <ul>
-            <li>
-              <b>org</b>, Organization
-            </li>
-            <li>
-              <b>user</b>, User
-            </li>
-            <li>
-              <b>role</b>, Role
-            </li>
-          </ul></li>
+        <li><strong class="pname"><code>group</code></strong> - A group returned by getGroups()</li>
     </ul></dd>
     <dt>Returns: list</dt>
-        <dd>Limit bean</dd>
-  </dl>
-</td></tr></table>
-</div>
-<a name="create"></a>
-<div>
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-  <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">create</span>(<span class="sig-arg">name</span>=<span class="sig-default"><code class="variable-quote">'</code><code class="variable-string"></code><code class="variable-quote">'</code></span>,
-        <span class="sig-arg">description</span>=<span class="sig-default"><code class="variable-quote">'</code><code class="variable-string"></code><code class="variable-quote">'</code></span>,
-        <span class="sig-arg">providerAccountId</span>=<span class="sig-default">-999</span>,
-        <span class="sig-arg">periodType</span>=<span class="sig-default"><code class="variable-quote">'</code><code class="variable-string">monthly</code><code class="variable-quote">'</code></span>,
-        <span class="sig-arg">budgetLevel</span>=<span class="sig-default"><code class="variable-quote">'</code><code class="variable-string">org</code><code class="variable-quote">'</code></span>,
-        <span class="sig-arg">startTime</span>=<span class="sig-default">0</span>,
-        <span class="sig-arg">endTime</span>=<span class="sig-default">0</span>,
-        <span class="sig-arg">limits</span>=<span class="sig-default"><code class="variable-group">{</code><code class="variable-group">}</code></span>)</span>
-  </h3>
-  </td><td align="right" valign="top"
-    >&nbsp;
-    </td>
-  </tr></table>
-  
-  <p>Create a budget</p>
-  <dl class="fields">
-    <dt>Parameters:</dt>
-    <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>name</code></strong> (string) - Budget name</li>
-        <li><strong class="pname"><code>description</code></strong> (string) - Budget description</li>
-        <li><strong class="pname"><code>periodType</code></strong> (string) - Period Type of budget, default value is <b>monthly</b>. Valid 
-          values are:
-          <ul>
-            <li>
-              <b>monthly</b>
-            </li>
-            <li>
-              <b>weekly</b>
-            </li>
-          </ul></li>
-        <li><strong class="pname"><code>budgetLevel</code></strong> (string) - Budget Level, default value is <b>org</b>. Valid values are:
-          <ul>
-            <li>
-              <b>org</b>, Organization
-            </li>
-            <li>
-              <b>user</b>, User
-            </li>
-            <li>
-              <b>role</b>, Role
-            </li>
-          </ul></li>
-        <li><strong class="pname"><code>startTime</code></strong> - Start time formatted like <b>2012-12-12-00:00</b>, default is now</li>
-        <li><strong class="pname"><code>endTime</code></strong> - End time formatted like <b>2012-12-12-00:00</b>, default is one 
-          year later</li>
-        <li><strong class="pname"><code>limits</code></strong> (list) - Soft and Hard Limits in your local currency. Default is 0, get 
-          limits use scalex.budget.getLimitBean(budgetLevel), change it's 
-          softLimit and hardLimit.</li>
-    </ul></dd>
-    <dt>Returns: dict</dt>
-        <dd>Budget just created</dd>
-  </dl>
-<div class="fields">      <p><strong>To Do:</strong>
-        Support provider account
-      </p>
-</div></td></tr></table>
-</div>
-<a name="update"></a>
-<div>
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-  <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">update</span>(<span class="sig-arg">budget</span>,
-        <span class="sig-arg">name</span>=<span class="sig-default"><code class="variable-quote">'</code><code class="variable-string"></code><code class="variable-quote">'</code></span>,
-        <span class="sig-arg">description</span>=<span class="sig-default"><code class="variable-quote">'</code><code class="variable-string"></code><code class="variable-quote">'</code></span>,
-        <span class="sig-arg">startTime</span>=<span class="sig-default">0</span>,
-        <span class="sig-arg">endTime</span>=<span class="sig-default">0</span>,
-        <span class="sig-arg">limits</span>=<span class="sig-default"><code class="variable-group">{</code><code class="variable-group">}</code></span>)</span>
-  </h3>
-  </td><td align="right" valign="top"
-    >&nbsp;
-    </td>
-  </tr></table>
-  
-  <p>Update a budget Provider Account, Period Type and Budget Level can't 
-  be updated</p>
-  <dl class="fields">
-    <dt>Parameters:</dt>
-    <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>budget</code></strong> - The budget you want to update</li>
-        <li><strong class="pname"><code>name</code></strong> (string) - Budget name</li>
-        <li><strong class="pname"><code>description</code></strong> (string) - Budget description</li>
-        <li><strong class="pname"><code>startTime</code></strong> - Start time formatted like <b>2012-12-12-00:00</b>, default is now</li>
-        <li><strong class="pname"><code>endTime</code></strong> - End time formatted like <b>2012-12-12-00:00</b>, default is one 
-          year later</li>
-    </ul></dd>
-    <dt>Returns: dict</dt>
-        <dd>budget just updated</dd>
+        <dd>list of nodes</dd>
   </dl>
 </td></tr></table>
 </div>
@@ -376,18 +176,18 @@
 <tr><td>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">delete</span>(<span class="sig-arg">budget</span>)</span>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">delete</span>(<span class="sig-arg">group</span>)</span>
   </h3>
   </td><td align="right" valign="top"
     >&nbsp;
     </td>
   </tr></table>
   
-  <p>Delete a budget</p>
+  <p>Delete a server group</p>
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>budget</code></strong> - The budget you want to delete</li>
+        <li><strong class="pname"><code>group</code></strong> - The group you want to delete</li>
     </ul></dd>
   </dl>
 </td></tr></table>
@@ -419,7 +219,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Thu Dec 27 17:39:37 2012
+    Generated by Epydoc 3.0.1 on Wed Jan  9 21:03:51 2013
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

@@ -15,13 +15,8 @@ scalex.company	scalex.company-module.html
 scalex.company.set	scalex.company-module.html#set
 scalex.company.getCompanies	scalex.company-module.html#getCompanies
 scalex.group	scalex.group-module.html
+scalex.group.getNodesOfGroup	scalex.group-module.html#getNodesOfGroup
 scalex.group.getGroups	scalex.group-module.html#getGroups
-scalex.group._getUsers	scalex.group-module.html#_getUsers
-scalex.group.getInfo	scalex.group-module.html#getInfo
-scalex.group.create	scalex.group-module.html#create
-scalex.group.update	scalex.group-module.html#update
-scalex.group._getRoles	scalex.group-module.html#_getRoles
-scalex.group.getLimitBean	scalex.group-module.html#getLimitBean
 scalex.group.delete	scalex.group-module.html#delete
 scalex.job	scalex.job-module.html
 scalex.job.getOutputs	scalex.job-module.html#getOutputs
