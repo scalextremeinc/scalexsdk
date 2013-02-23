@@ -14,7 +14,7 @@ from scalex import userinfo
 
 def getProviders():
   '''
-    Get list of providers
+    Get list of all providers
     
     @rtype: list
     @return: list of all providers for a Role and User
@@ -51,12 +51,37 @@ def create(name, providerCode, params):
   returnData = json.loads(response.read())
   return returnData
 
-def update(provider, name = ''):
+def update(provider, name = '', providerCode = '', params = {}):
   '''
-  FIXME, not finished yet
+    Update a provider
 
+    @type   provider: dict
+    @param  provider: A provider
+
+    @type   name: string
+    @param  name: The name of the provider account
+
+    @type   providerCode: string
+    @param  providerCode: The providercode for the cloud provider
+
+    @type   params: dict
+    @param  params: Provider-specific Parameters (required for individual providers)
+ 
   '''
-  pass
+  if providerCode != '':
+    validProviderCodes = ['ec2', 'rackspace', 'openstack', 'bluelock', 'vcloud', 'cloudstack', 'dellcloud', 'trmkecloud', 'savvis', 'thecloud', 'hpcloud']
+    assert providerCode in validProviderCodes, 'Wrong providerCode'
+  #   "provider_id": "529",
+  # "costing_enabled": "Y",
+  # "provider_code": "ec2",
+  # "provider_name": "Amazon"
+  if name == '':
+    name = provider['provider_name']
+  if providerCode == '':
+    providerCode = provider['provider_code']
+  # FIXME, not 
+  print 'FIXME, not implemented'
+
 
 def delete(provider):
   '''
@@ -104,7 +129,7 @@ def getEstimatedCost(provider, period = 'MONTHLY', level = 'ROLE'):
 def getActualCost(provider):
   '''
     Gets the actual cost for a provider
-        
+
     @type   provider: dict
     @param  provider: The provider
   '''
