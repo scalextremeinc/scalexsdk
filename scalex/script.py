@@ -8,6 +8,7 @@ import json
 import time
 import datetime
 import base64
+import os
 #
 from scalex import userinfo
 import scalex
@@ -159,7 +160,7 @@ def run(name, script, targets, arguments = [], type = 'script', version = -1, se
   return scalex.job.create(name, script, targets, arguments, type, version, serverGroups,
                            scheduleType, startTime, repeatInterval, endTime, repeatCount)
 
-def create(name, type, content, description = '', params = [], tags = []):
+def create(name, type, content, description = '', params = [], tagList = []):
   '''
     Create a script
     
@@ -207,8 +208,8 @@ def create(name, type, content, description = '', params = [], tags = []):
     "scriptName":name,
     "scriptType":type,
     "scriptDescription":base64.b64encode(description),
-    "scriptInputParams":[],
-    "tagList":[],
+    "scriptInputParams":params,
+    "tagList":tagList,
     "scriptAttachments":[],
     "scriptContent":base64.b64encode(content),
   }
@@ -218,6 +219,92 @@ def create(name, type, content, description = '', params = [], tags = []):
   response = urllib2.urlopen(request)
   returnData = json.loads(response.read())
   return returnData
+
+def exportAll(pathPrefix, type = ""):
+  '''
+   Export all scripts of a certain type
+    
+   
+   
+   @type type: string
+   @param type: my , org, purchased
+   
+  '''
+  allScripts = getScripts(type)
+  for script in allScripts:
+    export(pathPrefix, script)
+    time.sleep(2) 
+
+def export(pathprefix = "./", script = '', version = -1):
+  '''
+    Exports a script
+    @type pathprefix: string
+    @param pathprefix: valid directory where the script should be placed
+     
+    @type script: dict
+    @param script: Script returned by getScripts()
+
+    @type version: string
+    @param version: version of the script or current version if nothing is passed in
+  '''
+  #this gets the full object with content as base 64 encoded string and attachments and other things..
+  fullScript = getContent(script, version)
+  SEPARATOR = '.'
+  scriptName = fullScript['scriptName'] + SEPARATOR + fullScript['scriptType'].replace('.', '')
+  scriptDir  = pathprefix + "/" + scriptName
+  version = scriptDir + "/version-" + fullScript['version']
+  try: 
+    #create a dir with the script name
+    os.mkdir(scriptDir)
+    # create a dir for the version
+    os.mkdir(version)
+    #create script and meta data
+    __createFile(version + "/" + scriptName, fullScript['scriptContent'])
+    __createFile(version + "/" + "metadata.json", 
+        json.dumps(__getMeta(fullScript)), False)
+  except:
+    raise 
+
+def importAll(pathPrefix):
+    for subdir, dirs, files in os.walk(pathPrefix):
+        for dir in dirs:
+            importOne(os.path.join(subdir, dir))
+        
+
+def importOne(scriptDir):
+
+    versionDir = __findCurrentVersion(scriptDir)
+
+    if versionDir == False:
+        return
+
+
+    scriptDirBasename = os.path.basename(scriptDir)
+    name, type = os.path.splitext(scriptDirBasename)
+
+    scriptName = scriptDirBasename;
+    with open(versionDir + "/" + scriptName) as f: content = f.read()
+
+    params = []
+    with open(versionDir + "/" + "metadata.json") as f: meta = json.loads(f.read())
+    params = meta["scriptInputParams"]
+    tags = meta["tagList"];
+    description = meta["description"];
+    type=type[1:]
+
+    create(name, type, content, description, params, tags)
+
+def __findCurrentVersion(scriptDir):
+    for subdir, dirs, files in os.walk(scriptDir):
+        for dir in dirs:
+            if "version-" not in dir:
+                continue
+
+            return os.path.join(subdir, dir)
+
+    return False
+
+
 
 def delete(script = '', type = ''):
   '''
@@ -255,7 +342,7 @@ def delete(script = '', type = ''):
   returnData = json.loads(response.read())
   return returnData
 
-def update(script, name = '', type = '', content = '', description = '', params = [], tags = [] ):
+def update(script, name = '', type = '', content = '', description = '', params = [], tagList = []):
   '''
     Update a script
     
@@ -316,8 +403,8 @@ def update(script, name = '', type = '', content = '', description = '', params 
     "version":script['version'],
     "scriptType":type,
     "scriptDescription":base64.b64encode(description),
-    "scriptInputParams":[],
-    "tagList":[],
+    "scriptInputParams":params,
+    "tagList": tagList,
     "scriptAttachments":[],
     "scriptContent":content,
   }
@@ -327,3 +414,22 @@ def update(script, name = '', type = '', content = '', description = '', params 
   response = urllib2.urlopen(request)
   returnData = json.loads(response.read())
   return returnData
+
+def __getMeta(script):
+    return {
+        "scriptInputParams" : script['scriptInputParams'],
+        "tagList" : script['tagList'],
+        "description" : base64.decodestring(script['scriptDescription'])
+    }
+
+def __createFile(filename, content, decode=True):
+    try:
+        scriptFile = open(filename, "wb")
+        if decode:
+            scriptFile.write(base64.decodestring(content))
+        else:
+            scriptFile.write(content)
+        scriptFile.close()
+    except:
+        raise 
+    
