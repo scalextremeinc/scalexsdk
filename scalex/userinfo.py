@@ -1,5 +1,5 @@
 '''
-  
+
 '''
 import scalex
 
@@ -8,7 +8,10 @@ client_id = ''
 client_secret = ''
 access_token = ''
 
-domain = 'https://manage.scalextreme.com'
+domain = 'https://lifecycle.cloud.com'
+#remove this after testing
+domain = 'https://prep-manage.scalextreme.com'
+domain = 'https://cloudmanage.scalextreme.com'
 baseurl = domain + '/v0'
 
 companyid = ''
